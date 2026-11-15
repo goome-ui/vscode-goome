@@ -1,0 +1,595 @@
+{
+  "format": "goome-project",
+  "version": 1,
+  "name": "demo",
+  "mode": "overlay",
+  "title": "goome ui",
+  "app": {
+    "w": 960,
+    "h": 640,
+    "titlebar": false,
+    "menubar": false,
+    "statusbar": false,
+    "nopad": false,
+    "status": "ready"
+  },
+  "root": [
+    {
+      "id": "nf38va9lbt",
+      "type": "window",
+      "p": {
+        "label": "demo window",
+        "var": "win",
+        "x": 40,
+        "y": 40,
+        "w": 340,
+        "h": 0,
+        "move": true,
+        "resize": true,
+        "collapse": true,
+        "notitle": false,
+        "close": false
+      },
+      "kids": [
+        [
+          {
+            "id": "nf38vaaxy4",
+            "type": "heading",
+            "p": {
+              "label": "Hello",
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vab0f2",
+            "type": "button",
+            "p": {
+              "label": "Click me",
+              "action": "print",
+              "toast": "Saved",
+              "ms": 2500,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbcwmr",
+            "type": "checkbox",
+            "p": {
+              "label": "Show grid",
+              "var": "show_grid",
+              "on": true,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbdobv",
+            "type": "toggle",
+            "p": {
+              "label": "Wi-Fi",
+              "var": "wifi",
+              "on": true,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbehzb",
+            "type": "slider",
+            "p": {
+              "label": "Volume",
+              "var": "volume",
+              "min": 0,
+              "max": 1,
+              "value": 0.65,
+              "fmt": "%.2f",
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbfm7t",
+            "type": "input",
+            "p": {
+              "label": "Name",
+              "var": "name",
+              "text": "goome",
+              "cap": 64,
+              "hint": "",
+              "password": false,
+              "readonly": false,
+              "number": false,
+              "enter": false,
+              "noselect": false,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbg4mj",
+            "type": "combo",
+            "p": {
+              "label": "Fruit",
+              "var": "fruit",
+              "items": "Mango\nBanana\nCherry\nKiwi",
+              "sel": 0,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbh3yn",
+            "type": "progress",
+            "p": {
+              "value": 0.6,
+              "label": "60%",
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbiel8",
+            "type": "separator",
+            "p": {}
+          },
+          {
+            "id": "nf38vbj1oj",
+            "type": "checkbox",
+            "p": {
+              "label": "Show grid 2",
+              "var": "show_grid2",
+              "on": true,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbkrhm",
+            "type": "radio",
+            "p": {
+              "var": "size",
+              "items": "Small\nMedium\nLarge",
+              "sel": 1,
+              "inline": true,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vblv68",
+            "type": "slider_int",
+            "p": {
+              "label": "Count",
+              "var": "count",
+              "min": 0,
+              "max": 100,
+              "value": 42,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbmioh",
+            "type": "color",
+            "p": {
+              "label": "Highlight",
+              "var": "highlight",
+              "color": 4283409407,
+              "tooltip": "",
+              "width": 0
+            }
+          },
+          {
+            "id": "nf38vbn1a9",
+            "type": "tabs",
+            "p": {
+              "var": "tab",
+              "items": "General\nAdvanced",
+              "sel": 0
+            },
+            "kids": [
+              [],
+              []
+            ]
+          },
+          {
+            "id": "nf38vbopgx",
+            "type": "collapsing",
+            "p": {
+              "label": "More stuff",
+              "var": "more",
+              "open": true
+            },
+            "kids": [
+              []
+            ]
+          },
+          {
+            "id": "nf38vbpqm6",
+            "type": "label",
+            "p": {
+              "label": "some text",
+              "tooltip": "",
+              "width": 0
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "id": "nf38vbqnva",
+      "type": "el",
+      "p": {
+        "el": "ef38v90y5v",
+        "var": "thing",
+        "x": 420,
+        "y": 60,
+        "w": 0,
+        "h": 0,
+        "params": {},
+        "init": {}
+      }
+    }
+  ],
+  "theme": {
+    "id": "dark",
+    "name": "goome dark",
+    "base": "dark",
+    "bg": 4279506458,
+    "panel": 3961199906,
+    "border": 486539263,
+    "text": 4293520366,
+    "text_dim": 4288060582,
+    "accent": 4285520991,
+    "accent_text": 4279180556,
+    "hover": 4281743940,
+    "active": 4282533714,
+    "input_bg": 4280756785,
+    "shadow": 2348810240,
+    "focus": 0,
+    "select": 0,
+    "caret": 0,
+    "link": 0,
+    "badge": 0,
+    "toast": 0,
+    "tooltip": 0,
+    "danger": 0,
+    "knob": 0,
+    "dim": 0,
+    "radius": 10,
+    "pad": 10,
+    "gap": 8,
+    "border_width": 1,
+    "font_size": 15,
+    "shadow_blur": 22,
+    "anim_ms": 120,
+    "check_size": 18,
+    "check_radius": 5,
+    "toggle_w": 38,
+    "toggle_h": 22,
+    "slider_h": 22,
+    "slider_track": 6,
+    "knob_size": 8,
+    "scroll_w": 4,
+    "scroll_min": 28,
+    "item_h": 0,
+    "menu_item_h": 0,
+    "tab_h": 0,
+    "win_title_h": 0,
+    "app_title_h": 0,
+    "menubar_h": 0,
+    "statusbar_h": 0,
+    "focus_w": 2,
+    "focus_gap": 3,
+    "sep_w": 1,
+    "grip": 18,
+    "indent": 16,
+    "plot_w": 2,
+    "spinner": 0,
+    "caret_w": 0,
+    "win_min_w": 140,
+    "win_min_h": 50,
+    "pop_gap": 6,
+    "menu_gap": 3,
+    "tip_pad_x": 10,
+    "tip_pad_y": 7,
+    "tip_x": 14,
+    "tip_y": 20,
+    "tip_radius": 8,
+    "shadow_x": 0,
+    "shadow_y": 5,
+    "align": 0,
+    "heading_size": 0,
+    "small_size": 0,
+    "ease": 0,
+    "hover_ms": -1,
+    "press_ms": -1,
+    "popup_ms": -1,
+    "collapse_ms": -1,
+    "toast_fade_ms": -1,
+    "skin_button": null,
+    "skin_panel": null,
+    "skin_input": null,
+    "skin_scrollbar": null,
+    "skin_slider_track": null,
+    "skin_toggle": null,
+    "skin_tab": null,
+    "skin_titlebar": null,
+    "skin_tooltip": null,
+    "skin_menu": null,
+    "skin_checkbox": null,
+    "skin_radio": null,
+    "skin_slider_fill": null,
+    "skin_popup": null,
+    "icons": {},
+    "icon_tint": 0,
+    "font_heading": "",
+    "font_mono": "",
+    "font_small": ""
+  },
+  "themes": [],
+  "elements": [
+    {
+      "id": "ef38v90y5v",
+      "name": "pill_switch",
+      "w": 56,
+      "h": 30,
+      "resizable": {
+        "on": false,
+        "minW": 40,
+        "minH": 20,
+        "maxW": 400,
+        "maxH": 300
+      },
+      "params": [
+        {
+          "name": "on_color",
+          "type": "color",
+          "def": 4285520991
+        }
+      ],
+      "state": [
+        {
+          "name": "on",
+          "type": "bool",
+          "def": true
+        }
+      ],
+      "hit": "box",
+      "value": {
+        "src": "none",
+        "state": "",
+        "part": "",
+        "axis": "x",
+        "min": 0,
+        "max": 1
+      },
+      "events": [
+        {
+          "on": "click",
+          "act": "toggle",
+          "target": "on",
+          "expr": "",
+          "text": ""
+        }
+      ],
+      "parts": [
+        {
+          "id": "pf38v919zy",
+          "kind": "rrect",
+          "name": "track",
+          "show": "",
+          "f": {
+            "x": 0,
+            "y": 0,
+            "w": "w",
+            "h": "h",
+            "tl": "h / 2",
+            "tr": "h / 2",
+            "br": "h / 2",
+            "bl": "h / 2",
+            "color": "on ? on_color : (hovered ? th.hover : th.input_bg)"
+          },
+          "hit": false
+        },
+        {
+          "id": "pf38v92byp",
+          "kind": "circle",
+          "name": "knob",
+          "show": "",
+          "f": {
+            "cx": "on ? w - h / 2 : h / 2",
+            "cy": "h / 2",
+            "r": "h / 2 - 4",
+            "color": "0xFFFFFFFF"
+          },
+          "hit": false
+        }
+      ]
+    },
+    {
+      "id": "ef38v93n4t",
+      "name": "knob_slider",
+      "w": 220,
+      "h": 28,
+      "resizable": {
+        "on": false,
+        "minW": 40,
+        "minH": 20,
+        "maxW": 400,
+        "maxH": 300
+      },
+      "params": [],
+      "state": [
+        {
+          "name": "level",
+          "type": "num",
+          "def": 0.5
+        }
+      ],
+      "hit": "box",
+      "value": {
+        "src": "drag",
+        "state": "level",
+        "part": "pf38v9674m",
+        "axis": "x",
+        "min": 0,
+        "max": 1
+      },
+      "events": [],
+      "parts": [
+        {
+          "id": "pf38v94b2g",
+          "kind": "rrect",
+          "name": "rail",
+          "show": "",
+          "f": {
+            "x": 0,
+            "y": "h / 2 - 3",
+            "w": "w",
+            "h": 6,
+            "tl": 3,
+            "tr": 3,
+            "br": 3,
+            "bl": 3,
+            "color": "th.input_bg"
+          },
+          "hit": false
+        },
+        {
+          "id": "pf38v95w6m",
+          "kind": "rrect",
+          "name": "fill",
+          "show": "",
+          "f": {
+            "x": 0,
+            "y": "h / 2 - 3",
+            "w": "knob_dx + 14",
+            "h": 6,
+            "tl": 3,
+            "tr": 3,
+            "br": 3,
+            "bl": 3,
+            "color": "th.accent"
+          },
+          "hit": false
+        },
+        {
+          "id": "pf38v9674m",
+          "kind": "group",
+          "name": "knob",
+          "show": "",
+          "f": {
+            "x": 0,
+            "y": 0,
+            "w": 28,
+            "h": 28,
+            "clip": false
+          },
+          "kids": [
+            {
+              "id": "pf38va7g1m",
+              "kind": "circle",
+              "name": "circle",
+              "show": "",
+              "f": {
+                "cx": 14,
+                "cy": 14,
+                "r": "dragging ? 11 : 10",
+                "color": "0xFFFFFFFF"
+              },
+              "hit": false
+            },
+            {
+              "id": "pf38va873z",
+              "kind": "ring",
+              "name": "ring",
+              "show": "",
+              "f": {
+                "cx": 14,
+                "cy": 14,
+                "r": "dragging ? 11 : 10",
+                "width": 1,
+                "color": "0x30000000"
+              },
+              "hit": false
+            }
+          ],
+          "drag": {
+            "on": true,
+            "axis": "x",
+            "snap": 0,
+            "bounds": "element",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 220,
+              "h": 28
+            },
+            "handle": ""
+          }
+        }
+      ]
+    }
+  ],
+  "grid": {
+    "size": 8,
+    "snap": true,
+    "show": false
+  },
+  "vars": [],
+  "hotkeys": [
+    {
+      "id": "k1",
+      "combo": "alt+m",
+      "actions": []
+    }
+  ],
+  "config": {
+    "tip_delay_ms": 500,
+    "dbl_click_ms": 450,
+    "dbl_click_px": 5,
+    "drag_px": 4,
+    "repeat_delay_ms": 380,
+    "repeat_ms": 55,
+    "blink_ms": 530,
+    "menu_delay_ms": 120,
+    "toast_ms": 3000,
+    "scroll_lines": 3,
+    "raise_on_click": 1,
+    "esc_closes": 1,
+    "tab_nav": 1,
+    "focus_on_mouse": 0,
+    "cursor": {
+      "button": "ARROW",
+      "input": "IBEAM",
+      "link": "HAND",
+      "drag_value": "RESIZE_EW",
+      "split_x": "RESIZE_EW",
+      "split_y": "RESIZE_NS",
+      "grip": "RESIZE_NWSE",
+      "column": "RESIZE_EW",
+      "drag_drop": "MOVE",
+      "custom_x": "RESIZE_EW",
+      "custom_y": "RESIZE_NS",
+      "custom_xy": "MOVE"
+    },
+    "keys": {
+      "copy": "ctrl+c super+c",
+      "cut": "ctrl+x super+x",
+      "paste": "ctrl+v super+v",
+      "undo": "ctrl+z super+z",
+      "redo": "ctrl+y ctrl+shift+z super+y super+shift+z",
+      "select_all": "ctrl+a super+a",
+      "word_left": "ctrl+left super+left",
+      "word_right": "ctrl+right super+right",
+      "del_word_left": "ctrl+backspace super+backspace",
+      "del_word_right": "ctrl+delete super+delete",
+      "doc_start": "ctrl+home super+home",
+      "doc_end": "ctrl+end super+end"
+    },
+    "mask": "*"
+  }
+}

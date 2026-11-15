@@ -1,0 +1,553 @@
+{
+  "goome overlay": {
+    "prefix": "goome-overlay",
+    "description": "open a see-through overlay with a ui window",
+    "body": [
+      "using GoomeSharp;",
+      "",
+      "Goome g;",
+      "try { g = new Goome(new GoomeOptions { Title = \"${1:my overlay}\" }); }",
+      "catch (GoomeException e)",
+      "{",
+      "\tConsole.Error.WriteLine(\"couldnt open an overlay: \" + e.Message);",
+      "\treturn 1;",
+      "}",
+      "using (g)",
+      "using (var ui = new Ui(g))",
+      "{",
+      "\tdouble x = 60, y = 60, w = 280, h = 0;",
+      "\tbool open = true;",
+      "\twhile (open)",
+      "\t{",
+      "\t\twhile (g.Poll(out var ev, 16))",
+      "\t\t{",
+      "\t\t\tif (ev.Type == EventType.Quit) open = false;",
+      "\t\t\tui.Feed(ev);",
+      "\t\t}",
+      "\t\tif (!open || ui.Begin(0) == null) continue;",
+      "\t\tif (ui.Window(\"$1\", ref x, ref y, ref w, ref h, WindowFlags.Move | WindowFlags.Close, ref open))",
+      "\t\t{",
+      "\t\t\tui.Label(\"${2:im on top of everything}\");",
+      "\t\t\t$0",
+      "\t\t}",
+      "\t\tui.WindowEnd();",
+      "\t\tui.End();",
+      "\t}",
+      "}",
+      "return 0;"
+    ]
+  },
+  "goome app": {
+    "prefix": "goome-app",
+    "description": "open a normal app window that the ui fills",
+    "body": [
+      "using GoomeSharp;",
+      "",
+      "Goome g;",
+      "try { g = Goome.OpenApp(\"${1:My App}\", ${2:960}, ${3:640}); }",
+      "catch (GoomeException e)",
+      "{",
+      "\tConsole.Error.WriteLine(\"couldnt open a window: \" + e.Message);",
+      "\treturn 1;",
+      "}",
+      "using (g)",
+      "using (var ui = new Ui(g))",
+      "{",
+      "\tbool running = true;",
+      "\twhile (running)",
+      "\t{",
+      "\t\twhile (g.Poll(out var ev, 16))",
+      "\t\t{",
+      "\t\t\tif (ev.Type == EventType.Quit || ev.Type == EventType.Close) running = false;",
+      "\t\t\tui.Feed(ev);",
+      "\t\t}",
+      "\t\tif (!running || ui.Begin(0) == null) continue;",
+      "\t\tui.App(\"$1\");",
+      "\t\tui.Heading(\"${4:Hello}\");",
+      "\t\t$0",
+      "\t\tui.AppEnd();",
+      "\t\tui.End();",
+      "\t}",
+      "}",
+      "return 0;"
+    ]
+  },
+  "goome loop": {
+    "prefix": "goome-loop",
+    "description": "main loop with poll and pace, only redraws when something changed",
+    "body": [
+      "bool running = true, dirty = true;",
+      "var pace = new Pacer();",
+      "while (running)",
+      "{",
+      "\tint wait = dirty || ${1:ui}.Animating ? pace.Pace(${2:60}) : 500;",
+      "\twhile (${3:g}.Poll(out var ev, wait))",
+      "\t{",
+      "\t\tif (ev.Type == EventType.Quit || ev.Type == EventType.Close) running = false;",
+      "\t\t$1.Feed(ev);",
+      "\t\tdirty = true;",
+      "\t\twait = 0;",
+      "\t}",
+      "\tif (!running) break;",
+      "\tif (!dirty && !$1.Animating) continue;",
+      "\tdirty = false;",
+      "\tif ($1.Begin(0) == null) continue;",
+      "\t$0",
+      "\t$1.End();",
+      "}"
+    ]
+  },
+  "goome window": {
+    "prefix": "goome-window",
+    "description": "ui window with a label and a button",
+    "body": [
+      "if (ui.Window(\"${1:Window}\", ref ${2:winX}, ref ${3:winY}, ref ${4:winW}, ref ${5:winH}, WindowFlags.Move | WindowFlags.Resize | WindowFlags.Collapse))",
+      "{",
+      "\tui.Label(\"${6:hello}\");",
+      "\tif (ui.Button(\"${7:Click me}\"))",
+      "\t{",
+      "\t\t$0",
+      "\t}",
+      "}",
+      "ui.WindowEnd();"
+    ]
+  },
+  "goome canvas": {
+    "prefix": "goome-canvas",
+    "description": "draw on the overlay yourself, no ui",
+    "body": [
+      "var c = ${1:g}.Begin(0);",
+      "if (c != null)",
+      "{",
+      "\tc.Clear();",
+      "\tc.DrawRoundRect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22u);",
+      "\tc.DrawText($2 + 12, $3 + 12, \"${6:hello}\", true, 0xFFE9EBEEu);",
+      "\t$0",
+      "\t$1.End(c, new Rect($2, $3, $4, $5));",
+      "}"
+    ]
+  },
+  "goome label": {
+    "prefix": "goome-label",
+    "description": "label",
+    "body": [
+      "ui.Label(\"${1:some text}\");"
+    ]
+  },
+  "goome heading": {
+    "prefix": "goome-heading",
+    "description": "heading",
+    "body": [
+      "ui.Heading(\"${1:Heading}\");"
+    ]
+  },
+  "goome wrapped": {
+    "prefix": "goome-wrapped",
+    "description": "text that wraps at the edge",
+    "body": [
+      "ui.Wrapped(\"${1:this text wraps when it runs into the edge}\");"
+    ]
+  },
+  "goome button": {
+    "prefix": "goome-button",
+    "description": "button",
+    "body": [
+      "if (ui.Button(\"${1:Click me}\"))",
+      "{",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome checkbox": {
+    "prefix": "goome-checkbox",
+    "description": "checkbox on a bool",
+    "body": [
+      "ui.Checkbox(\"${1:Show grid}\", ref ${2:showGrid});"
+    ]
+  },
+  "goome toggle": {
+    "prefix": "goome-toggle",
+    "description": "toggle switch on a bool",
+    "body": [
+      "ui.Toggle(\"${1:Wi-Fi}\", ref ${2:wifi});"
+    ]
+  },
+  "goome radio": {
+    "prefix": "goome-radio",
+    "description": "radio buttons on one int",
+    "body": [
+      "ui.Radio(\"${1:Small}\", ref ${2:size}, 0);",
+      "ui.SameLine();",
+      "ui.Radio(\"${3:Large}\", ref $2, 1);"
+    ]
+  },
+  "goome slider": {
+    "prefix": "goome-slider",
+    "description": "slider on a double",
+    "body": [
+      "ui.Slider(\"${1:Volume}\", ref ${2:volume}, ${3:0}, ${4:1}, \"${5:%.2f}\");"
+    ]
+  },
+  "goome slider int": {
+    "prefix": "goome-slider-int",
+    "description": "slider on an int",
+    "body": [
+      "ui.SliderInt(\"${1:Count}\", ref ${2:count}, ${3:0}, ${4:100});"
+    ]
+  },
+  "goome input": {
+    "prefix": "goome-input",
+    "description": "one line text input",
+    "body": [
+      "ui.Input(\"${1:Name}\", ref ${2:name}, ${3:64});"
+    ]
+  },
+  "goome password": {
+    "prefix": "goome-password",
+    "description": "password input with a hint",
+    "body": [
+      "ui.Password(\"${1:Password}\", ref ${2:pass}, \"${3:hint}\");"
+    ]
+  },
+  "goome combo": {
+    "prefix": "goome-combo",
+    "description": "dropdown",
+    "body": [
+      "ui.Combo(\"${1:Fruit}\", ref ${2:fruit}, new[] { \"${3:Mango}\", \"${4:Banana}\", \"${5:Cherry}\" });"
+    ]
+  },
+  "goome selectable": {
+    "prefix": "goome-selectable",
+    "description": "selectable list row",
+    "body": [
+      "if (ui.Selectable(\"${1:Item}\", ${2:picked} == ${3:0})) $2 = $3;"
+    ]
+  },
+  "goome tabs": {
+    "prefix": "goome-tabs",
+    "description": "tabs",
+    "body": [
+      "ui.Tabs(\"${1:tabs}\", new[] { \"${2:General}\", \"${3:Advanced}\" }, ref ${4:tab});",
+      "if ($4 == 0)",
+      "{",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome collapsing": {
+    "prefix": "goome-collapsing",
+    "description": "collapsing section",
+    "body": [
+      "if (ui.Collapsing(\"${1:More stuff}\", ref ${2:more}))",
+      "{",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome tree": {
+    "prefix": "goome-tree",
+    "description": "tree node",
+    "body": [
+      "if (ui.Tree(\"${1:src}\", ref ${2:srcOpen}))",
+      "{",
+      "\t$0",
+      "\tui.TreeEnd();",
+      "}"
+    ]
+  },
+  "goome progress": {
+    "prefix": "goome-progress",
+    "description": "progress bar",
+    "body": [
+      "ui.Progress(${1:0.6}, \"${2:60%}\");"
+    ]
+  },
+  "goome color": {
+    "prefix": "goome-color",
+    "description": "color picker on a uint",
+    "body": [
+      "ui.Color(\"${1:Highlight}\", ref ${2:highlight});"
+    ]
+  },
+  "goome tooltip": {
+    "prefix": "goome-tooltip",
+    "description": "tooltip for the widget before it",
+    "body": [
+      "ui.Tooltip(\"${1:what it does}\");"
+    ]
+  },
+  "goome row": {
+    "prefix": "goome-row",
+    "description": "next widgets go side by side",
+    "body": [
+      "ui.Row(${1:2});"
+    ]
+  },
+  "goome same line": {
+    "prefix": "goome-same-line",
+    "description": "next widget on the same line",
+    "body": [
+      "ui.SameLine();"
+    ]
+  },
+  "goome separator": {
+    "prefix": "goome-separator",
+    "description": "separator line",
+    "body": [
+      "ui.Separator();"
+    ]
+  },
+  "goome space": {
+    "prefix": "goome-space",
+    "description": "empty space",
+    "body": [
+      "ui.Space(${1:12});"
+    ]
+  },
+  "goome scroll": {
+    "prefix": "goome-scroll",
+    "description": "scroll area",
+    "body": [
+      "if (ui.ScrollBegin(\"${1:list}\", ${2:150}))",
+      "{",
+      "\t$0",
+      "}",
+      "ui.ScrollEnd();"
+    ]
+  },
+  "goome split": {
+    "prefix": "goome-split",
+    "description": "split panes",
+    "body": [
+      "if (ui.SplitBegin(\"${1:main}\", false, ref ${2:frac}))",
+      "{",
+      "\t$0",
+      "\tui.SplitNext();",
+      "}",
+      "ui.SplitEnd();"
+    ]
+  },
+  "goome menubar": {
+    "prefix": "goome-menubar",
+    "description": "menu bar with a File menu",
+    "body": [
+      "if (ui.MenuBarBegin())",
+      "{",
+      "\tif (ui.MenuBegin(\"${1:File}\"))",
+      "\t{",
+      "\t\tif (ui.MenuItem(\"${2:Open}\", \"${3:Ctrl+O}\"))",
+      "\t\t{",
+      "\t\t\t$0",
+      "\t\t}",
+      "\t\tui.MenuSeparator();",
+      "\t\tif (ui.MenuItem(\"Quit\", \"Ctrl+Q\")) running = false;",
+      "\t\tui.MenuEnd();",
+      "\t}",
+      "\tui.MenuBarEnd();",
+      "}"
+    ]
+  },
+  "goome popup": {
+    "prefix": "goome-popup",
+    "description": "button that opens a popup",
+    "body": [
+      "if (ui.Button(\"${1:More}\")) ui.PopupOpen(\"${2:more}\");",
+      "if (ui.PopupBegin(\"$2\"))",
+      "{",
+      "\t$0",
+      "\tui.PopupEnd();",
+      "}"
+    ]
+  },
+  "goome context": {
+    "prefix": "goome-context",
+    "description": "right click menu for the widget before it",
+    "body": [
+      "if (ui.ContextBegin(\"${1:ctx}\"))",
+      "{",
+      "\tif (ui.MenuItem(\"${2:Delete}\"))",
+      "\t{",
+      "\t\t$0",
+      "\t}",
+      "\tui.ContextEnd();",
+      "}"
+    ]
+  },
+  "goome modal": {
+    "prefix": "goome-modal",
+    "description": "modal with a Done button",
+    "body": [
+      "if (ui.Button(\"${1:Open settings}\")) ${2:settingsOpen} = true;",
+      "if (ui.ModalBegin(\"${3:Settings}\", ref $2))",
+      "{",
+      "\t$0",
+      "\tif (ui.Button(\"Done\")) ui.PopupClose();",
+      "\tui.ModalEnd();",
+      "}"
+    ]
+  },
+  "goome toast": {
+    "prefix": "goome-toast",
+    "description": "toast message",
+    "body": [
+      "ui.Toast(\"${1:Saved}\", ${2:2500});"
+    ]
+  },
+  "goome text edit": {
+    "prefix": "goome-text-edit",
+    "description": "multiline text editor",
+    "body": [
+      "ui.TextEdit(\"${1:notes}\", ref ${2:notes}, ${3:140}, EditFlags.Wrap);"
+    ]
+  },
+  "goome table": {
+    "prefix": "goome-table",
+    "description": "table with sortable columns",
+    "body": [
+      "if (ui.TableBegin(\"${1:files}\", 2, ${2:200}, TableFlags.Sortable | TableFlags.Stripes))",
+      "{",
+      "\tui.TableColumn(\"${3:Name}\");",
+      "\tui.TableColumn(\"${4:Size}\", 90);",
+      "\tif (ui.TableSort(ref ${5:sortCol}, ref ${6:sortDesc}))",
+      "\t{",
+      "\t}",
+      "\tfor (int i = 0; i < ${7:count}; i++)",
+      "\t{",
+      "\t\tui.TableRow();",
+      "\t\tui.Label(i.ToString());",
+      "\t\tui.TableNext();",
+      "\t\tui.Label(\"$0\");",
+      "\t}",
+      "}",
+      "ui.TableEnd();"
+    ]
+  },
+  "goome drag float": {
+    "prefix": "goome-drag-float",
+    "description": "drag a number left and right",
+    "body": [
+      "ui.DragFloat(\"${1:Speed}\", ref ${2:speed}, ${3:0.01}, ${4:0}, ${5:10}, \"${6:%.2f}\");"
+    ]
+  },
+  "goome number": {
+    "prefix": "goome-number",
+    "description": "number box with - and + buttons",
+    "body": [
+      "ui.Number(\"${1:Amount}\", ref ${2:amount}, ${3:1}, \"${4:%.0f}\");"
+    ]
+  },
+  "goome plot": {
+    "prefix": "goome-plot",
+    "description": "line plot from a float array",
+    "body": [
+      "ui.PlotLines(\"${1:CPU}\", ${2:values}, ${3:0}, ${4:100}, ${5:90});"
+    ]
+  },
+  "goome plot bars": {
+    "prefix": "goome-plot-bars",
+    "description": "bar plot from a float array",
+    "body": [
+      "ui.PlotBars(\"${1:Requests}\", ${2:values}, ${3:0}, ${4:20}, ${5:90});"
+    ]
+  },
+  "goome spinner": {
+    "prefix": "goome-spinner",
+    "description": "loading spinner",
+    "body": [
+      "ui.Spinner();"
+    ]
+  },
+  "goome link": {
+    "prefix": "goome-link",
+    "description": "clickable link",
+    "body": [
+      "if (ui.Link(\"${1:goome docs}\"))",
+      "{",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome badge": {
+    "prefix": "goome-badge",
+    "description": "little colored badge",
+    "body": [
+      "ui.Badge(\"${1:new}\", ${2:0xFF6FDC5Fu});"
+    ]
+  },
+  "goome style": {
+    "prefix": "goome-style",
+    "description": "push a color and a size, pop them after",
+    "body": [
+      "using (ui.Style(${1:accent}: ${2:0xFFFF5050u}, ${3:radius}: ${4:4}))",
+      "{",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome style push": {
+    "prefix": "goome-style-push",
+    "description": "push and pop by hand",
+    "body": [
+      "ui.PushColor(Style.${1|Accent,Bg,Panel,Border,Text,TextDim,Hover,Active,InputBg|}, ${2:0xFFFF5050u});",
+      "ui.PushNum(Style.${3|Radius,Pad,Gap,BorderWidth,FontSize|}, ${4:4});",
+      "$0",
+      "ui.Pop(2);"
+    ]
+  },
+  "goome custom": {
+    "prefix": "goome-custom",
+    "description": "your own widget, a knob you drag up and down",
+    "body": [
+      "var ${1:gain} = ui.Store(\"$1\", 1);",
+      "ui.Custom(\"$1\", ${2:80}, ${3:80}, ItemFlags.DragY | ItemFlags.Focusable, out var it);",
+      "if (it.Held) $1[0] = Math.Max(0, Math.Min(1, $1[0] - it.Dy / 200));",
+      "ui.Canvas()?.DrawArc(it.X + 40, it.Y + 40, 30, 6, 2.36, 2.36 + 4.71 * $1[0], ui.Theme.Accent);"
+    ]
+  },
+  "goome offscreen": {
+    "prefix": "goome-offscreen",
+    "description": "offscreen frame: no window, push a click, save what it drew",
+    "body": [
+      "using (var g = Goome.OpenOffscreen(${1:640}, ${2:480}))",
+      "using (var ui = new Ui(g))",
+      "{",
+      "\tg.Push(Event.Down(${3:60}, ${4:60}));",
+      "\tg.Push(Event.Up($3, $4));",
+      "\twhile (g.Poll(out var ev, 0)) ui.Feed(ev);",
+      "\tif (ui.Begin(0) != null)",
+      "\t{",
+      "\t\tui.App(\"${5:offscreen}\");",
+      "\t\t$0",
+      "\t\tui.AppEnd();",
+      "\t\tui.End();",
+      "\t}",
+      "\tGoome.SavePpm(\"${6:frame.ppm}\", g.Frame());",
+      "}"
+    ]
+  },
+  "goome hotkey": {
+    "prefix": "goome-hotkey",
+    "description": "global hotkey and where it fires",
+    "body": [
+      "g.Hotkey(\"${1:alt+m}\", ${2:1});",
+      "$0",
+      "if (ev.Type == EventType.Hotkey && ev.Id == $2)",
+      "{",
+      "}"
+    ]
+  },
+  "goome theme preset": {
+    "prefix": "goome-theme-preset",
+    "description": "use a built in theme",
+    "body": [
+      "ui.Theme.Preset(Preset.${1|Dark,Light,Midnight,Paper,Mint,HighContrast,Rose|});"
+    ]
+  },
+  "goome theme make": {
+    "prefix": "goome-theme-make",
+    "description": "make a theme from one accent color",
+    "body": [
+      "ui.Theme.Make(${1:0xFF4FA3FFu}, ${2:true}, ${3:10});"
+    ]
+  }
+}

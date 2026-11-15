@@ -1,0 +1,2359 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/goome-ui/vscode-goome/main/schemas/goome-project.schema.json",
+  "title": "goome ui builder project",
+  "description": "a .goome.json from the goome ui builder, https://goome-ui.github.io/docs/builder/",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "goome-project"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "overlay",
+        "app"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "app": {
+      "type": "object",
+      "properties": {
+        "w": {
+          "type": "number"
+        },
+        "h": {
+          "type": "number"
+        },
+        "titlebar": {
+          "type": "boolean"
+        },
+        "menubar": {
+          "type": "boolean"
+        },
+        "statusbar": {
+          "type": "boolean"
+        },
+        "nopad": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "root": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/node"
+      }
+    },
+    "theme": {
+      "$ref": "#/definitions/theme"
+    },
+    "themes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/theme"
+      }
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/element"
+      }
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "number"
+        },
+        "snap": {
+          "type": "boolean"
+        },
+        "show": {
+          "type": "boolean"
+        }
+      }
+    },
+    "vars": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "bool",
+              "int",
+              "float",
+              "string",
+              "color",
+              "list"
+            ]
+          },
+          "def": {
+            "type": [
+              "number",
+              "string",
+              "boolean"
+            ]
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      }
+    },
+    "hotkeys": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "combo": {
+            "type": "string",
+            "description": "like ctrl+m or alt+shift+f1"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "do": {
+                  "enum": [
+                    "set",
+                    "toggle",
+                    "add",
+                    "sub",
+                    "open",
+                    "close",
+                    "toast",
+                    "tab",
+                    "copy",
+                    "quit",
+                    "call"
+                  ]
+                },
+                "var": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "target": {
+                  "type": "string"
+                },
+                "tab": {
+                  "type": "number"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "ms": {
+                  "type": "number"
+                },
+                "fn": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "do"
+              ]
+            }
+          }
+        },
+        "required": [
+          "combo"
+        ]
+      }
+    },
+    "config": {
+      "$ref": "#/definitions/config"
+    },
+    "settings": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "format"
+  ],
+  "definitions": {
+    "node": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "window",
+            "row",
+            "same_line",
+            "space",
+            "separator",
+            "scroll",
+            "split",
+            "tabs",
+            "collapsing",
+            "tree",
+            "label",
+            "heading",
+            "wrapped",
+            "button",
+            "checkbox",
+            "toggle",
+            "radio",
+            "slider",
+            "slider_int",
+            "input",
+            "text_edit",
+            "combo",
+            "selectable",
+            "color",
+            "progress",
+            "table",
+            "plot_lines",
+            "plot_bars",
+            "image",
+            "menubar",
+            "menu",
+            "menu_item",
+            "menu_sep",
+            "popup",
+            "modal",
+            "toast",
+            "el"
+          ],
+          "description": "a widget type from the builder"
+        },
+        "p": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "var": {
+              "type": "string"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "w": {
+              "type": "number"
+            },
+            "h": {
+              "type": "number"
+            },
+            "move": {
+              "type": "boolean"
+            },
+            "resize": {
+              "type": "boolean"
+            },
+            "collapse": {
+              "type": "boolean"
+            },
+            "notitle": {
+              "type": "boolean"
+            },
+            "close": {
+              "type": "boolean"
+            },
+            "cols": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "px": {
+              "type": "number"
+            },
+            "vertical": {
+              "type": "boolean"
+            },
+            "frac": {
+              "type": "number"
+            },
+            "items": {
+              "type": "string"
+            },
+            "sel": {
+              "type": "number"
+            },
+            "open": {
+              "type": "boolean"
+            },
+            "tooltip": {
+              "type": "string"
+            },
+            "width": {
+              "type": "number"
+            },
+            "action": {
+              "type": "string"
+            },
+            "toast": {
+              "type": "string"
+            },
+            "ms": {
+              "type": "number"
+            },
+            "on": {
+              "type": "boolean"
+            },
+            "inline": {
+              "type": "boolean"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "value": {
+              "type": "number"
+            },
+            "fmt": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "cap": {
+              "type": "number"
+            },
+            "hint": {
+              "type": "string"
+            },
+            "password": {
+              "type": "boolean"
+            },
+            "readonly": {
+              "type": "boolean"
+            },
+            "number": {
+              "type": "boolean"
+            },
+            "enter": {
+              "type": "boolean"
+            },
+            "noselect": {
+              "type": "boolean"
+            },
+            "numbers": {
+              "type": "boolean"
+            },
+            "wrap": {
+              "type": "boolean"
+            },
+            "mono": {
+              "type": "boolean"
+            },
+            "color": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295,
+              "description": "0xAARRGGBB as a number"
+            },
+            "rows": {
+              "type": "string"
+            },
+            "sortable": {
+              "type": "boolean"
+            },
+            "resizable": {
+              "type": "boolean"
+            },
+            "stripes": {
+              "type": "boolean"
+            },
+            "borders": {
+              "type": "boolean"
+            },
+            "values": {
+              "type": "string"
+            },
+            "radius": {
+              "type": "number"
+            },
+            "shortcut": {
+              "type": "string"
+            },
+            "check": {
+              "type": "boolean"
+            },
+            "button": {
+              "type": "string"
+            },
+            "el": {
+              "type": "string"
+            },
+            "params": {
+              "type": "object"
+            },
+            "init": {
+              "type": "object"
+            },
+            "bind": {
+              "type": "string"
+            },
+            "showIf": {
+              "type": "string"
+            },
+            "enable": {
+              "type": [
+                "string",
+                "boolean"
+              ]
+            },
+            "show": {
+              "type": [
+                "string",
+                "boolean"
+              ]
+            }
+          }
+        },
+        "kids": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/node"
+            }
+          }
+        },
+        "style": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "c": {
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "bg",
+                  "panel",
+                  "border",
+                  "text",
+                  "text_dim",
+                  "accent",
+                  "accent_text",
+                  "hover",
+                  "active",
+                  "input_bg",
+                  "shadow",
+                  "focus",
+                  "select",
+                  "caret",
+                  "link",
+                  "badge",
+                  "toast",
+                  "tooltip",
+                  "danger",
+                  "knob",
+                  "dim"
+                ]
+              },
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4294967295,
+                "description": "0xAARRGGBB as a number"
+              }
+            },
+            "n": {
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "radius",
+                  "pad",
+                  "gap",
+                  "border_width",
+                  "font_size",
+                  "shadow_blur",
+                  "anim_ms",
+                  "check_size",
+                  "check_radius",
+                  "toggle_w",
+                  "toggle_h",
+                  "slider_h",
+                  "slider_track",
+                  "knob_size",
+                  "scroll_w",
+                  "scroll_min",
+                  "item_h",
+                  "menu_item_h",
+                  "tab_h",
+                  "win_title_h",
+                  "app_title_h",
+                  "menubar_h",
+                  "statusbar_h",
+                  "focus_w",
+                  "focus_gap",
+                  "sep_w",
+                  "grip",
+                  "indent",
+                  "plot_w",
+                  "spinner",
+                  "caret_w",
+                  "win_min_w",
+                  "win_min_h",
+                  "pop_gap",
+                  "menu_gap",
+                  "tip_pad_x",
+                  "tip_pad_y",
+                  "tip_x",
+                  "tip_y",
+                  "tip_radius",
+                  "shadow_x",
+                  "shadow_y",
+                  "align",
+                  "heading_size",
+                  "small_size",
+                  "ease",
+                  "hover_ms",
+                  "press_ms",
+                  "popup_ms",
+                  "collapse_ms",
+                  "toast_fade_ms"
+                ]
+              },
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "radii": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            }
+          }
+        },
+        "slotStyle": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "theme": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "c": {
+                    "type": "object",
+                    "propertyNames": {
+                      "enum": [
+                        "bg",
+                        "panel",
+                        "border",
+                        "text",
+                        "text_dim",
+                        "accent",
+                        "accent_text",
+                        "hover",
+                        "active",
+                        "input_bg",
+                        "shadow",
+                        "focus",
+                        "select",
+                        "caret",
+                        "link",
+                        "badge",
+                        "toast",
+                        "tooltip",
+                        "danger",
+                        "knob",
+                        "dim"
+                      ]
+                    },
+                    "additionalProperties": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 4294967295,
+                      "description": "0xAARRGGBB as a number"
+                    }
+                  },
+                  "n": {
+                    "type": "object",
+                    "propertyNames": {
+                      "enum": [
+                        "radius",
+                        "pad",
+                        "gap",
+                        "border_width",
+                        "font_size",
+                        "shadow_blur",
+                        "anim_ms",
+                        "check_size",
+                        "check_radius",
+                        "toggle_w",
+                        "toggle_h",
+                        "slider_h",
+                        "slider_track",
+                        "knob_size",
+                        "scroll_w",
+                        "scroll_min",
+                        "item_h",
+                        "menu_item_h",
+                        "tab_h",
+                        "win_title_h",
+                        "app_title_h",
+                        "menubar_h",
+                        "statusbar_h",
+                        "focus_w",
+                        "focus_gap",
+                        "sep_w",
+                        "grip",
+                        "indent",
+                        "plot_w",
+                        "spinner",
+                        "caret_w",
+                        "win_min_w",
+                        "win_min_h",
+                        "pop_gap",
+                        "menu_gap",
+                        "tip_pad_x",
+                        "tip_pad_y",
+                        "tip_x",
+                        "tip_y",
+                        "tip_radius",
+                        "shadow_x",
+                        "shadow_y",
+                        "align",
+                        "heading_size",
+                        "small_size",
+                        "ease",
+                        "hover_ms",
+                        "press_ms",
+                        "popup_ms",
+                        "collapse_ms",
+                        "toast_fade_ms"
+                      ]
+                    },
+                    "additionalProperties": {
+                      "type": "number"
+                    }
+                  },
+                  "radii": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 4,
+                    "maxItems": 4
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "abs": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "w": {
+              "type": "number"
+            },
+            "h": {
+              "type": "number"
+            }
+          }
+        },
+        "on": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "click",
+              "change",
+              "on",
+              "off",
+              "hover",
+              "enter",
+              "dragend"
+            ]
+          },
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "do": {
+                  "enum": [
+                    "set",
+                    "toggle",
+                    "add",
+                    "sub",
+                    "open",
+                    "close",
+                    "toast",
+                    "tab",
+                    "copy",
+                    "quit",
+                    "call"
+                  ]
+                },
+                "var": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "target": {
+                  "type": "string"
+                },
+                "tab": {
+                  "type": "number"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "ms": {
+                  "type": "number"
+                },
+                "fn": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "do"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "part": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "rect",
+            "rrect",
+            "frame",
+            "line",
+            "circle",
+            "ring",
+            "arc",
+            "poly",
+            "grad",
+            "shadow",
+            "text",
+            "bitmap",
+            "hit",
+            "group",
+            "widget"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "show": {
+          "type": "string"
+        },
+        "hit": {
+          "type": "boolean"
+        },
+        "f": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "string",
+              "boolean"
+            ]
+          }
+        },
+        "kids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/part"
+          }
+        },
+        "drag": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "axis": {
+              "type": "string"
+            },
+            "snap": {
+              "type": "number"
+            },
+            "bounds": {
+              "type": "string"
+            },
+            "rect": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number"
+                },
+                "h": {
+                  "type": "number"
+                }
+              }
+            },
+            "handle": {
+              "type": "string"
+            }
+          }
+        },
+        "w": {
+          "$ref": "#/definitions/node"
+        }
+      },
+      "required": [
+        "kind"
+      ]
+    },
+    "element": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "about": {
+          "type": "string"
+        },
+        "w": {
+          "type": "number"
+        },
+        "h": {
+          "type": "number"
+        },
+        "resizable": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "minW": {
+              "type": "number"
+            },
+            "minH": {
+              "type": "number"
+            },
+            "maxW": {
+              "type": "number"
+            },
+            "maxH": {
+              "type": "number"
+            }
+          }
+        },
+        "params": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "num",
+                  "color",
+                  "bool",
+                  "text"
+                ]
+              },
+              "def": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "state": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "num",
+                  "bool"
+                ]
+              },
+              "def": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "hit": {
+          "type": "string"
+        },
+        "value": {
+          "type": "object",
+          "properties": {
+            "src": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "part": {
+              "type": "string"
+            },
+            "axis": {
+              "type": "string"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "on": {
+                "type": "string"
+              },
+              "act": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "expr": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "parts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/part"
+          }
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "base": {
+          "enum": [
+            "dark",
+            "light"
+          ]
+        },
+        "preset": {
+          "type": "boolean"
+        },
+        "icon_tint": {
+          "enum": [
+            0,
+            1,
+            true,
+            false
+          ]
+        },
+        "icons": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "arrow_down",
+              "arrow_right",
+              "arrow_up",
+              "arrow_left",
+              "check",
+              "radio_dot",
+              "close",
+              "minimize",
+              "maximize",
+              "restore",
+              "resize",
+              "sort_up",
+              "sort_down",
+              "plus",
+              "minus",
+              "slider_knob",
+              "toggle_knob",
+              "collapse",
+              "expand",
+              "drag_handle",
+              "toast",
+              "picker"
+            ]
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "img": {
+                "type": "string"
+              },
+              "file": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "img"
+            ]
+          }
+        },
+        "quick": {
+          "type": "object",
+          "properties": {
+            "accent": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295,
+              "description": "0xAARRGGBB as a number"
+            },
+            "dark": {
+              "type": "boolean"
+            },
+            "radius": {
+              "type": "number"
+            },
+            "scale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 4
+            }
+          }
+        },
+        "bg": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "panel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "border": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "text": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "text_dim": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "accent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "accent_text": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "hover": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "active": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "input_bg": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "shadow": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "focus": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "focus ring, 0 = auto"
+        },
+        "select": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "text selection, 0 = auto"
+        },
+        "caret": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "text caret, 0 = auto"
+        },
+        "link": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "links, 0 = auto"
+        },
+        "badge": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "badges, 0 = auto"
+        },
+        "toast": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "toast background, 0 = auto"
+        },
+        "tooltip": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "tooltip background, 0 = auto"
+        },
+        "danger": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "red close buttons, 0 = auto"
+        },
+        "knob": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "slider and toggle knobs, 0 = auto"
+        },
+        "dim": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "behind modals, 0 = auto"
+        },
+        "radius": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "pad": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "gap": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "border_width": {
+          "type": "number",
+          "description": "builder range 0 to 6"
+        },
+        "font_size": {
+          "type": "number",
+          "description": "builder range 9 to 28"
+        },
+        "shadow_blur": {
+          "type": "number",
+          "description": "builder range 0 to 60"
+        },
+        "anim_ms": {
+          "type": "number",
+          "description": "builder range 0 to 600"
+        },
+        "check_size": {
+          "type": "number",
+          "description": "builder range 8 to 40"
+        },
+        "check_radius": {
+          "type": "number",
+          "description": "builder range 0 to 20"
+        },
+        "toggle_w": {
+          "type": "number",
+          "description": "builder range 20 to 80"
+        },
+        "toggle_h": {
+          "type": "number",
+          "description": "builder range 10 to 44"
+        },
+        "slider_h": {
+          "type": "number",
+          "description": "builder range 10 to 44"
+        },
+        "slider_track": {
+          "type": "number",
+          "description": "builder range 1 to 20"
+        },
+        "knob_size": {
+          "type": "number",
+          "description": "builder range 2 to 20, slider knob radius"
+        },
+        "scroll_w": {
+          "type": "number",
+          "description": "builder range 1 to 20"
+        },
+        "scroll_min": {
+          "type": "number",
+          "description": "builder range 8 to 80"
+        },
+        "item_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, every widget row, 0 = from the font"
+        },
+        "menu_item_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "tab_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "win_title_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "app_title_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "menubar_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "statusbar_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "focus_w": {
+          "type": "number",
+          "description": "builder range 0 to 6"
+        },
+        "focus_gap": {
+          "type": "number",
+          "description": "builder range 0 to 10"
+        },
+        "sep_w": {
+          "type": "number",
+          "description": "builder range 0 to 6"
+        },
+        "grip": {
+          "type": "number",
+          "description": "builder range 6 to 40"
+        },
+        "indent": {
+          "type": "number",
+          "description": "builder range 0 to 48"
+        },
+        "plot_w": {
+          "type": "number",
+          "description": "builder range 0.5 to 8"
+        },
+        "spinner": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "caret_w": {
+          "type": "number",
+          "description": "builder range 0 to 16, 0 = thin, go wide for a block"
+        },
+        "win_min_w": {
+          "type": "number",
+          "description": "builder range 40 to 600"
+        },
+        "win_min_h": {
+          "type": "number",
+          "description": "builder range 20 to 400"
+        },
+        "pop_gap": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "menu_gap": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "tip_pad_x": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "tip_pad_y": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "tip_x": {
+          "type": "number",
+          "description": "builder range -40 to 60"
+        },
+        "tip_y": {
+          "type": "number",
+          "description": "builder range -40 to 60"
+        },
+        "tip_radius": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "shadow_x": {
+          "type": "number",
+          "description": "builder range -30 to 30"
+        },
+        "shadow_y": {
+          "type": "number",
+          "description": "builder range -30 to 30"
+        },
+        "align": {
+          "type": "number",
+          "description": "builder range 0 to 3"
+        },
+        "heading_size": {
+          "type": "number",
+          "description": "builder range 0 to 48, 0 = font size x 1.3"
+        },
+        "small_size": {
+          "type": "number",
+          "description": "builder range 0 to 28, 0 = from the font"
+        },
+        "ease": {
+          "type": "number",
+          "description": "builder range 0 to 4"
+        },
+        "hover_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "press_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "popup_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "collapse_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "toast_fade_ms": {
+          "type": "number",
+          "description": "builder range -1 to 1000, below 0 follows anim_ms"
+        },
+        "font_heading": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "system font name, empty = the ui font"
+        },
+        "font_mono": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "system font name, empty = the ui font"
+        },
+        "font_small": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "system font name, empty = the ui font"
+        },
+        "skin_button": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_panel": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_input": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_scrollbar": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_slider_track": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_toggle": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_tab": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_titlebar": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_tooltip": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_menu": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_checkbox": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_radio": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_slider_fill": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_popup": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "tip_delay_ms": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 3000,
+          "description": "tooltip delay"
+        },
+        "dbl_click_ms": {
+          "type": "number",
+          "minimum": 100,
+          "maximum": 1500,
+          "description": "double click time"
+        },
+        "dbl_click_px": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 40,
+          "description": "double click distance"
+        },
+        "drag_px": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 40,
+          "description": "drag threshold"
+        },
+        "repeat_delay_ms": {
+          "type": "number",
+          "minimum": 50,
+          "maximum": 2000,
+          "description": "key repeat delay"
+        },
+        "repeat_ms": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 500,
+          "description": "key repeat rate"
+        },
+        "blink_ms": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2000,
+          "description": "caret blink, 0 = no blink"
+        },
+        "menu_delay_ms": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "submenu delay"
+        },
+        "toast_ms": {
+          "type": "number",
+          "minimum": 200,
+          "maximum": 20000,
+          "description": "default toast time"
+        },
+        "scroll_lines": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 20,
+          "description": "scroll speed in lines"
+        },
+        "raise_on_click": {
+          "enum": [
+            0,
+            1,
+            true,
+            false
+          ],
+          "description": "raise windows on click"
+        },
+        "esc_closes": {
+          "enum": [
+            0,
+            1,
+            true,
+            false
+          ],
+          "description": "esc closes popups"
+        },
+        "tab_nav": {
+          "enum": [
+            0,
+            1,
+            true,
+            false
+          ],
+          "description": "tab moves focus"
+        },
+        "focus_on_mouse": {
+          "enum": [
+            0,
+            1,
+            true,
+            false
+          ],
+          "description": "focus ring after a mouse click too"
+        },
+        "cursor": {
+          "type": "object",
+          "properties": {
+            "button": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "input": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "link": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "drag_value": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "split_x": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "split_y": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "grip": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "column": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "drag_drop": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "custom_x": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "custom_y": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            },
+            "custom_xy": {
+              "enum": [
+                "ARROW",
+                "IBEAM",
+                "HAND",
+                "MOVE",
+                "RESIZE_EW",
+                "RESIZE_NS",
+                "RESIZE_NWSE",
+                "RESIZE_NESW",
+                "WAIT",
+                "NO",
+                "HIDDEN"
+              ]
+            }
+          }
+        },
+        "keys": {
+          "type": "object",
+          "properties": {
+            "copy": {
+              "type": "string",
+              "description": "like ctrl+c super+c"
+            },
+            "cut": {
+              "type": "string",
+              "description": "like ctrl+x super+x"
+            },
+            "paste": {
+              "type": "string",
+              "description": "like ctrl+v super+v"
+            },
+            "undo": {
+              "type": "string",
+              "description": "like ctrl+z super+z"
+            },
+            "redo": {
+              "type": "string",
+              "description": "like ctrl+y ctrl+shift+z super+y super+shift+z"
+            },
+            "select_all": {
+              "type": "string",
+              "description": "like ctrl+a super+a"
+            },
+            "word_left": {
+              "type": "string",
+              "description": "like ctrl+left super+left"
+            },
+            "word_right": {
+              "type": "string",
+              "description": "like ctrl+right super+right"
+            },
+            "del_word_left": {
+              "type": "string",
+              "description": "like ctrl+backspace super+backspace"
+            },
+            "del_word_right": {
+              "type": "string",
+              "description": "like ctrl+delete super+delete"
+            },
+            "doc_start": {
+              "type": "string",
+              "description": "like ctrl+home super+home"
+            },
+            "doc_end": {
+              "type": "string",
+              "description": "like ctrl+end super+end"
+            }
+          }
+        },
+        "mask": {
+          "type": "string",
+          "description": "password mask character"
+        }
+      }
+    }
+  }
+}

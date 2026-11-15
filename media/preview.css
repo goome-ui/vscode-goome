@@ -1,0 +1,7 @@
+.gp { grid-template-rows: auto minmax(0, 1fr) auto; }
+.gp .top { flex-wrap: wrap; }
+.gp-copy { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.gp-copy span { color: var(--c-dim); font-size: 12px; margin-right: 4px; }
+.gp-err { padding: 8px 12px; background: #3a1d1f; color: #ffb4b4; border-top: 1px solid var(--c-line); font-size: 13px; }
+.gp .stage-bar .seg, .gp .stage-bar .chip { display: none; }
+.gp .stage-wrap { cursor: default; }

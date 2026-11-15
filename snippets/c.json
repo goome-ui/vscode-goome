@@ -1,0 +1,549 @@
+{
+  "goome include": {
+    "prefix": "goome-include",
+    "description": "goome.h with the implementation in this file",
+    "body": [
+      "#define GOOME_IMPLEMENTATION",
+      "#include \"goome.h\"",
+      "$0"
+    ]
+  },
+  "goome overlay": {
+    "prefix": "goome-overlay",
+    "description": "open a see-through overlay with a ui window",
+    "body": [
+      "#define GOOME_IMPLEMENTATION",
+      "#include \"goome.h\"",
+      "#include <stdio.h>",
+      "",
+      "int main(void)",
+      "{",
+      "\tint err;",
+      "\tgoome *g = goome_open(&(goome_opts){.title = \"${1:my overlay}\"}, &err);",
+      "\tif (!g) {",
+      "\t\tfprintf(stderr, \"cant open an overlay: %s\\n\", goome_strerror(err));",
+      "\t\treturn 1;",
+      "\t}",
+      "\tgoome_ui *u = goome_ui_new(g);",
+      "\tdouble x = 60, y = 60, w = 280, h = 0;",
+      "\tint open = 1;",
+      "\twhile (open) {",
+      "\t\tgoome_event ev;",
+      "\t\twhile (goome_poll(g, &ev, 16) > 0) {",
+      "\t\t\tif (ev.type == GOOME_QUIT) open = 0;",
+      "\t\t\tgoome_ui_feed(u, &ev);",
+      "\t\t}",
+      "\t\tif (!open || !goome_ui_begin(u, 0)) continue;",
+      "\t\tif (goome_ui_window(u, \"$1\", &x, &y, &w, &h, GOOME_WIN_MOVE | GOOME_WIN_CLOSE, &open)) {",
+      "\t\t\tgoome_ui_label(u, \"${2:im on top of everything}\");",
+      "\t\t\t$0",
+      "\t\t}",
+      "\t\tgoome_ui_window_end(u);",
+      "\t\tgoome_ui_end(u);",
+      "\t}",
+      "\tgoome_ui_free(u);",
+      "\tgoome_close(g);",
+      "\treturn 0;",
+      "}"
+    ]
+  },
+  "goome app": {
+    "prefix": "goome-app",
+    "description": "open a normal app window that the ui fills",
+    "body": [
+      "#define GOOME_IMPLEMENTATION",
+      "#include \"goome.h\"",
+      "#include <stdio.h>",
+      "",
+      "int main(void)",
+      "{",
+      "\tint err;",
+      "\tgoome *g = goome_open_app(\"${1:My App}\", ${2:960}, ${3:640}, &err);",
+      "\tif (!g) {",
+      "\t\tfprintf(stderr, \"cant open a window: %s\\n\", goome_strerror(err));",
+      "\t\treturn 1;",
+      "\t}",
+      "\tgoome_ui *u = goome_ui_new(g);",
+      "\tint running = 1;",
+      "\twhile (running) {",
+      "\t\tgoome_event ev;",
+      "\t\twhile (goome_poll(g, &ev, 16) > 0) {",
+      "\t\t\tif (ev.type == GOOME_QUIT || ev.type == GOOME_CLOSE) running = 0;",
+      "\t\t\tgoome_ui_feed(u, &ev);",
+      "\t\t}",
+      "\t\tif (!running || !goome_ui_begin(u, 0)) continue;",
+      "\t\tgoome_ui_app(u, \"$1\", 0);",
+      "\t\tgoome_ui_heading(u, \"${4:Hello}\");",
+      "\t\t$0",
+      "\t\tgoome_ui_app_end(u);",
+      "\t\tgoome_ui_end(u);",
+      "\t}",
+      "\tgoome_ui_free(u);",
+      "\tgoome_close(g);",
+      "\treturn 0;",
+      "}"
+    ]
+  },
+  "goome loop": {
+    "prefix": "goome-loop",
+    "description": "main loop with poll and pace, only redraws when something changed",
+    "body": [
+      "goome_pacer pace = {0};",
+      "int running = 1, dirty = 1;",
+      "while (running) {",
+      "\tgoome_event ev;",
+      "\tint wait = dirty || goome_ui_animating(${1:u}) ? goome_pace(&pace, ${2:60}) : 500;",
+      "\twhile (goome_poll(${3:g}, &ev, wait) > 0) {",
+      "\t\tif (ev.type == GOOME_QUIT || ev.type == GOOME_CLOSE) running = 0;",
+      "\t\tgoome_ui_feed($1, &ev);",
+      "\t\tdirty = 1, wait = 0;",
+      "\t}",
+      "\tif (!running) break;",
+      "\tif (!dirty && !goome_ui_animating($1)) continue;",
+      "\tdirty = 0;",
+      "\tif (!goome_ui_begin($1, 0)) continue;",
+      "\t$0",
+      "\tgoome_ui_end($1);",
+      "}"
+    ]
+  },
+  "goome window": {
+    "prefix": "goome-window",
+    "description": "ui window with a label and a button",
+    "body": [
+      "static double ${1:win}_x = 40, $1_y = 40, $1_w = 300, $1_h = 0;",
+      "if (goome_ui_window(u, \"${2:Window}\", &$1_x, &$1_y, &$1_w, &$1_h, GOOME_WIN_MOVE | GOOME_WIN_RESIZE | GOOME_WIN_COLLAPSE, NULL)) {",
+      "\tgoome_ui_label(u, \"${3:hello}\");",
+      "\tif (goome_ui_button(u, \"${4:Click me}\")) {",
+      "\t\t$0",
+      "\t}",
+      "}",
+      "goome_ui_window_end(u);"
+    ]
+  },
+  "goome canvas": {
+    "prefix": "goome-canvas",
+    "description": "draw on the overlay yourself, no ui",
+    "body": [
+      "goome_canvas *c = goome_begin(${1:g}, 0);",
+      "if (c) {",
+      "\tgoome_clear(c);",
+      "\tgoome_draw_round_rect(c, ${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22);",
+      "\tgoome_draw_text(c, $2 + 12, $3 + 12, \"${6:hello}\", 1, 0xFFE9EBEE);",
+      "\t$0",
+      "\tgoome_rect hit = {$2, $3, $4, $5};",
+      "\tgoome_end($1, c, &hit, 1);",
+      "}"
+    ]
+  },
+  "goome label": {
+    "prefix": "goome-label",
+    "description": "label",
+    "body": [
+      "goome_ui_label(u, \"${1:some text}\");"
+    ]
+  },
+  "goome heading": {
+    "prefix": "goome-heading",
+    "description": "heading",
+    "body": [
+      "goome_ui_heading(u, \"${1:Heading}\");"
+    ]
+  },
+  "goome wrapped": {
+    "prefix": "goome-wrapped",
+    "description": "text that wraps at the edge",
+    "body": [
+      "goome_ui_wrapped(u, \"${1:this text wraps when it runs into the edge}\");"
+    ]
+  },
+  "goome button": {
+    "prefix": "goome-button",
+    "description": "button",
+    "body": [
+      "if (goome_ui_button(u, \"${1:Click me}\")) {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome checkbox": {
+    "prefix": "goome-checkbox",
+    "description": "checkbox on an int",
+    "body": [
+      "goome_ui_checkbox(u, \"${1:Show grid}\", &${2:show_grid});"
+    ]
+  },
+  "goome toggle": {
+    "prefix": "goome-toggle",
+    "description": "toggle switch on an int",
+    "body": [
+      "goome_ui_toggle(u, \"${1:Wi-Fi}\", &${2:wifi});"
+    ]
+  },
+  "goome radio": {
+    "prefix": "goome-radio",
+    "description": "radio buttons on one int",
+    "body": [
+      "goome_ui_radio(u, \"${1:Small}\", &${2:size}, 0);",
+      "goome_ui_same_line(u);",
+      "goome_ui_radio(u, \"${3:Large}\", &$2, 1);"
+    ]
+  },
+  "goome slider": {
+    "prefix": "goome-slider",
+    "description": "slider on a double",
+    "body": [
+      "goome_ui_slider(u, \"${1:Volume}\", &${2:volume}, ${3:0}, ${4:1}, \"${5:%.2f}\");"
+    ]
+  },
+  "goome slider int": {
+    "prefix": "goome-slider-int",
+    "description": "slider on an int",
+    "body": [
+      "goome_ui_slider_int(u, \"${1:Count}\", &${2:count}, ${3:0}, ${4:100});"
+    ]
+  },
+  "goome input": {
+    "prefix": "goome-input",
+    "description": "one line text input",
+    "body": [
+      "goome_ui_input(u, \"${1:Name}\", ${2:name}, sizeof($2));"
+    ]
+  },
+  "goome password": {
+    "prefix": "goome-password",
+    "description": "password input with a hint",
+    "body": [
+      "goome_ui_input_ex(u, \"${1:Password}\", ${2:pass}, sizeof($2), GOOME_INPUT_PASSWORD, \"${3:hint}\");"
+    ]
+  },
+  "goome combo": {
+    "prefix": "goome-combo",
+    "description": "dropdown",
+    "body": [
+      "static const char *const ${1:fruit}_items[] = {\"${2:Mango}\", \"${3:Banana}\", \"${4:Cherry}\"};",
+      "goome_ui_combo(u, \"${5:Fruit}\", &$1, $1_items, 3);"
+    ]
+  },
+  "goome selectable": {
+    "prefix": "goome-selectable",
+    "description": "selectable list row",
+    "body": [
+      "if (goome_ui_selectable(u, \"${1:Item}\", ${2:picked} == ${3:0})) $2 = $3;"
+    ]
+  },
+  "goome tabs": {
+    "prefix": "goome-tabs",
+    "description": "tabs",
+    "body": [
+      "static const char *const ${1:tab}_names[] = {\"${2:General}\", \"${3:Advanced}\"};",
+      "goome_ui_tabs(u, \"$1\", $1_names, 2, &${4:tab});",
+      "if ($4 == 0) {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome collapsing": {
+    "prefix": "goome-collapsing",
+    "description": "collapsing section",
+    "body": [
+      "if (goome_ui_collapsing(u, \"${1:More stuff}\", NULL)) {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome tree": {
+    "prefix": "goome-tree",
+    "description": "tree node",
+    "body": [
+      "if (goome_ui_tree(u, \"${1:src}\", &${2:src_open})) {",
+      "\t$0",
+      "\tgoome_ui_tree_end(u);",
+      "}"
+    ]
+  },
+  "goome progress": {
+    "prefix": "goome-progress",
+    "description": "progress bar",
+    "body": [
+      "goome_ui_progress(u, ${1:0.6}, \"${2:60%}\");"
+    ]
+  },
+  "goome color": {
+    "prefix": "goome-color",
+    "description": "color picker on a uint32_t",
+    "body": [
+      "goome_ui_color(u, \"${1:Highlight}\", &${2:highlight});"
+    ]
+  },
+  "goome tooltip": {
+    "prefix": "goome-tooltip",
+    "description": "tooltip for the widget before it",
+    "body": [
+      "goome_ui_tooltip(u, \"${1:what it does}\");"
+    ]
+  },
+  "goome row": {
+    "prefix": "goome-row",
+    "description": "next widgets go side by side",
+    "body": [
+      "goome_ui_row(u, ${1:2});"
+    ]
+  },
+  "goome same line": {
+    "prefix": "goome-same-line",
+    "description": "next widget on the same line",
+    "body": [
+      "goome_ui_same_line(u);"
+    ]
+  },
+  "goome separator": {
+    "prefix": "goome-separator",
+    "description": "separator line",
+    "body": [
+      "goome_ui_separator(u);"
+    ]
+  },
+  "goome space": {
+    "prefix": "goome-space",
+    "description": "empty space",
+    "body": [
+      "goome_ui_space(u, ${1:12});"
+    ]
+  },
+  "goome scroll": {
+    "prefix": "goome-scroll",
+    "description": "scroll area",
+    "body": [
+      "if (goome_ui_scroll_begin(u, \"${1:list}\", ${2:150})) {",
+      "\t$0",
+      "}",
+      "goome_ui_scroll_end(u);"
+    ]
+  },
+  "goome split": {
+    "prefix": "goome-split",
+    "description": "split panes",
+    "body": [
+      "static double ${1:frac} = 0.3;",
+      "if (goome_ui_split_begin(u, \"${2:main}\", 0, &$1)) {",
+      "\t$0",
+      "\tgoome_ui_split_next(u);",
+      "}",
+      "goome_ui_split_end(u);"
+    ]
+  },
+  "goome menubar": {
+    "prefix": "goome-menubar",
+    "description": "menu bar with a File menu",
+    "body": [
+      "if (goome_ui_menubar_begin(u)) {",
+      "\tif (goome_ui_menu_begin(u, \"${1:File}\")) {",
+      "\t\tif (goome_ui_menu_item(u, \"${2:Open}\", \"${3:Ctrl+O}\", NULL)) {",
+      "\t\t\t$0",
+      "\t\t}",
+      "\t\tgoome_ui_menu_separator(u);",
+      "\t\tif (goome_ui_menu_item(u, \"Quit\", \"Ctrl+Q\", NULL)) running = 0;",
+      "\t\tgoome_ui_menu_end(u);",
+      "\t}",
+      "\tgoome_ui_menubar_end(u);",
+      "}"
+    ]
+  },
+  "goome popup": {
+    "prefix": "goome-popup",
+    "description": "button that opens a popup",
+    "body": [
+      "if (goome_ui_button(u, \"${1:More}\")) goome_ui_popup_open(u, \"${2:more}\");",
+      "if (goome_ui_popup_begin(u, \"$2\")) {",
+      "\t$0",
+      "\tgoome_ui_popup_end(u);",
+      "}"
+    ]
+  },
+  "goome context": {
+    "prefix": "goome-context",
+    "description": "right click menu for the widget before it",
+    "body": [
+      "if (goome_ui_context_begin(u, \"${1:ctx}\")) {",
+      "\tif (goome_ui_menu_item(u, \"${2:Delete}\", NULL, NULL)) {",
+      "\t\t$0",
+      "\t}",
+      "\tgoome_ui_context_end(u);",
+      "}"
+    ]
+  },
+  "goome modal": {
+    "prefix": "goome-modal",
+    "description": "modal with a Done button",
+    "body": [
+      "if (goome_ui_button(u, \"${1:Open settings}\")) ${2:settings_open} = 1;",
+      "if (goome_ui_modal_begin(u, \"${3:Settings}\", &$2)) {",
+      "\t$0",
+      "\tif (goome_ui_button(u, \"Done\")) goome_ui_popup_close(u);",
+      "\tgoome_ui_modal_end(u);",
+      "}"
+    ]
+  },
+  "goome toast": {
+    "prefix": "goome-toast",
+    "description": "toast message",
+    "body": [
+      "goome_ui_toast(u, \"${1:Saved}\", ${2:2500});"
+    ]
+  },
+  "goome text edit": {
+    "prefix": "goome-text-edit",
+    "description": "multiline text editor",
+    "body": [
+      "goome_ui_text_edit(u, \"${1:notes}\", ${2:notes}, sizeof($2), ${3:140}, GOOME_EDIT_WRAP);"
+    ]
+  },
+  "goome table": {
+    "prefix": "goome-table",
+    "description": "table with sortable columns",
+    "body": [
+      "if (goome_ui_table_begin(u, \"${1:files}\", 2, ${2:200}, GOOME_TABLE_SORTABLE | GOOME_TABLE_STRIPES)) {",
+      "\tgoome_ui_table_column(u, \"${3:Name}\", 0);",
+      "\tgoome_ui_table_column(u, \"${4:Size}\", 90);",
+      "\tif (goome_ui_table_sort(u, &${5:sort_col}, &${6:sort_desc})) {",
+      "\t}",
+      "\tfor (int i = 0; i < ${7:count}; i++) {",
+      "\t\tgoome_ui_table_row(u);",
+      "\t\tgoome_ui_label(u, \"%d\", i);",
+      "\t\tgoome_ui_table_next(u);",
+      "\t\tgoome_ui_label(u, \"$0\");",
+      "\t}",
+      "}",
+      "goome_ui_table_end(u);"
+    ]
+  },
+  "goome drag float": {
+    "prefix": "goome-drag-float",
+    "description": "drag a number left and right",
+    "body": [
+      "goome_ui_drag_float(u, \"${1:Speed}\", &${2:speed}, ${3:0.01}, ${4:0}, ${5:10}, \"${6:%.2f}\");"
+    ]
+  },
+  "goome number": {
+    "prefix": "goome-number",
+    "description": "number box with - and + buttons",
+    "body": [
+      "goome_ui_number(u, \"${1:Amount}\", &${2:amount}, ${3:1}, \"${4:%.0f}\");"
+    ]
+  },
+  "goome plot": {
+    "prefix": "goome-plot",
+    "description": "line plot from a float array",
+    "body": [
+      "goome_ui_plot_lines(u, \"${1:CPU}\", ${2:values}, ${3:count}, ${4:0}, ${5:100}, ${6:90});"
+    ]
+  },
+  "goome plot bars": {
+    "prefix": "goome-plot-bars",
+    "description": "bar plot from a float array",
+    "body": [
+      "goome_ui_plot_bars(u, \"${1:Requests}\", ${2:values}, ${3:count}, ${4:0}, ${5:20}, ${6:90});"
+    ]
+  },
+  "goome spinner": {
+    "prefix": "goome-spinner",
+    "description": "loading spinner",
+    "body": [
+      "goome_ui_spinner(u, ${1:0});"
+    ]
+  },
+  "goome link": {
+    "prefix": "goome-link",
+    "description": "clickable link",
+    "body": [
+      "if (goome_ui_link(u, \"${1:goome docs}\")) {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome badge": {
+    "prefix": "goome-badge",
+    "description": "little colored badge",
+    "body": [
+      "goome_ui_badge(u, \"${1:new}\", ${2:0xFF6FDC5F});"
+    ]
+  },
+  "goome style": {
+    "prefix": "goome-style",
+    "description": "push a color and a size, pop them after",
+    "body": [
+      "goome_ui_push_color(u, GOOME_S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xFFFF5050});",
+      "goome_ui_push_num(u, GOOME_S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4});",
+      "$0",
+      "goome_ui_pop(u, 2);"
+    ]
+  },
+  "goome custom": {
+    "prefix": "goome-custom",
+    "description": "your own widget, a knob you drag up and down",
+    "body": [
+      "double *${1:gain} = goome_ui_store(u, \"$1\", 1);",
+      "goome_ui_item it;",
+      "goome_ui_custom(u, \"$1\", ${2:80}, ${3:80}, GOOME_ITEM_DRAG_Y | GOOME_ITEM_FOCUSABLE, &it);",
+      "if ($1 && it.held) $1[0] -= it.dy / 200;",
+      "if ($1 && $1[0] < 0) $1[0] = 0;",
+      "if ($1 && $1[0] > 1) $1[0] = 1;",
+      "goome_canvas *c = goome_ui_canvas(u);",
+      "if (c && $1) goome_draw_arc(c, it.x + 40, it.y + 40, 30, 6, 2.36, 2.36 + 4.71 * $1[0], goome_ui_theme(u)->accent);"
+    ]
+  },
+  "goome offscreen": {
+    "prefix": "goome-offscreen",
+    "description": "offscreen frame: no window, push a click, save what it drew",
+    "body": [
+      "int err;",
+      "goome *g = goome_open(&(goome_opts){.mode = GOOME_MODE_OFFSCREEN, .width = ${1:640}, .height = ${2:480}, .scale = 1}, &err);",
+      "if (!g) {",
+      "\tfprintf(stderr, \"cant open offscreen: %s\\n\", goome_strerror(err));",
+      "\treturn 1;",
+      "}",
+      "goome_ui *u = goome_ui_new(g);",
+      "goome_event click = {.type = GOOME_DOWN, .x = ${3:60}, .y = ${4:60}, .button = 1};",
+      "goome_push(g, &click);",
+      "click.type = GOOME_UP;",
+      "goome_push(g, &click);",
+      "goome_event ev;",
+      "while (goome_poll(g, &ev, 0) > 0) goome_ui_feed(u, &ev);",
+      "if (goome_ui_begin(u, 0)) {",
+      "\tgoome_ui_app(u, \"${5:offscreen}\", 0);",
+      "\t$0",
+      "\tgoome_ui_app_end(u);",
+      "\tgoome_ui_end(u);",
+      "}",
+      "goome_image frame;",
+      "if (goome_frame(g, &frame) == GOOME_OK) goome_save_ppm(\"${6:frame.ppm}\", frame.px, frame.w, frame.h, frame.stride);",
+      "goome_ui_free(u);",
+      "goome_close(g);"
+    ]
+  },
+  "goome hotkey": {
+    "prefix": "goome-hotkey",
+    "description": "global hotkey and where it fires",
+    "body": [
+      "goome_hotkey(g, \"${1:alt+m}\", ${2:1});",
+      "$0",
+      "if (ev.type == GOOME_HOTKEY && ev.id == $2) {",
+      "}"
+    ]
+  },
+  "goome theme preset": {
+    "prefix": "goome-theme-preset",
+    "description": "use a built in theme",
+    "body": [
+      "goome_ui_theme_preset(goome_ui_theme(u), GOOME_PRESET_${1|DARK,LIGHT,MIDNIGHT,PAPER,MINT,HIGH_CONTRAST,ROSE|});"
+    ]
+  },
+  "goome theme make": {
+    "prefix": "goome-theme-make",
+    "description": "make a theme from one accent color",
+    "body": [
+      "goome_ui_theme_make(goome_ui_theme(u), ${1:0xFF4FA3FF}, ${2:1}, ${3:10});"
+    ]
+  }
+}
