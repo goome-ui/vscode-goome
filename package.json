@@ -144,7 +144,7 @@
   "scripts": {
     "sync": "node scripts/sync.js",
     "compile": "npm run sync && tsc -p .",
-    "unit": "node --test test/unit/",
+    "unit": "node --test \"test/unit/*.test.js\"",
     "test": "node out/test/runTest.js",
     "vscode:prepublish": "npm run compile"
   },
