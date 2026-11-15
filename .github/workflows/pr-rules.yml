@@ -1,0 +1,51 @@
+name: pr rules
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  check:
+    if: >-
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.author_association != 'OWNER' &&
+      github.event.pull_request.author_association != 'MEMBER'
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          why=""
+          if [ "$BASE" != "dev" ]; then
+            why="PRs go to the dev branch, this one is against $BASE."
+          fi
+          files=$(gh api "repos/$REPO/pulls/$PR/files?per_page=100" --paginate --jq '.[] | .filename, (.previous_filename // empty)')
+          if printf '%s\n' "$files" | grep -q '^\.github/'; then
+            why="$why It changes something in .github/, thats CI and these rules so only I change those."
+          fi
+          if printf '%s\n' "$files" | grep -qxE 'package\.json|package-lock\.json|\.vscodeignore'; then
+            why="$why It changes package.json, package-lock.json or .vscodeignore. Those decide what gets installed, what runs and what ends up in the .vsix, so only I touch them."
+          fi
+          if printf '%s\n' "$files" | grep -qxE 'LICENSE|media/icon\.png'; then
+            why="$why It changes the LICENSE or the icon, only I change those."
+          fi
+          if printf '%s\n' "$files" | grep -q '^media/builder/'; then
+            why="$why It adds files in media/builder/, those get copied from goome-docs at build time. Builder fixes go to the docs repo."
+          fi
+          if [ -z "$why" ]; then
+            echo "follows the rules"
+            exit 0
+          fi
+          gh api "repos/$REPO/labels" -f name=rules-closed -f color=b60205 -f description="closed by the pr rules" >/dev/null 2>&1 || true
+          gh api "repos/$REPO/issues/$PR/comments" -f body="Closed automatically, sorry. $why Check [CONTRIBUTING.md](https://github.com/goome-ui/vscode-goome/blob/dev/CONTRIBUTING.md), fix it and open a new PR against dev." >/dev/null
+          gh api "repos/$REPO/issues/$PR/labels" -f "labels[]=rules-closed" >/dev/null
+          gh api -X PATCH "repos/$REPO/pulls/$PR" -f state=closed >/dev/null
+          echo "closed: $why"

@@ -1,0 +1,41 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  vsix:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: package.json says the right version
+        run: |
+          v=$(node -p "require('./package.json').version")
+          [ "$v" = "${TAG#v}" ] || { echo "package.json is $v, not ${TAG#v}"; exit 1; }
+      - name: goome sources
+        run: |
+          mkdir -p deps
+          for r in docs c-goome; do
+            git clone -q --depth 1 "https://github.com/goome-ui/$r.git" "deps/$r"
+          done
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run compile
+      - run: npm run unit
+      - name: package
+        run: npx @vscode/vsce package -o "vscode-goome-${TAG#v}.vsix"
+      - name: upload
+        run: |
+          gh release view "$TAG" > /dev/null 2>&1 || gh release create "$TAG" --verify-tag --title "vscode-goome ${TAG#v}" --notes "vscode-goome ${TAG#v}. Grab the .vsix below and install it with Extensions > ... > Install from VSIX."
+          gh release upload "$TAG" "vscode-goome-${TAG#v}.vsix" --clobber

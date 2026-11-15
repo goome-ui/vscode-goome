@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      GOOME_CLI: ${{ github.workspace }}/deps/goome-cli/goome.py
+    steps:
+      - uses: actions/checkout@v4
+      - name: goome sources
+        run: |
+          mkdir -p deps
+          for r in docs c-goome python-goome csharp-goome java-goome goome-cli; do
+            git clone -q --depth 1 "https://github.com/goome-ui/$r.git" "deps/$r"
+          done
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: build
+        run: npm run compile
+      - name: unit tests
+        run: npm run unit
+      - name: vscode tests
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then xvfb-run -a npm test; else npm test; fi
+      - name: package
+        run: npx @vscode/vsce package -o vscode-goome.vsix
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          name: vscode-goome-vsix
+          path: vscode-goome.vsix
