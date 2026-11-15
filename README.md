@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VS%20Code-1.90%2B-6fdc5f?style=flat-square&labelColor=6fdc5f&logoColor=1b1d22" alt="VS Code 1.90+">
+  <img src="https://goome-ui.github.io/docs/assets/badges/vscode-190.svg" alt="VS Code 1.90+">
   <img src="https://img.shields.io/badge/C%20%C2%B7%20C%23%20%C2%B7%20Python%20%C2%B7%20Java-1b1d22?style=flat-square&labelColor=6fdc5f" alt="C, C#, Python, Java">
   <img src="https://img.shields.io/badge/license-GPL--3.0-1b1d22?style=flat-square" alt="GPL-3.0">
 </p>
