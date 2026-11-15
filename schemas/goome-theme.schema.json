@@ -1,0 +1,1009 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/goome-ui/vscode-goome/main/schemas/goome-theme.schema.json",
+  "title": "goome theme",
+  "description": "a .goome-theme.json exported from the goome ui builder",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "goome-theme"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "theme": {
+      "$ref": "#/definitions/theme"
+    }
+  },
+  "required": [
+    "format",
+    "theme"
+  ],
+  "definitions": {
+    "theme": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "base": {
+          "enum": [
+            "dark",
+            "light"
+          ]
+        },
+        "preset": {
+          "type": "boolean"
+        },
+        "icon_tint": {
+          "enum": [
+            0,
+            1,
+            true,
+            false
+          ]
+        },
+        "icons": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "arrow_down",
+              "arrow_right",
+              "arrow_up",
+              "arrow_left",
+              "check",
+              "radio_dot",
+              "close",
+              "minimize",
+              "maximize",
+              "restore",
+              "resize",
+              "sort_up",
+              "sort_down",
+              "plus",
+              "minus",
+              "slider_knob",
+              "toggle_knob",
+              "collapse",
+              "expand",
+              "drag_handle",
+              "toast",
+              "picker"
+            ]
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "img": {
+                "type": "string"
+              },
+              "file": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "img"
+            ]
+          }
+        },
+        "quick": {
+          "type": "object",
+          "properties": {
+            "accent": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295,
+              "description": "0xAARRGGBB as a number"
+            },
+            "dark": {
+              "type": "boolean"
+            },
+            "radius": {
+              "type": "number"
+            },
+            "scale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 4
+            }
+          }
+        },
+        "bg": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "panel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "border": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "text": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "text_dim": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "accent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "accent_text": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "hover": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "active": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "input_bg": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "shadow": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "0xAARRGGBB as a number"
+        },
+        "focus": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "focus ring, 0 = auto"
+        },
+        "select": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "text selection, 0 = auto"
+        },
+        "caret": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "text caret, 0 = auto"
+        },
+        "link": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "links, 0 = auto"
+        },
+        "badge": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "badges, 0 = auto"
+        },
+        "toast": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "toast background, 0 = auto"
+        },
+        "tooltip": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "tooltip background, 0 = auto"
+        },
+        "danger": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "red close buttons, 0 = auto"
+        },
+        "knob": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "slider and toggle knobs, 0 = auto"
+        },
+        "dim": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "behind modals, 0 = auto"
+        },
+        "radius": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "pad": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "gap": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "border_width": {
+          "type": "number",
+          "description": "builder range 0 to 6"
+        },
+        "font_size": {
+          "type": "number",
+          "description": "builder range 9 to 28"
+        },
+        "shadow_blur": {
+          "type": "number",
+          "description": "builder range 0 to 60"
+        },
+        "anim_ms": {
+          "type": "number",
+          "description": "builder range 0 to 600"
+        },
+        "check_size": {
+          "type": "number",
+          "description": "builder range 8 to 40"
+        },
+        "check_radius": {
+          "type": "number",
+          "description": "builder range 0 to 20"
+        },
+        "toggle_w": {
+          "type": "number",
+          "description": "builder range 20 to 80"
+        },
+        "toggle_h": {
+          "type": "number",
+          "description": "builder range 10 to 44"
+        },
+        "slider_h": {
+          "type": "number",
+          "description": "builder range 10 to 44"
+        },
+        "slider_track": {
+          "type": "number",
+          "description": "builder range 1 to 20"
+        },
+        "knob_size": {
+          "type": "number",
+          "description": "builder range 2 to 20, slider knob radius"
+        },
+        "scroll_w": {
+          "type": "number",
+          "description": "builder range 1 to 20"
+        },
+        "scroll_min": {
+          "type": "number",
+          "description": "builder range 8 to 80"
+        },
+        "item_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, every widget row, 0 = from the font"
+        },
+        "menu_item_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "tab_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "win_title_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "app_title_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "menubar_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "statusbar_h": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "focus_w": {
+          "type": "number",
+          "description": "builder range 0 to 6"
+        },
+        "focus_gap": {
+          "type": "number",
+          "description": "builder range 0 to 10"
+        },
+        "sep_w": {
+          "type": "number",
+          "description": "builder range 0 to 6"
+        },
+        "grip": {
+          "type": "number",
+          "description": "builder range 6 to 40"
+        },
+        "indent": {
+          "type": "number",
+          "description": "builder range 0 to 48"
+        },
+        "plot_w": {
+          "type": "number",
+          "description": "builder range 0.5 to 8"
+        },
+        "spinner": {
+          "type": "number",
+          "description": "builder range 0 to 64, 0 = from the font"
+        },
+        "caret_w": {
+          "type": "number",
+          "description": "builder range 0 to 16, 0 = thin, go wide for a block"
+        },
+        "win_min_w": {
+          "type": "number",
+          "description": "builder range 40 to 600"
+        },
+        "win_min_h": {
+          "type": "number",
+          "description": "builder range 20 to 400"
+        },
+        "pop_gap": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "menu_gap": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "tip_pad_x": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "tip_pad_y": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "tip_x": {
+          "type": "number",
+          "description": "builder range -40 to 60"
+        },
+        "tip_y": {
+          "type": "number",
+          "description": "builder range -40 to 60"
+        },
+        "tip_radius": {
+          "type": "number",
+          "description": "builder range 0 to 30"
+        },
+        "shadow_x": {
+          "type": "number",
+          "description": "builder range -30 to 30"
+        },
+        "shadow_y": {
+          "type": "number",
+          "description": "builder range -30 to 30"
+        },
+        "align": {
+          "type": "number",
+          "description": "builder range 0 to 3"
+        },
+        "heading_size": {
+          "type": "number",
+          "description": "builder range 0 to 48, 0 = font size x 1.3"
+        },
+        "small_size": {
+          "type": "number",
+          "description": "builder range 0 to 28, 0 = from the font"
+        },
+        "ease": {
+          "type": "number",
+          "description": "builder range 0 to 4"
+        },
+        "hover_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "press_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "popup_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "collapse_ms": {
+          "type": "number",
+          "description": "builder range -1 to 600, below 0 follows anim_ms"
+        },
+        "toast_fade_ms": {
+          "type": "number",
+          "description": "builder range -1 to 1000, below 0 follows anim_ms"
+        },
+        "font_heading": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "system font name, empty = the ui font"
+        },
+        "font_mono": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "system font name, empty = the ui font"
+        },
+        "font_small": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "system font name, empty = the ui font"
+        },
+        "skin_button": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_panel": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_input": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_scrollbar": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_slider_track": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_toggle": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_tab": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_titlebar": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_tooltip": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_menu": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_checkbox": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_radio": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_slider_fill": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        },
+        "skin_popup": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "img": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "l": {
+                  "type": "number"
+                },
+                "t": {
+                  "type": "number"
+                },
+                "r": {
+                  "type": "number"
+                },
+                "b": {
+                  "type": "number"
+                },
+                "iw": {
+                  "type": "number"
+                },
+                "ih": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "img"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
