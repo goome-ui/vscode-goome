@@ -1,0 +1,160 @@
+{
+  "name": "vscode-goome",
+  "displayName": "goome",
+  "description": "Snippets, a new project command, a .goome.json preview and hover docs for goome, the see-through overlay and ui library.",
+  "version": "0.4.0",
+  "publisher": "goome-ui",
+  "license": "GPL-3.0-only",
+  "icon": "media/icon.png",
+  "homepage": "https://goome-ui.github.io/docs/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goome-ui/vscode-goome"
+  },
+  "bugs": {
+    "url": "https://github.com/goome-ui/vscode-goome/issues"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Snippets",
+    "Programming Languages",
+    "Visualization"
+  ],
+  "keywords": [
+    "goome",
+    "overlay",
+    "ui",
+    "immediate mode",
+    "gui"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:c",
+    "onLanguage:cpp"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "goome",
+      "properties": {
+        "goome.cli": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Path to `goome` or `goome.py` for **goome: New Project**. Empty = `goome` on PATH, or else goome.py from the latest goome-cli release."
+        },
+        "goome.python": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Python to run goome.py with. Empty = `python3`, `python` or `py -3`."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "goome.newProject",
+        "title": "New Project",
+        "category": "goome"
+      },
+      {
+        "command": "goome.openPreview",
+        "title": "Open Preview",
+        "category": "goome",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "goome.copyCode",
+        "title": "Copy Code From This Project",
+        "category": "goome"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "goome.openPreview",
+          "when": "resourceFilename =~ /\\.goome\\.json$/"
+        },
+        {
+          "command": "goome.copyCode",
+          "when": "resourceFilename =~ /\\.goome\\.json$/"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "goome.openPreview",
+          "when": "resourceFilename =~ /\\.goome\\.json$/ && activeEditor == workbench.editors.files.textFileEditor",
+          "group": "navigation"
+        }
+      ]
+    },
+    "customEditors": [
+      {
+        "viewType": "goome.preview",
+        "displayName": "goome Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.goome.json"
+          }
+        ],
+        "priority": "option"
+      }
+    ],
+    "languages": [
+      {
+        "id": "json",
+        "extensions": [
+          ".goome.json",
+          ".goome-theme.json"
+        ]
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": "*.goome.json",
+        "url": "./schemas/goome-project.schema.json"
+      },
+      {
+        "fileMatch": "*.goome-theme.json",
+        "url": "./schemas/goome-theme.schema.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "c",
+        "path": "./snippets/c.json"
+      },
+      {
+        "language": "cpp",
+        "path": "./snippets/c.json"
+      },
+      {
+        "language": "csharp",
+        "path": "./snippets/csharp.json"
+      },
+      {
+        "language": "python",
+        "path": "./snippets/python.json"
+      },
+      {
+        "language": "java",
+        "path": "./snippets/java.json"
+      }
+    ]
+  },
+  "scripts": {
+    "sync": "node scripts/sync.js",
+    "compile": "npm run sync && tsc -p .",
+    "unit": "node --test test/unit/",
+    "test": "node out/test/runTest.js",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "~1.90.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.9.2",
+    "mocha": "^11.7.0",
+    "typescript": "~5.9.3"
+  }
+}

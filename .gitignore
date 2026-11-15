@@ -1,0 +1,7 @@
+node_modules/
+out/
+media/builder/
+media/hover.json
+deps/
+.vscode-test/
+*.vsix
