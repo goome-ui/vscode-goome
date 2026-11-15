@@ -51,7 +51,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     }),
   );
 
-  return { preview, hover };
+  return { preview, hover, storage: ctx.globalStorageUri };
 }
 
 export function deactivate() {}
