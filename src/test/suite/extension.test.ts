@@ -235,7 +235,7 @@ describe("goome extension", () => {
     if (!fs.existsSync(cli)) return this.skip();
     await vscode.workspace.getConfiguration("goome").update("cli", cli, vscode.ConfigurationTarget.Global);
     const dest = await vscode.commands.executeCommand<string>("goome.newProject", { lang: "c", template: "hud", folder: work, name: "e2e hud", open: false });
-    assert.strictEqual(dest, path.join(work, "e2e hud"));
+    assert.strictEqual(vscode.Uri.file(dest).fsPath, vscode.Uri.file(path.join(work, "e2e hud")).fsPath);
     assert.ok(fs.existsSync(path.join(dest, "main.c")), "no main.c in " + dest);
     assert.ok(fs.readFileSync(path.join(dest, "README.md"), "utf8").includes("E2e Hud"));
   });
@@ -312,7 +312,7 @@ describe("goome extension", () => {
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(file, "int main(void){return 0;}\n");
       const out = await vscode.commands.executeCommand<string>("goome.buildWeb", vscode.Uri.file(file));
-      assert.strictEqual(out, path.join(work, "app", "web"));
+      assert.strictEqual(vscode.Uri.file(out).fsPath, vscode.Uri.file(path.join(work, "app", "web")).fsPath);
       assert.strictEqual(calls[0].cmd, "fake-goome-cli");
       assert.deepStrictEqual(calls[0].args, ["build", "--web", file, "--out", out, "--goome", "/src/c-goome"]);
     });
