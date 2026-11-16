@@ -57,7 +57,7 @@ On VSCodium and the other forks it is on <a href="https://open-vsx.org/extension
 <b>goome: New Project</b> - pick a language (C, C#, Python, Java, Godot, Rust, Node, Go, Zig or Lua), a template (<code>app</code>, <code>overlay</code>, <code>mod-menu</code> or <code>hud</code>, all four exist for all ten), a folder and a name. It runs <a href="https://github.com/goome-ui/goome-cli">goome-cli</a> and opens what it made. If <code>goome</code> isnt on your PATH it downloads goome.py from the latest goome-cli release and runs that with Python, so you dont have to install anything besides Python<br>
 <b>goome: Build for Web</b> - compiles a C app to webassembly with <code>goome build --web</code>, from the command palette, the button at the top of a <code>.c</code> file, the right click menu or the side bar. The output goes in a <code>web</code> folder next to the file, errors show up as a message with the full output in the goome output panel. When it works pick <b>Open in browser</b> (runs <code>goome serve</code> on localhost) or <b>Reveal folder</b>. <b>goome: Stop Web Server</b> stops it, and it stops when VS Code closes. Needs <code>clang</code> and <code>wasm-ld</code>, apps only, and your app has to have <code>goome_web_init</code> and <code>goome_web_frame</code> (see <a href="https://github.com/goome-ui/c-goome/tree/dev/wasm/web">wasm/web</a>). Released c-goome versions dont have the web build yet, so set <code>goome.web.goomePath</code> to a c-goome checkout<br>
 <b>Preview</b> - open a <code>.goome.json</code> and hit the preview button at the top right (or <b>goome: Open Preview</b>). It draws the project with the UI builders own code and updates while you type. Its read only, <b>Open in the UI builder</b> takes you to the real thing<br>
-<b>Copy code</b> - the C, C#, Python, Java and Godot buttons in the preview (or <b>goome: Copy Code From This Project</b>) put the builders generated code on your clipboard. Rust, Node, Go, Zig and Lua arent in the builder yet, their buttons show up on their own once it has them<br>
+<b>Copy code</b> - the C, C#, Python, Java, Godot, Rust, Node, Go, Zig and Lua buttons in the preview (or <b>goome: Copy Code From This Project</b>) put the builders generated code on your clipboard.<br>
 <b>Hover</b> - hover any <code>goome_*</code> function in C and you get its signature, the note from goome.h and a link to the docs. In Rust, JavaScript, TypeScript, Go, Zig, Lua and GDScript hover a goome method or constant (<code>ui.button</code>, <code>goome::open</code>, <code>GoomeUI.WIN_MOVE</code>) and you get the real signature from that binding, plus the goome.h note and docs link when theres a C function behind it. It only kicks in in files that mention goome<br>
 <b>Completion</b> - in those same seven languages type <code>ui.</code>, <code>g.</code>, <code>c.</code>, <code>goome.</code> (<code>ui:</code> in Lua, <code>goome::</code> in Rust) and you get that objects methods and constants with their signatures. C, C# Python and Java only complete the snippets<br>
 <b>Schemas</b> - <code>.goome.json</code> and <code>.goome-theme.json</code> get checked while you edit them, so typos in widget types, theme fields and colors show up right away<br> <br>
@@ -83,17 +83,17 @@ Every language gets snippets and New Project. The rest depends on the binding, a
 | Python | python | 58 | snippets only | no | yes | yes | no |
 | Java | java | 58 | snippets only | no | yes | yes | no |
 | Godot | gdscript | 56 | yes | yes | yes | yes | no |
-| Rust | rust | 58 | yes | yes | yes | not yet | no |
-| Node | javascript, typescript (and the react ones) | 58 | yes | yes | yes | not yet | no |
-| Go | go | 58 | yes | yes | yes | not yet | no |
-| Zig | zig | 58 | yes | yes | yes | not yet | no |
-| Lua | lua | 58 | yes | yes | yes | not yet | no |
+| Rust | rust | 58 | yes | yes | yes | yes | no |
+| Node | javascript, typescript (and the react ones) | 58 | yes | yes | yes | yes | no |
+| Go | go | 58 | yes | yes | yes | yes | no |
+| Zig | zig | 58 | yes | yes | yes | yes | no |
+| Lua | lua | 58 | yes | yes | yes | yes | no |
 
 </div>
 
 <p align="center">
 <b>Build for Web</b> is C only for now, it compiles a C app with <code>goome build --web</code>.<br>
-<b>Copy code</b> comes from the UI builder, so a language shows up there once the builder can write it.<br>
+<b>Copy code</b> comes from the UI builder, which writes all ten languages.<br>
 Node has an <code>index.d.ts</code>, so TypeScript gets the same snippets, completion and hover as JavaScript.<br>
 The VS Code side of Rust, Go, Zig, Lua and GDScript (syntax colors, rust-analyzer, gopls and so on) comes from their own extensions, goome only adds the goome parts. It registers the <code>.rs</code>, <code>.go</code>, <code>.zig</code>, <code>.lua</code> and <code>.gd</code> language ids so the snippets still work if you dont have those installed.<br>
 The names for hover and completion are read out of the bindings when the extension is built, so they follow what the bindings really have.

@@ -201,6 +201,12 @@ describe("goome extension", () => {
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
 
+  it("has a copy code button for each of the ten languages", () => {
+    const html = api.preview.html({ cspSource: "x", asWebviewUri: (u: vscode.Uri) => u } as unknown as vscode.Webview);
+    const ids = [...html.matchAll(/data-copy="(\w+)"/g)].map((m) => m[1]).sort();
+    assert.deepStrictEqual(ids, ["c", "cs", "gd", "go", "java", "lua", "node", "py", "rust", "zig"]);
+  });
+
   it("opens the preview when a builder file is clicked", async () => {
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
     const uri = vscode.Uri.file(path.join(fixtures, "demo.goome.json"));
@@ -216,7 +222,7 @@ describe("goome extension", () => {
 
   it("copies code from the project with the builder codegen", async () => {
     const uri = vscode.Uri.file(path.join(fixtures, "demo.goome.json"));
-    const want: Record<string, string> = { c: "goome_ui_window(", cs: "ui.Window(", py: "ui.window(", java: "ui.window(", gd: "ui.window(" };
+    const want: Record<string, string> = { c: "goome_ui_window(", cs: "ui.Window(", py: "ui.window(", java: "ui.window(", gd: "ui.window(", rust: "ui.window(\"demo window\"", node: "ui.window(\"demo window\"", go: "ui.Window(\"demo window\"", zig: "u.window(\"demo window\"", lua: "ui:window(\"demo window\"" };
     for (const lang of Object.keys(want)) {
       const code = await vscode.commands.executeCommand<string>("goome.copyCode", uri, lang);
       assert.ok(code && code.includes(want[lang]), lang + ": " + String(code).slice(0, 200));

@@ -61,7 +61,8 @@ test("the bundled builder codegen turns the demo project into code", () => {
 test("copy code only offers languages the builder can write", () => {
   const cg = require("../../out/codegen.js");
   const langs = cg.codeLangs(src.root);
-  for (const id of ["c", "cs", "py", "java", "gd"]) assert.ok(langs[id], id);
   const X = require(path.join(src.root, "media", "builder", "codegen.js"));
-  for (const id of ["rust", "node", "go", "zig", "lua"]) assert.strictEqual(!!langs[id], !!(X.langs && X.langs[id]), id);
+  assert.deepStrictEqual(Object.keys(langs).sort(), ["c", "cs", "gd", "go", "java", "lua", "node", "py", "rust", "zig"]);
+  for (const id of ["rust", "node", "go", "zig", "lua"]) assert.ok(X.langs[id], id);
+  assert.deepStrictEqual([langs.rust, langs.node, langs.go, langs.zig, langs.lua], ["Rust", "Node", "Go", "Zig", "Lua"]);
 });
