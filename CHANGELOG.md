@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.2
 
 - Rust, Node (JavaScript and TypeScript), Go, Zig, Lua and Godot (GDScript) get the goome snippets, with the same prefixes as C, C#, Python and Java
 - completion and hover for goome methods and constants in those languages, read out of the bindings at build time
