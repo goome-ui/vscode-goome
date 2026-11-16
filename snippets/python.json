@@ -512,5 +512,60 @@
     "body": [
       "ui.theme.make(${1:0xFF4FA3FF}, ${2:True}, ${3:10})"
     ]
+  },
+  "goome ease": {
+    "prefix": "goome-ease",
+    "description": "raw easing curve, t goes 0 to 1",
+    "body": [
+      "${1:k} = goome.ease(goome.EASE_${2|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|}, ${3:t})"
+    ]
+  },
+  "goome anim": {
+    "prefix": "goome-anim",
+    "description": "animate a number toward a target, call it every frame",
+    "body": [
+      "${1:x} = ${2:ui}.anim(\"${3:panel x}\", ${4:0 if open else -300}, ${5:250}, goome.EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|})"
+    ]
+  },
+  "goome anim color": {
+    "prefix": "goome-anim-color",
+    "description": "animate a color toward a target, call it every frame",
+    "body": [
+      "${1:bg} = ${2:ui}.anim_color(\"${3:bg}\", ${4:0xFF3A7BD5 if hot else 0xFF202020}, ${5:150}, goome.EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|})"
+    ]
+  },
+  "goome text input": {
+    "prefix": "goome-text-input",
+    "description": "ime on with the candidate window at the caret, plus typed and composing text",
+    "body": [
+      "${1:g}.text_input(${2:focused}, (${3:x}, ${4:y}, 2, ${5:20}))",
+      "$0",
+      "if ev.type == goome.TEXT:",
+      "\t${6:typed} = $1.event_text",
+      "elif ev.type == goome.PREEDIT:",
+      "\t${7:composing}, ${8:at} = $1.event_text, $1.preedit_cursor"
+    ]
+  },
+  "goome a11y": {
+    "prefix": "goome-a11y",
+    "description": "screen reader role, name and value for the next custom item",
+    "body": [
+      "${1:ui}.a11y_role(goome.ROLE_${2|SLIDER,BUTTON,CHECKBOX,PROGRESS,IMAGE,GROUP|}, \"${3:Volume}\")",
+      "$1.a11y_value(${4:\"50%\"})"
+    ]
+  },
+  "goome font fallback": {
+    "prefix": "goome-font-fallback",
+    "description": "font that falls back to another one for chars it doesnt have",
+    "body": [
+      "${1:font} = goome.Font.load(\"${2:Inter.ttf}\").fallback(goome.Font.load(\"${3:NotoSansCJK.ttc}\"))"
+    ]
+  },
+  "goome text dir": {
+    "prefix": "goome-text-dir",
+    "description": "force the text direction for all text",
+    "body": [
+      "goome.text_dir(goome.DIR_${1|RTL,LTR,AUTO|})"
+    ]
   }
 }

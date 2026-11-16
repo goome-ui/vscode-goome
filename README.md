@@ -40,7 +40,7 @@ Or from a terminal:
 </p>
 
 ```sh
-code --install-extension vscode-goome-0.4.1.vsix
+code --install-extension vscode-goome-0.5.0.vsix
 ```
 
 <p align="center">
@@ -55,7 +55,7 @@ The marketplace version is coming soon.
 
 <p align="center">
 <b>Side bar</b> - click the goome icon in the activity bar. It has the quick actions, every <code>.goome.json</code> and <code>.goome-theme.json</code> in your workspace (click one to preview it), the templates for each language (click one and New Project starts with it picked) and a snippet cheat sheet that drops the snippet into your open file. The same file list also sits in the Explorer under your files<br>
-<b>Snippets</b> - type <code>goome</code> and pick one. <code>goome-overlay</code> and <code>goome-app</code> are a whole program, <code>goome-loop</code> is the poll and pace loop, and theres one for every common widget, plus <code>goome-style</code>, <code>goome-custom</code>, <code>goome-offscreen</code>, <code>goome-hotkey</code>, <code>goome-theme-preset</code> and <code>goome-theme-make</code>. Same names in all four languages<br>
+<b>Snippets</b> - type <code>goome</code> and pick one. <code>goome-overlay</code> and <code>goome-app</code> are a whole program, <code>goome-loop</code> is the poll and pace loop, and theres one for every common widget, plus <code>goome-style</code>, <code>goome-custom</code>, <code>goome-offscreen</code>, <code>goome-hotkey</code>, <code>goome-theme-preset</code>, <code>goome-theme-make</code>, <code>goome-anim</code>, <code>goome-anim-color</code>, <code>goome-ease</code>, <code>goome-text-input</code>, <code>goome-a11y</code>, <code>goome-font-fallback</code> and <code>goome-text-dir</code>. Same names in all four languages<br>
 <b>goome: New Project</b> - pick a language, a template, a folder and a name. It runs <a href="https://github.com/goome-ui/goome-cli">goome-cli</a> and opens what it made. If <code>goome</code> isnt on your PATH it downloads goome.py from the latest goome-cli release and runs that with Python, so you dont have to install anything besides Python<br>
 <b>Preview</b> - open a <code>.goome.json</code> and hit the preview button at the top right (or <b>goome: Open Preview</b>). It draws the project with the UI builders own code and updates while you type. Its read only, <b>Open in the UI builder</b> takes you to the real thing<br>
 <b>Copy code</b> - the C, C#, Python and Java buttons in the preview (or <b>goome: Copy Code From This Project</b>) put the builders generated code on your clipboard<br>

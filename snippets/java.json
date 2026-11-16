@@ -529,5 +529,62 @@
     "body": [
       "ui.theme().set(Theme.make(ui.theme(), ${1:0xFF4FA3FF}, ${2:true}, ${3:10}));"
     ]
+  },
+  "goome ease": {
+    "prefix": "goome-ease",
+    "description": "raw easing curve, t goes 0 to 1",
+    "body": [
+      "double ${1:k} = Ui.ease(Theme.EASE_${2|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|}, ${3:t});"
+    ]
+  },
+  "goome anim": {
+    "prefix": "goome-anim",
+    "description": "animate a number toward a target, call it every frame",
+    "body": [
+      "double ${1:x} = ${2:ui}.anim(\"${3:panel x}\", ${4:open ? 0 : -300}, ${5:250}, Theme.EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|});"
+    ]
+  },
+  "goome anim color": {
+    "prefix": "goome-anim-color",
+    "description": "animate a color toward a target, call it every frame",
+    "body": [
+      "int ${1:bg} = ${2:ui}.animColor(\"${3:bg}\", ${4:hot ? 0xFF3A7BD5 : 0xFF202020}, ${5:150}, Theme.EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|});"
+    ]
+  },
+  "goome text input": {
+    "prefix": "goome-text-input",
+    "description": "ime on with the candidate window at the caret, plus typed and composing text",
+    "body": [
+      "${1:g}.textInput(${2:focused}, new Rect(${3:x}, ${4:y}, 2, ${5:20}));",
+      "$0",
+      "if (ev.type() == Goome.TEXT) {",
+      "\tString ${6:typed} = $1.eventText();",
+      "} else if (ev.type() == Goome.PREEDIT) {",
+      "\tString ${7:composing} = $1.eventText();",
+      "\tint ${8:at} = $1.preeditCursor();",
+      "}"
+    ]
+  },
+  "goome a11y": {
+    "prefix": "goome-a11y",
+    "description": "screen reader role, name and value for the next custom item",
+    "body": [
+      "${1:ui}.a11yRole(A11yNode.ROLE_${2|SLIDER,BUTTON,CHECKBOX,PROGRESS,IMAGE,GROUP|}, \"${3:Volume}\");",
+      "$1.a11yValue(${4:\"50%\"});"
+    ]
+  },
+  "goome font fallback": {
+    "prefix": "goome-font-fallback",
+    "description": "font that falls back to another one for chars it doesnt have",
+    "body": [
+      "Font ${1:font} = Font.load(\"${2:Inter.ttf}\").fallback(Font.load(\"${3:NotoSansCJK.ttc}\"));"
+    ]
+  },
+  "goome text dir": {
+    "prefix": "goome-text-dir",
+    "description": "force the text direction for all text",
+    "body": [
+      "Font.textDir(Font.DIR_${1|RTL,LTR,AUTO|});"
+    ]
   }
 }

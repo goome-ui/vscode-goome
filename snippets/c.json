@@ -545,5 +545,65 @@
     "body": [
       "goome_ui_theme_make(goome_ui_theme(u), ${1:0xFF4FA3FF}, ${2:1}, ${3:10});"
     ]
+  },
+  "goome ease": {
+    "prefix": "goome-ease",
+    "description": "raw easing curve, t goes 0 to 1",
+    "body": [
+      "double ${1:k} = goome_ease(GOOME_EASE_${2|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|}, ${3:t});"
+    ]
+  },
+  "goome anim": {
+    "prefix": "goome-anim",
+    "description": "animate a number toward a target, call it every frame",
+    "body": [
+      "double ${1:x} = goome_ui_anim(${2:u}, \"${3:panel x}\", ${4:open ? 0 : -300}, ${5:250}, GOOME_EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|});"
+    ]
+  },
+  "goome anim color": {
+    "prefix": "goome-anim-color",
+    "description": "animate a color toward a target, call it every frame",
+    "body": [
+      "uint32_t ${1:bg} = goome_ui_anim_color(${2:u}, \"${3:bg}\", ${4:hot ? 0xFF3A7BD5 : 0xFF202020}, ${5:150}, GOOME_EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|});"
+    ]
+  },
+  "goome text input": {
+    "prefix": "goome-text-input",
+    "description": "ime on with the candidate window at the caret, plus typed and composing text",
+    "body": [
+      "goome_rect ${1:caret} = {${2:x}, ${3:y}, 2, ${4:20}};",
+      "goome_text_input(${5:g}, ${6:focused}, &$1);",
+      "$0",
+      "if (ev.type == GOOME_TEXT) {",
+      "\tconst char *${7:typed} = goome_event_text($5);",
+      "}",
+      "if (ev.type == GOOME_PREEDIT) {",
+      "\tconst char *${8:composing} = goome_event_text($5);",
+      "\tint ${9:at} = goome_preedit_cursor($5);",
+      "}"
+    ]
+  },
+  "goome a11y": {
+    "prefix": "goome-a11y",
+    "description": "screen reader role, name and value for the next custom item",
+    "body": [
+      "goome_ui_a11y_role(${1:u}, GOOME_ROLE_${2|SLIDER,BUTTON,CHECKBOX,PROGRESS,IMAGE,GROUP|}, \"${3:Volume}\");",
+      "goome_ui_a11y_value($1, ${4:\"50%\"});"
+    ]
+  },
+  "goome font fallback": {
+    "prefix": "goome-font-fallback",
+    "description": "font that falls back to another one for chars it doesnt have",
+    "body": [
+      "goome_font *${1:font} = goome_font_load(\"${2:Inter.ttf}\");",
+      "goome_font_fallback($1, goome_font_load(\"${3:NotoSansCJK.ttc}\"));"
+    ]
+  },
+  "goome text dir": {
+    "prefix": "goome-text-dir",
+    "description": "force the text direction for all text",
+    "body": [
+      "goome_text_dir(GOOME_DIR_${1|RTL,LTR,AUTO|});"
+    ]
   }
 }
