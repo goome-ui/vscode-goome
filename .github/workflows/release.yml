@@ -35,7 +35,31 @@ jobs:
       - run: npm run unit
       - name: package
         run: npx @vscode/vsce package -o "vscode-goome-${TAG#v}.vsix"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix
+          path: vscode-goome-*.vsix
       - name: upload
         run: |
           gh release view "$TAG" > /dev/null 2>&1 || gh release create "$TAG" --verify-tag --title "vscode-goome ${TAG#v}" --notes "vscode-goome ${TAG#v}. Grab the .vsix below and install it with Extensions > ... > Install from VSIX."
           gh release upload "$TAG" "vscode-goome-${TAG#v}.vsix" --clobber
+
+  marketplace:
+    needs: vsix
+    if: vars.MARKETPLACE_PUBLISH == 'yes'
+    runs-on: ubuntu-latest
+    environment: marketplace
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: vsix
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: publish
+        run: npx --yes @vscode/vsce@4.1.1 publish --oidc --skip-duplicate --packagePath "vscode-goome-${TAG#v}.vsix"
