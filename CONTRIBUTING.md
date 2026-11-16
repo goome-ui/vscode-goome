@@ -12,7 +12,7 @@ Bugs in the preview or the generated code usually live in the builder, those go 
 • One thing per PR<br>
 • Open your PR against the <b>dev</b> branch, not main<br>
 • Snippets use the real API names and argument orders, the tests check them against the bindings<br>
-• If you add a snippet, add it for all four languages with the same prefix<br>
+• If you add a snippet, add it for every language with the same prefix (Godot skips the three that dont make sense there)<br>
 • No new runtime dependencies, the extension ships with none<br>
 • Dont touch the protected files, a bot closes the PR if you do<br>
 • CI has to pass<br>
@@ -45,7 +45,7 @@ xvfb-run -a npm test
 ```
 
 <p align="center">
-Put <code>docs</code>, <code>c-goome</code>, <code>python-goome</code>, <code>csharp-goome</code>, <code>java-goome</code> and <code>goome-cli</code> next to this folder (or in <code>deps/</code>) and the unit tests check every name the snippets use against the real sources. Without them those tests get skipped.<br>
+Put <code>docs</code>, <code>c-goome</code>, <code>python-goome</code>, <code>csharp-goome</code>, <code>java-goome</code>, <code>rust-goome</code>, <code>node-goome</code>, <code>go-goome</code>, <code>zig-goome</code>, <code>lua-goome</code>, <code>godot-goome</code> and <code>goome-cli</code> next to this folder (or in <code>deps/</code>) and the unit tests check every name the snippets use against the real sources. Without them those tests get skipped.<br>
 <code>npm test</code> starts VS Code with the extension loaded and checks the snippets, hover, schemas, preview, copy code and New Project. Leave out <code>xvfb-run</code> on windows and mac.
 </p>
 </details>

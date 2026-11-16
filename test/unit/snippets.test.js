@@ -3,8 +3,10 @@ const assert = require("node:assert");
 const fs = require("fs");
 const path = require("path");
 const src = require("./sources");
+const api = require("../../scripts/api.js");
 
-const FILES = { c: "c.json", cs: "csharp.json", py: "python.json", java: "java.json" };
+const FILES = { c: "c.json", cs: "csharp.json", py: "python.json", java: "java.json", rust: "rust.json", node: "node.json", go: "go.json", zig: "zig.json", lua: "lua.json", godot: "godot.json" };
+const GODOT_SKIPS = ["goome-offscreen"];
 const MUST = ["goome-overlay", "goome-app", "goome-loop", "goome-window", "goome-label", "goome-heading", "goome-button", "goome-checkbox", "goome-toggle", "goome-radio",
   "goome-slider", "goome-slider-int", "goome-input", "goome-combo", "goome-selectable", "goome-tabs", "goome-collapsing", "goome-tree", "goome-progress", "goome-color",
   "goome-tooltip", "goome-separator", "goome-same-line", "goome-row", "goome-scroll", "goome-split", "goome-menubar", "goome-popup", "goome-modal", "goome-toast",
@@ -30,13 +32,14 @@ test("every snippet file is valid and uses goome prefixes", () => {
   }
 });
 
-test("all four languages have the common patterns", () => {
+test("every language has the common patterns", () => {
   for (const [k, snips] of Object.entries(all)) {
     const have = new Set(Object.values(snips).map((s) => s.prefix));
-    for (const p of MUST) assert.ok(have.has(p), k + " is missing " + p);
+    for (const p of MUST) if (k !== "godot" || !GODOT_SKIPS.includes(p)) assert.ok(have.has(p), k + " is missing " + p);
   }
+  assert.ok(new Set(Object.values(all.godot).map((s) => s.prefix)).has("goome-view"));
   const c = new Set(Object.values(all.c).map((s) => s.prefix));
-  for (const k of ["cs", "py", "java"]) for (const p of Object.values(all[k]).map((s) => s.prefix)) if (p !== "goome-style-push") assert.ok(c.has(p), p + " in " + k + " but not in c");
+  for (const k of Object.keys(FILES).filter((k) => k !== "c")) for (const p of Object.values(all[k]).map((s) => s.prefix)) if (p !== "goome-style-push" && !(k === "godot" && ["goome-view"].includes(p))) assert.ok(c.has(p), p + " in " + k + " but not in c");
 });
 
 test("placeholders expand to plain code", () => {
@@ -85,5 +88,40 @@ test("java snippets use real java-goome names", (t) => {
   for (const [p, list] of texts("java")) for (const text of list) for (const [n] of names(text, ["ui", "g", "c", "it", "ev", "e", "pace", "sort", "Goome", "Ui", "Theme", "ItemFlag", "Style", "Font", "A11yNode"])) {
     if (["getMessage", "println", "err", "put", "get"].includes(n)) continue;
     assert.ok(new RegExp("(public[^\\n]*\\b" + n + "\\b|^\\s*" + n + "\\b\\s*[(,;=]|\\b" + n + "\\(\\d+\\)|\\b(boolean|double|int|String) " + n + "\\s*[,)]|\\b" + n + " = -?\\d)", "m").test(code), p + " uses ." + n + " which isnt in java-goome");
+  }
+});
+
+const RECEIVERS = ["ui", "u", "g", "c", "cv", "goome", "GoomeUI", "pace", "app", "win", "Options", "Goome", "WindowState"];
+const BINDING_SOURCES = {
+  rust: (d) => src.readTree(path.join(d, "goome", "src"), ".rs"),
+  node: (d) => fs.readFileSync(path.join(d, "index.d.ts"), "utf8") + src.readTree(path.join(d, "lib"), ".ts"),
+  go: (d) => src.readTree(d, ".go"),
+  zig: (d) => src.readTree(path.join(d, "src"), ".zig"),
+  lua: (d) => src.readTree(path.join(d, "src"), ".c") + src.readTree(path.join(d, "src"), ".h"),
+  godot: (d) => src.readTree(path.join(d, "src"), ".c"),
+};
+
+for (const lang of Object.keys(BINDING_SOURCES)) {
+  test(lang + " snippets only use names the " + lang + " binding really has", (t) => {
+    const dir = api.findRepo(src.root, lang);
+    if (!dir) return t.skip("no " + lang + "-goome next to this repo");
+    const list = api.extract(lang, dir);
+    const known = new Set(list.flatMap((e) => [e.n, e.o]));
+    const code = BINDING_SOURCES[lang](dir);
+    const re = new RegExp("\\b(?:" + RECEIVERS.join("|") + ")(?:\\.|::|:)([A-Za-z_]\\w*)", "g");
+    for (const [p, snips] of texts(lang)) for (const text of snips) for (const m of text.matchAll(re)) {
+      const n = m[1];
+      const ok = known.has(n) || (/^[A-Z]/.test(n) && new RegExp("\\b" + n + "\\b").test(code));
+      assert.ok(ok, p + " uses " + n + " which isnt in " + lang + "-goome");
+    }
+  });
+}
+
+test("snippets for the new languages have no comments and no leftover placeholders", () => {
+  for (const k of ["rust", "node", "go", "zig", "lua", "godot"]) for (const [p, list] of texts(k)) for (const t of list) {
+    for (const line of t.split("\n")) {
+      const trimmed = line.trim();
+      assert.ok(!(trimmed.startsWith("//") || trimmed.startsWith("--") || trimmed.startsWith("#") || trimmed.startsWith("/*")), k + " " + p + " has a comment: " + trimmed);
+    }
   }
 });

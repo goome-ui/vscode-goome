@@ -1,0 +1,680 @@
+{
+  "goome overlay": {
+    "prefix": "goome-overlay",
+    "description": "open a see-through overlay with a ui window",
+    "body": [
+      "package main",
+      "",
+      "import (",
+      "\t\"fmt\"",
+      "\t\"os\"",
+      "",
+      "\t\"github.com/goome-ui/go-goome\"",
+      ")",
+      "",
+      "func main() {",
+      "\tg, err := goome.Open(goome.Options{Title: \"${1:my overlay}\"})",
+      "\tif err != nil {",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt open an overlay:\", err)",
+      "\t\tos.Exit(1)",
+      "\t}",
+      "\tdefer g.Close()",
+      "\tui, err := g.NewUI()",
+      "\tif err != nil {",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt make a ui:\", err)",
+      "\t\tos.Exit(1)",
+      "\t}",
+      "\tdefer ui.Free()",
+      "\twin := goome.NewWindow(60, 60, 280, 0)",
+      "\tfor !win.Closed {",
+      "\t\tfor ev := range g.Events(16) {",
+      "\t\t\tif ev.Type == goome.EventQuit {",
+      "\t\t\t\twin.Closed = true",
+      "\t\t\t}",
+      "\t\t\tui.Feed(ev)",
+      "\t\t}",
+      "\t\tif win.Closed {",
+      "\t\t\tbreak",
+      "\t\t}",
+      "\t\tif ui.Begin(0) == nil {",
+      "\t\t\tui.End()",
+      "\t\t\tcontinue",
+      "\t\t}",
+      "\t\tif ui.Window(\"$1\", win, goome.WinMove|goome.WinClose) {",
+      "\t\t\tui.Label(\"${2:im on top of everything}\")",
+      "\t\t\t$0",
+      "\t\t}",
+      "\t\tui.End()",
+      "\t\tui.End()",
+      "\t}",
+      "}"
+    ]
+  },
+  "goome app": {
+    "prefix": "goome-app",
+    "description": "open a normal app window that the ui fills",
+    "body": [
+      "package main",
+      "",
+      "import (",
+      "\t\"fmt\"",
+      "\t\"os\"",
+      "",
+      "\t\"github.com/goome-ui/go-goome\"",
+      ")",
+      "",
+      "func main() {",
+      "\tg, err := goome.OpenApp(\"${1:My App}\", ${2:960}, ${3:640})",
+      "\tif err != nil {",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt open a window:\", err)",
+      "\t\tos.Exit(1)",
+      "\t}",
+      "\tdefer g.Close()",
+      "\tui, err := g.NewUI()",
+      "\tif err != nil {",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt make a ui:\", err)",
+      "\t\tos.Exit(1)",
+      "\t}",
+      "\tdefer ui.Free()",
+      "\tfor running := true; running; {",
+      "\t\tfor ev := range g.Events(16) {",
+      "\t\t\tif ev.Type == goome.EventQuit || ev.Type == goome.EventClose {",
+      "\t\t\t\trunning = false",
+      "\t\t\t}",
+      "\t\t\tui.Feed(ev)",
+      "\t\t}",
+      "\t\tif !running {",
+      "\t\t\tbreak",
+      "\t\t}",
+      "\t\tif ui.Begin(0) == nil {",
+      "\t\t\tui.End()",
+      "\t\t\tcontinue",
+      "\t\t}",
+      "\t\tui.App(\"$1\", 0)",
+      "\t\tui.Heading(\"${4:Hello}\")",
+      "\t\t$0",
+      "\t\tui.End()",
+      "\t\tui.End()",
+      "\t}",
+      "}"
+    ]
+  },
+  "goome loop": {
+    "prefix": "goome-loop",
+    "description": "main loop with poll and pace, only redraws when something changed",
+    "body": [
+      "pace := goome.NewPacer(${1:60})",
+      "defer pace.Free()",
+      "running, dirty := true, true",
+      "for running {",
+      "\twait := 500",
+      "\tif dirty || ${2:ui}.Animating() {",
+      "\t\twait = pace.Wait()",
+      "\t}",
+      "\tfor ev := range ${3:g}.Events(wait) {",
+      "\t\tif ev.Type == goome.EventQuit || ev.Type == goome.EventClose {",
+      "\t\t\trunning = false",
+      "\t\t}",
+      "\t\t$2.Feed(ev)",
+      "\t\tdirty = true",
+      "\t}",
+      "\tif !running {",
+      "\t\tbreak",
+      "\t}",
+      "\tif !dirty && !$2.Animating() {",
+      "\t\tcontinue",
+      "\t}",
+      "\tdirty = false",
+      "\tif $2.Begin(0) == nil {",
+      "\t\t$2.End()",
+      "\t\tcontinue",
+      "\t}",
+      "\t$0",
+      "\t$2.End()",
+      "}"
+    ]
+  },
+  "goome window": {
+    "prefix": "goome-window",
+    "description": "ui window with a label and a button, win is a *Window",
+    "body": [
+      "if ui.Window(\"${1:Window}\", ${2:win}, goome.WinMove|goome.WinResize|goome.WinCollapse) {",
+      "\tui.Label(\"${3:hello}\")",
+      "\tif ui.Button(\"${4:Click me}\") {",
+      "\t\t$0",
+      "\t}",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome canvas": {
+    "prefix": "goome-canvas",
+    "description": "draw on the overlay yourself, no ui",
+    "body": [
+      "c := ${1:g}.Begin(0)",
+      "if c != nil {",
+      "\tc.Clear()",
+      "\tc.RoundRect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22)",
+      "\tc.Text($2+12, $3+12, \"${6:hello}\", true, 0xFFE9EBEE)",
+      "\t$0",
+      "\tc.Hit($2, $3, $4, $5)",
+      "\t$1.End(c)",
+      "}"
+    ]
+  },
+  "goome label": {
+    "prefix": "goome-label",
+    "description": "label",
+    "body": [
+      "ui.Label(\"${1:some text}\")"
+    ]
+  },
+  "goome heading": {
+    "prefix": "goome-heading",
+    "description": "heading",
+    "body": [
+      "ui.Heading(\"${1:Heading}\")"
+    ]
+  },
+  "goome wrapped": {
+    "prefix": "goome-wrapped",
+    "description": "text that wraps at the edge",
+    "body": [
+      "ui.Wrapped(\"${1:this text wraps when it runs into the edge}\")"
+    ]
+  },
+  "goome button": {
+    "prefix": "goome-button",
+    "description": "button",
+    "body": [
+      "if ui.Button(\"${1:Click me}\") {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome checkbox": {
+    "prefix": "goome-checkbox",
+    "description": "checkbox on a bool",
+    "body": [
+      "ui.Checkbox(\"${1:Show grid}\", &${2:showGrid})"
+    ]
+  },
+  "goome toggle": {
+    "prefix": "goome-toggle",
+    "description": "toggle switch on a bool",
+    "body": [
+      "ui.Toggle(\"${1:Wi-Fi}\", &${2:wifi})"
+    ]
+  },
+  "goome radio": {
+    "prefix": "goome-radio",
+    "description": "radio buttons on one int",
+    "body": [
+      "ui.Radio(\"${1:Small}\", &${2:size}, 0)",
+      "ui.SameLine()",
+      "ui.Radio(\"${3:Large}\", &$2, 1)"
+    ]
+  },
+  "goome slider": {
+    "prefix": "goome-slider",
+    "description": "slider on a float64",
+    "body": [
+      "ui.SliderFmt(\"${1:Volume}\", &${2:volume}, ${3:0}, ${4:1}, \"${5:%.2f}\")"
+    ]
+  },
+  "goome slider int": {
+    "prefix": "goome-slider-int",
+    "description": "slider on an int",
+    "body": [
+      "ui.SliderInt(\"${1:Count}\", &${2:count}, ${3:0}, ${4:100})"
+    ]
+  },
+  "goome input": {
+    "prefix": "goome-input",
+    "description": "one line text input on a string",
+    "body": [
+      "ui.Input(\"${1:Name}\", &${2:name})"
+    ]
+  },
+  "goome password": {
+    "prefix": "goome-password",
+    "description": "password input with a hint",
+    "body": [
+      "ui.Password(\"${1:Password}\", &${2:password}, \"${3:hint}\")"
+    ]
+  },
+  "goome combo": {
+    "prefix": "goome-combo",
+    "description": "dropdown, the index goes in an int",
+    "body": [
+      "ui.Combo(\"${1:Fruit}\", &${2:fruit}, []string{\"${3:Mango}\", \"${4:Banana}\", \"${5:Cherry}\"})"
+    ]
+  },
+  "goome selectable": {
+    "prefix": "goome-selectable",
+    "description": "selectable list row",
+    "body": [
+      "if ui.Selectable(\"${1:Item}\", ${2:picked} == ${3:0}) {",
+      "\t$2 = $3",
+      "}"
+    ]
+  },
+  "goome tabs": {
+    "prefix": "goome-tabs",
+    "description": "tabs",
+    "body": [
+      "ui.Tabs(\"${1:tabs}\", []string{\"${3:General}\", \"${4:Advanced}\"}, &${2:tab})",
+      "if $2 == 0 {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome collapsing": {
+    "prefix": "goome-collapsing",
+    "description": "collapsing section",
+    "body": [
+      "if ui.Collapsing(\"${1:More stuff}\", nil) {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome tree": {
+    "prefix": "goome-tree",
+    "description": "tree node, srcOpen is a bool",
+    "body": [
+      "if ui.Tree(\"${1:src}\", &${2:srcOpen}) {",
+      "\t$0",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome progress": {
+    "prefix": "goome-progress",
+    "description": "progress bar",
+    "body": [
+      "ui.Progress(${1:0.6}, \"${2:60%}\")"
+    ]
+  },
+  "goome color": {
+    "prefix": "goome-color",
+    "description": "color picker on a uint32",
+    "body": [
+      "ui.Color(\"${1:Highlight}\", &${2:highlight})"
+    ]
+  },
+  "goome tooltip": {
+    "prefix": "goome-tooltip",
+    "description": "tooltip for the widget before it",
+    "body": [
+      "ui.Tooltip(\"${1:what it does}\")"
+    ]
+  },
+  "goome row": {
+    "prefix": "goome-row",
+    "description": "next widgets go side by side",
+    "body": [
+      "ui.Row(${1:2})"
+    ]
+  },
+  "goome same line": {
+    "prefix": "goome-same-line",
+    "description": "next widget on the same line",
+    "body": [
+      "ui.SameLine()"
+    ]
+  },
+  "goome separator": {
+    "prefix": "goome-separator",
+    "description": "separator line",
+    "body": [
+      "ui.Separator()"
+    ]
+  },
+  "goome space": {
+    "prefix": "goome-space",
+    "description": "empty space",
+    "body": [
+      "ui.Space(${1:12})"
+    ]
+  },
+  "goome scroll": {
+    "prefix": "goome-scroll",
+    "description": "scroll area",
+    "body": [
+      "if ui.Scroll(\"${1:list}\", ${2:150}) {",
+      "\t$0",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome split": {
+    "prefix": "goome-split",
+    "description": "split panes, panes is a *goome.Split",
+    "body": [
+      "if ui.Split(\"${1:main}\", ${2:panes}) {",
+      "\t$0",
+      "\tui.SplitNext()",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome menubar": {
+    "prefix": "goome-menubar",
+    "description": "menu bar with a File menu",
+    "body": [
+      "if ui.Menubar() {",
+      "\tif ui.Menu(\"${1:File}\") {",
+      "\t\tif ui.MenuItem(\"${2:Open}\", \"${3:Ctrl+O}\", nil) {",
+      "\t\t\t$0",
+      "\t\t}",
+      "\t\tui.MenuSeparator()",
+      "\t\tif ui.MenuItem(\"Quit\", \"Ctrl+Q\", nil) {",
+      "\t\t\trunning = false",
+      "\t\t}",
+      "\t}",
+      "\tui.End()",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome popup": {
+    "prefix": "goome-popup",
+    "description": "button that opens a popup",
+    "body": [
+      "if ui.Button(\"${1:More}\") {",
+      "\tui.PopupOpen(\"${2:more}\")",
+      "}",
+      "if ui.Popup(\"$2\") {",
+      "\t$0",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome context": {
+    "prefix": "goome-context",
+    "description": "right click menu for the widget before it",
+    "body": [
+      "if ui.Context(\"${1:ctx}\") {",
+      "\tif ui.MenuItem(\"${2:Delete}\", \"\", nil) {",
+      "\t\t$0",
+      "\t}",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome modal": {
+    "prefix": "goome-modal",
+    "description": "modal with a Done button, settingsOpen is a bool",
+    "body": [
+      "if ui.Button(\"${1:Open settings}\") {",
+      "\t${2:settingsOpen} = true",
+      "}",
+      "if ui.Modal(\"${3:Settings}\", &$2) {",
+      "\t$0",
+      "\tif ui.Button(\"Done\") {",
+      "\t\tui.PopupClose()",
+      "\t}",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome toast": {
+    "prefix": "goome-toast",
+    "description": "toast message",
+    "body": [
+      "ui.Toast(\"${1:Saved}\", ${2:2500})"
+    ]
+  },
+  "goome text edit": {
+    "prefix": "goome-text-edit",
+    "description": "multiline text editor on a string",
+    "body": [
+      "ui.TextEdit(\"${1:notes}\", &${2:notes}, ${3:140}, goome.EditWrap)"
+    ]
+  },
+  "goome table": {
+    "prefix": "goome-table",
+    "description": "table with sortable columns",
+    "body": [
+      "if ui.Table(\"${1:files}\", 2, ${2:200}, goome.TableSortable|goome.TableStripes) {",
+      "\tui.TableColumn(\"${3:Name}\", 0)",
+      "\tui.TableColumn(\"${4:Size}\", 90)",
+      "\tui.TableSort(&${5:sortCol}, &${6:sortDesc})",
+      "\tfor i := 0; i < ${7:count}; i++ {",
+      "\t\tui.TableRow()",
+      "\t\tui.Label(fmt.Sprint(i))",
+      "\t\tui.TableNext()",
+      "\t\tui.Label(\"$0\")",
+      "\t}",
+      "}",
+      "ui.End()"
+    ]
+  },
+  "goome drag float": {
+    "prefix": "goome-drag-float",
+    "description": "drag a number left and right",
+    "body": [
+      "ui.DragFloat(\"${1:Speed}\", &${2:speed}, ${3:0.01}, ${4:0}, ${5:10}, \"${6:%.2f}\")"
+    ]
+  },
+  "goome number": {
+    "prefix": "goome-number",
+    "description": "number box with - and + buttons",
+    "body": [
+      "ui.Number(\"${1:Amount}\", &${2:amount}, ${3:1}, \"${4:%.0f}\")"
+    ]
+  },
+  "goome plot": {
+    "prefix": "goome-plot",
+    "description": "line plot from a float32 slice",
+    "body": [
+      "ui.PlotLines(\"${1:CPU}\", ${2:values}, ${3:0}, ${4:100}, ${5:90})"
+    ]
+  },
+  "goome plot bars": {
+    "prefix": "goome-plot-bars",
+    "description": "bar plot from a float32 slice",
+    "body": [
+      "ui.PlotBars(\"${1:Requests}\", ${2:values}, ${3:0}, ${4:20}, ${5:90})"
+    ]
+  },
+  "goome spinner": {
+    "prefix": "goome-spinner",
+    "description": "loading spinner",
+    "body": [
+      "ui.Spinner(${1:0})"
+    ]
+  },
+  "goome link": {
+    "prefix": "goome-link",
+    "description": "clickable link",
+    "body": [
+      "if ui.Link(\"${1:goome docs}\") {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "goome badge": {
+    "prefix": "goome-badge",
+    "description": "little colored badge",
+    "body": [
+      "ui.Badge(\"${1:new}\", ${2:0xFF6FDC5F})"
+    ]
+  },
+  "goome style": {
+    "prefix": "goome-style",
+    "description": "push a color and a size, pop them after",
+    "body": [
+      "ui.PushColor(goome.Style${1|Accent,Bg,Panel,Border,Text,TextDim,Hover,Active,InputBg|}, ${2:0xFFFF5050})",
+      "ui.PushNum(goome.Style${3|Radius,Pad,Gap,BorderWidth,FontSize|}, ${4:4})",
+      "$0",
+      "ui.Pop(2)"
+    ]
+  },
+  "goome style push": {
+    "prefix": "goome-style-push",
+    "description": "push a color and a size, pop them when you are done",
+    "body": [
+      "ui.PushColor(goome.${1|StyleAccent,StyleBg,StylePanel,StyleBorder,StyleText,StyleTextDim,StyleHover,StyleActive,StyleInputBg|}, ${2:0xFFFF5050})",
+      "ui.PushNum(goome.${3|StyleRadius,StylePad,StyleGap,StyleBorderWidth,StyleFontSize|}, ${4:4})",
+      "$0",
+      "ui.Pop(2)"
+    ]
+  },
+  "goome custom": {
+    "prefix": "goome-custom",
+    "description": "your own widget, a knob you drag up and down",
+    "body": [
+      "${1:gain} := ui.Store(\"$1\", 1)",
+      "it, _ := ui.Custom(\"$1\", ${2:80}, ${3:80}, goome.ItemDragY|goome.ItemFocusable)",
+      "if $1 != nil {",
+      "\tif it.Held {",
+      "\t\t$1[0] = min(1, max(0, $1[0]-it.DY/200))",
+      "\t}",
+      "\tif c := ui.Canvas(); c != nil {",
+      "\t\tc.Arc(it.X+40, it.Y+40, 30, 6, 2.36, 2.36+4.71*$1[0], ui.Theme().Accent)",
+      "\t}",
+      "}"
+    ]
+  },
+  "goome offscreen": {
+    "prefix": "goome-offscreen",
+    "description": "offscreen frame: no window, push a click, save what it drew",
+    "body": [
+      "package main",
+      "",
+      "import (",
+      "\t\"fmt\"",
+      "\t\"os\"",
+      "",
+      "\t\"github.com/goome-ui/go-goome\"",
+      ")",
+      "",
+      "func main() {",
+      "\tg, err := goome.OpenOffscreen(${1:640}, ${2:480}, 1)",
+      "\tif err != nil {",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt open an offscreen frame:\", err)",
+      "\t\tos.Exit(1)",
+      "\t}",
+      "\tdefer g.Close()",
+      "\tui, err := g.NewUI()",
+      "\tif err != nil {",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt make a ui:\", err)",
+      "\t\tos.Exit(1)",
+      "\t}",
+      "\tdefer ui.Free()",
+      "\tg.PushClick(${3:60}, ${4:60})",
+      "\tfor ev := range g.Events(0) {",
+      "\t\tui.Feed(ev)",
+      "\t}",
+      "\tif ui.Begin(0) != nil {",
+      "\t\tui.App(\"${5:offscreen}\", 0)",
+      "\t\t$0",
+      "\t\tui.End()",
+      "\t}",
+      "\tui.End()",
+      "\tframe, err := g.LastFrame()",
+      "\tif err == nil {",
+      "\t\terr = frame.SavePPM(\"${6:frame.ppm}\")",
+      "\t}",
+      "\tif err != nil {",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt save the frame:\", err)",
+      "\t\tos.Exit(1)",
+      "\t}",
+      "}"
+    ]
+  },
+  "goome hotkey": {
+    "prefix": "goome-hotkey",
+    "description": "global hotkey and where it fires",
+    "body": [
+      "if err := g.Hotkey(\"${1:alt+m}\", ${2:1}); err != nil {",
+      "\tfmt.Fprintln(os.Stderr, \"couldnt grab $1:\", err)",
+      "}",
+      "$0",
+      "if ev.Type == goome.EventHotkey && ev.ID == $2 {",
+      "}"
+    ]
+  },
+  "goome theme preset": {
+    "prefix": "goome-theme-preset",
+    "description": "use a built in theme",
+    "body": [
+      "ui.Theme().Preset(goome.${1|PresetDark,PresetLight,PresetMidnight,PresetPaper,PresetMint,PresetHighContrast,PresetRose|})"
+    ]
+  },
+  "goome theme make": {
+    "prefix": "goome-theme-make",
+    "description": "make a theme from one accent color",
+    "body": [
+      "ui.Theme().Make(${1:0xFF4FA3FF}, ${2:true}, ${3:10})"
+    ]
+  },
+  "goome ease": {
+    "prefix": "goome-ease",
+    "description": "raw easing curve, t goes 0 to 1",
+    "body": [
+      "${1:k} := goome.Ease(goome.${2|EaseOut,EaseIn,EaseInOut,EaseLinear,EaseSmooth,EaseBack,EaseSpring,EaseBounce|}, ${3:t})"
+    ]
+  },
+  "goome anim": {
+    "prefix": "goome-anim",
+    "description": "animate a number toward a target, call it every frame",
+    "body": [
+      "${1:x} := ${2:ui}.Anim(\"${3:panel x}\", ${4:0}, ${5:250}, goome.${6|EaseOut,EaseIn,EaseInOut,EaseLinear,EaseSmooth,EaseBack,EaseSpring,EaseBounce|})"
+    ]
+  },
+  "goome anim color": {
+    "prefix": "goome-anim-color",
+    "description": "animate a color toward a target, call it every frame",
+    "body": [
+      "${1:bg} := ${2:ui}.AnimColor(\"${3:bg}\", ${4:0xFF3A7BD5}, ${5:150}, goome.${6|EaseOut,EaseIn,EaseInOut,EaseLinear,EaseSmooth,EaseBack,EaseSpring,EaseBounce|})"
+    ]
+  },
+  "goome text input": {
+    "prefix": "goome-text-input",
+    "description": "ime on with the candidate window at the caret, plus typed and composing text",
+    "body": [
+      "${1:g}.TextInput(${2:focused}, &goome.Rect{X: ${3:x}, Y: ${4:y}, W: 2, H: ${5:20}})",
+      "$0",
+      "if ev.Type == goome.EventText {",
+      "\t${6:typed} := $1.EventText()",
+      "} else if ev.Type == goome.EventPreedit {",
+      "\t${7:composing} := $1.EventText()",
+      "\t${8:at} := $1.PreeditCursor()",
+      "}"
+    ]
+  },
+  "goome a11y": {
+    "prefix": "goome-a11y",
+    "description": "screen reader role, name and value for the next custom item",
+    "body": [
+      "${1:ui}.A11yRole(goome.${2|RoleSlider,RoleButton,RoleCheckbox,RoleProgress,RoleImage,RoleGroup|}, \"${3:Volume}\")",
+      "$1.A11yValue(${4:\"50%\"})"
+    ]
+  },
+  "goome font fallback": {
+    "prefix": "goome-font-fallback",
+    "description": "font that falls back to another one for chars it doesnt have",
+    "body": [
+      "${1:font}, err := goome.LoadFont(\"${2:Inter.ttf}\")",
+      "if err != nil {",
+      "\tfmt.Fprintln(os.Stderr, \"couldnt load the font:\", err)",
+      "\tos.Exit(1)",
+      "}",
+      "extra, err := goome.LoadFont(\"${3:NotoSansCJK.ttc}\")",
+      "if err != nil {",
+      "\tfmt.Fprintln(os.Stderr, \"couldnt load the fallback font:\", err)",
+      "\tos.Exit(1)",
+      "}",
+      "$1.Fallback(extra)"
+    ]
+  },
+  "goome text dir": {
+    "prefix": "goome-text-dir",
+    "description": "force the text direction for all text",
+    "body": [
+      "goome.SetTextDir(goome.${1|DirRTL,DirLTR,DirAuto|})"
+    ]
+  }
+}

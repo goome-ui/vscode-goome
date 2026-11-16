@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 import * as vscode from "vscode";
-import { CODE_LANGS, generateCode } from "./codegen";
+import { codeLangs, generateCode } from "./codegen";
 import { BUILDER_URL } from "./sidebar";
 
 const SCRIPTS = ["model.js", "elements.js", "app.js", "stage.js", "vars.js"];
@@ -20,7 +20,7 @@ export class GoomePreview implements vscode.CustomTextEditorProvider {
     const r = generateCode(this.ctx.extensionPath, text, lang);
     await vscode.env.clipboard.writeText(r.code);
     const warn = r.warnings.length ? ", " + r.warnings.length + " warning" + (r.warnings.length > 1 ? "s" : "") + ": " + r.warnings[0].msg : "";
-    vscode.window.showInformationMessage("copied the " + CODE_LANGS[lang] + " code" + warn);
+    vscode.window.showInformationMessage("copied the " + codeLangs(this.ctx.extensionPath)[lang] + " code" + warn);
     return r.code;
   }
 
@@ -54,7 +54,7 @@ export class GoomePreview implements vscode.CustomTextEditorProvider {
       '    <div class="sp"></div>',
       '    <div class="gp-copy" role="group" aria-label="Copy code">',
       "      <span>Copy code</span>",
-      Object.keys(CODE_LANGS).map((l) => '      <button class="btn sm" data-copy="' + l + '" title="Copy the ' + CODE_LANGS[l] + ' code">' + CODE_LANGS[l] + "</button>").join("\n"),
+      Object.entries(codeLangs(this.ctx.extensionPath)).map(([l, name]) => '      <button class="btn sm" data-copy="' + l + '" title="Copy the ' + name + ' code">' + name + "</button>").join("\n"),
       "    </div>",
       '    <button class="btn sm pri" id="gpBuilder" title="' + BUILDER_URL + '">Open in the UI builder</button>',
       "  </header>",

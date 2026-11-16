@@ -50,10 +50,19 @@ test("the bundled builder codegen turns the demo project into code", () => {
   const GM = require(path.join(dir, "model.js"));
   const X = require(path.join(dir, "codegen.js"));
   const demo = JSON.parse(fs.readFileSync(path.join(src.root, "test", "fixtures", "demo.goome.json"), "utf8"));
-  const want = { c: "goome_ui_window(", cs: "ui.Window(", py: "ui.window(", java: "ui.window(" };
+  const want = { c: "goome_ui_window(", cs: "ui.Window(", py: "ui.window(", java: "ui.window(", gd: "ui.window(" };
   for (const [lang, bit] of Object.entries(want)) {
     const r = X.generate(GM.normProject(demo), lang);
     assert.ok(r.code.includes(bit), lang + " code has no " + bit);
     assert.ok(r.code.includes("demo window"), lang);
   }
+});
+
+test("copy code only offers languages the builder can write", () => {
+  const cg = require("../../out/codegen.js");
+  const langs = cg.codeLangs(src.root);
+  const X = require(path.join(src.root, "media", "builder", "codegen.js"));
+  assert.deepStrictEqual(Object.keys(langs).sort(), ["c", "cs", "gd", "go", "java", "lua", "node", "py", "rust", "zig"]);
+  for (const id of ["rust", "node", "go", "zig", "lua"]) assert.ok(X.langs[id], id);
+  assert.deepStrictEqual([langs.rust, langs.node, langs.go, langs.zig, langs.lua], ["Rust", "Node", "Go", "Zig", "Lua"]);
 });

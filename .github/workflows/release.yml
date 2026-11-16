@@ -23,7 +23,7 @@ jobs:
       - name: goome sources
         run: |
           mkdir -p deps
-          for r in docs c-goome; do
+          for r in docs c-goome rust-goome node-goome go-goome zig-goome lua-goome godot-goome; do
             git clone -q --depth 1 "https://github.com/goome-ui/$r.git" "deps/$r"
           done
       - uses: actions/setup-node@v4
@@ -63,3 +63,19 @@ jobs:
           node-version: 22
       - name: publish
         run: npx --yes @vscode/vsce@4.1.1 publish --oidc --skip-duplicate --packagePath "vscode-goome-${TAG#v}.vsix"
+
+  openvsx:
+    needs: vsix
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: vsix
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: publish
+        run: npx --yes ovsx publish "vscode-goome-${TAG#v}.vsix"

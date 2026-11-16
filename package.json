@@ -1,8 +1,8 @@
 {
   "name": "vscode-goome",
   "displayName": "goome",
-  "description": "Snippets, a new project command, a .goome.json preview and hover docs for goome, the see-through overlay and ui library.",
-  "version": "0.5.1",
+  "description": "Snippets, completion, hover docs and a new project command for goome in C, C#, Python, Java, Rust, Node, Go, Zig, Lua and Godot, plus a .goome.json preview. See-through overlays, normal app windows, game mod menus and engine ui. Linux, Windows, Mac.",
+  "version": "0.5.2",
   "publisher": "goome-ui",
   "license": "GPL-3.0-only",
   "icon": "media/icon.png",
@@ -27,12 +27,36 @@
     "overlay",
     "ui",
     "immediate mode",
-    "gui"
+    "gui",
+    "c",
+    "csharp",
+    "python",
+    "java",
+    "rust",
+    "node",
+    "javascript",
+    "typescript",
+    "go",
+    "golang",
+    "zig",
+    "lua",
+    "godot",
+    "gdscript",
+    "snippets"
   ],
   "main": "./out/extension.js",
   "activationEvents": [
     "onLanguage:c",
     "onLanguage:cpp",
+    "onLanguage:rust",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:go",
+    "onLanguage:zig",
+    "onLanguage:lua",
+    "onLanguage:gdscript",
     "onLanguage:goome",
     "onLanguage:goome-theme"
   ],
@@ -49,6 +73,11 @@
           "type": "string",
           "default": "",
           "markdownDescription": "Python to run goome.py with. Empty = `python3`, `python` or `py -3`."
+        },
+        "goome.web.goomePath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "A c-goome checkout for **goome: Build for Web**. Empty = look next to your app, then download c-goome. Released versions dont have the web build yet, so point this at a checkout of c-goome."
         }
       }
     },
@@ -68,6 +97,17 @@
       {
         "command": "goome.copyCode",
         "title": "Copy Code From This Project",
+        "category": "goome"
+      },
+      {
+        "command": "goome.buildWeb",
+        "title": "Build for Web",
+        "category": "goome",
+        "icon": "$(globe)"
+      },
+      {
+        "command": "goome.stopWebServer",
+        "title": "Stop Web Server",
         "category": "goome"
       },
       {
@@ -129,6 +169,11 @@
           "command": "goome.openPreview",
           "when": "resourceFilename =~ /\\.goome\\.json$/ && activeEditor == workbench.editors.files.textFileEditor",
           "group": "navigation"
+        },
+        {
+          "command": "goome.buildWeb",
+          "when": "resourceExtname == .c",
+          "group": "navigation"
         }
       ],
       "view/title": [
@@ -146,6 +191,20 @@
           "command": "goome.refreshSidebar",
           "when": "view == goome.sidebar || view == goome.files",
           "group": "navigation@9"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "goome.buildWeb",
+          "when": "resourceExtname == .c",
+          "group": "goome"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "goome.buildWeb",
+          "when": "resourceExtname == .c",
+          "group": "goome"
         }
       ]
     },
@@ -222,6 +281,51 @@
           "light": "./media/goome-file-light.svg",
           "dark": "./media/goome-file-dark.svg"
         }
+      },
+      {
+        "id": "rust",
+        "aliases": [
+          "Rust"
+        ],
+        "extensions": [
+          ".rs"
+        ]
+      },
+      {
+        "id": "go",
+        "aliases": [
+          "Go"
+        ],
+        "extensions": [
+          ".go"
+        ]
+      },
+      {
+        "id": "zig",
+        "aliases": [
+          "Zig"
+        ],
+        "extensions": [
+          ".zig"
+        ]
+      },
+      {
+        "id": "lua",
+        "aliases": [
+          "Lua"
+        ],
+        "extensions": [
+          ".lua"
+        ]
+      },
+      {
+        "id": "gdscript",
+        "aliases": [
+          "GDScript"
+        ],
+        "extensions": [
+          ".gd"
+        ]
       }
     ],
     "grammars": [
@@ -274,6 +378,42 @@
       {
         "language": "java",
         "path": "./snippets/java.json"
+      },
+      {
+        "language": "rust",
+        "path": "./snippets/rust.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "go",
+        "path": "./snippets/go.json"
+      },
+      {
+        "language": "zig",
+        "path": "./snippets/zig.json"
+      },
+      {
+        "language": "lua",
+        "path": "./snippets/lua.json"
+      },
+      {
+        "language": "gdscript",
+        "path": "./snippets/godot.json"
       }
     ]
   },
@@ -292,5 +432,9 @@
     "@vscode/vsce": "^3.9.2",
     "mocha": "^11.7.0",
     "typescript": "~5.9.3"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1",
+    "serialize-javascript": "^7.1.3"
   }
 }
