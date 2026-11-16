@@ -59,8 +59,7 @@
       "let mut pace = goome::Pacer::new(${1:60});",
       "let (mut running, mut dirty) = (true, true);",
       "while running {",
-      "    let busy = dirty || ${2:ui}.animating();",
-      "    let wait = if busy { pace.wait() } else { 500 };",
+      "    let wait = if dirty || ${2:ui}.animating() { pace.wait() } else { 500 };",
       "    for ev in $2.pump(wait) {",
       "        if ev.kind == goome::QUIT || ev.kind == goome::CLOSE {",
       "            running = false;",
@@ -70,7 +69,7 @@
       "    if !running {",
       "        break;",
       "    }",
-      "    if !(dirty || $2.animating()) {",
+      "    if !dirty && !$2.animating() {",
       "        continue;",
       "    }",
       "    dirty = false;",
@@ -81,7 +80,7 @@
   },
   "goome window": {
     "prefix": "goome-window",
-    "description": "ui window with a label and a button",
+    "description": "ui window with a label and a button, win is a WindowState",
     "body": [
       "{",
       "    let mut w = ui.window(\"${1:Window}\", &mut ${2:win}, goome::WIN_MOVE | goome::WIN_RESIZE | goome::WIN_COLLAPSE);",
@@ -96,14 +95,14 @@
   },
   "goome canvas": {
     "prefix": "goome-canvas",
-    "description": "draw on the overlay yourself, no ui",
+    "description": "draw on the overlay yourself, no ui, needs use goome::Draw",
     "body": [
       "if let Some(mut c) = ${1:g}.begin(0) {",
       "    c.clear();",
-      "    c.round_rect(${2:40} as f64, ${3:40} as f64, ${4:200} as f64, ${5:80} as f64, 10.0, 0xEC1B1D22);",
-      "    c.text_big($2 as f64 + 12.0, $3 as f64 + 12.0, \"${6:hello}\", 0xFFE9EBEE);",
+      "    c.round_rect(${2:40.0}, ${3:40.0}, ${4:200.0}, ${5:80.0}, 10.0, 0xEC1B1D22);",
+      "    c.text($2 + 12.0, $3 + 12.0, \"${6:hello}\", 0xFFE9EBEE);",
       "    $0",
-      "    c.hit($2, $3, $4, $5);",
+      "    c.hit($2 as i32, $3 as i32, $4 as i32, $5 as i32);",
       "}"
     ]
   },
@@ -139,21 +138,21 @@
   },
   "goome checkbox": {
     "prefix": "goome-checkbox",
-    "description": "checkbox",
+    "description": "checkbox on a bool",
     "body": [
       "ui.checkbox(\"${1:Show grid}\", &mut ${2:show_grid});"
     ]
   },
   "goome toggle": {
     "prefix": "goome-toggle",
-    "description": "toggle switch",
+    "description": "toggle switch on a bool",
     "body": [
       "ui.toggle(\"${1:Wi-Fi}\", &mut ${2:wifi});"
     ]
   },
   "goome radio": {
     "prefix": "goome-radio",
-    "description": "radio buttons on one int",
+    "description": "radio buttons on one i32",
     "body": [
       "ui.radio(\"${1:Small}\", &mut ${2:size}, 0);",
       "ui.same_line();",
@@ -162,21 +161,21 @@
   },
   "goome slider": {
     "prefix": "goome-slider",
-    "description": "slider",
+    "description": "slider on an f64",
     "body": [
       "ui.slider_fmt(\"${1:Volume}\", &mut ${2:volume}, ${3:0.0}, ${4:1.0}, Some(\"${5:%.2f}\"));"
     ]
   },
   "goome slider int": {
     "prefix": "goome-slider-int",
-    "description": "int slider",
+    "description": "slider on an i32",
     "body": [
       "ui.slider_int(\"${1:Count}\", &mut ${2:count}, ${3:0}, ${4:100});"
     ]
   },
   "goome input": {
     "prefix": "goome-input",
-    "description": "one line text input",
+    "description": "one line text input on a String",
     "body": [
       "ui.input_cap(\"${1:Name}\", &mut ${2:name}, ${3:64});"
     ]
@@ -185,12 +184,12 @@
     "prefix": "goome-password",
     "description": "password input with a hint",
     "body": [
-      "ui.input_ex(\"${1:Password}\", &mut ${2:password}, goome::INPUT_PASSWORD, Some(\"${3:hint}\"));"
+      "ui.input_ex_cap(\"${1:Password}\", &mut ${2:password}, goome::INPUT_PASSWORD, Some(\"${3:hint}\"), ${4:64});"
     ]
   },
   "goome combo": {
     "prefix": "goome-combo",
-    "description": "dropdown",
+    "description": "dropdown on an i32",
     "body": [
       "ui.combo(\"${1:Fruit}\", &mut ${2:fruit}, &[\"${3:Mango}\", \"${4:Banana}\", \"${5:Cherry}\"]);"
     ]
@@ -206,7 +205,7 @@
   },
   "goome tabs": {
     "prefix": "goome-tabs",
-    "description": "tabs",
+    "description": "tabs on an i32",
     "body": [
       "ui.tabs(\"${1:tabs}\", &[\"${3:General}\", \"${4:Advanced}\"], &mut ${2:tab});",
       "if $2 == 0 {",
@@ -225,7 +224,7 @@
   },
   "goome tree": {
     "prefix": "goome-tree",
-    "description": "tree node, open while it returns true",
+    "description": "tree node, src_open is a bool",
     "body": [
       "if let Some(mut t) = ui.tree(\"${1:src}\", &mut ${2:src_open}) {",
       "    $0",
@@ -241,7 +240,7 @@
   },
   "goome color": {
     "prefix": "goome-color",
-    "description": "color picker",
+    "description": "color picker on a u32",
     "body": [
       "ui.color(\"${1:Highlight}\", &mut ${2:highlight});"
     ]
@@ -295,7 +294,7 @@
   },
   "goome split": {
     "prefix": "goome-split",
-    "description": "split panes",
+    "description": "split panes, side is an f64 between 0 and 1",
     "body": [
       "{",
       "    let mut panes = ui.split(\"${1:main}\", false, &mut ${2:side});",
@@ -348,7 +347,7 @@
   },
   "goome modal": {
     "prefix": "goome-modal",
-    "description": "modal with a Done button",
+    "description": "modal with a Done button, settings_open is a bool",
     "body": [
       "if ui.button(\"${1:Open settings}\") {",
       "    ${2:settings_open} = true;",
@@ -370,7 +369,7 @@
   },
   "goome text edit": {
     "prefix": "goome-text-edit",
-    "description": "multiline text editor",
+    "description": "multiline text editor on a String",
     "body": [
       "ui.text_edit(\"${1:notes}\", &mut ${2:notes}, ${3:140.0}, goome::EDIT_WRAP);"
     ]
@@ -382,13 +381,13 @@
       "if let Some(mut t) = ui.table(\"${1:files}\", 2, ${2:200.0}, goome::TABLE_SORTABLE | goome::TABLE_STRIPES) {",
       "    t.table_column(\"${3:Name}\", 0.0);",
       "    t.table_column(\"${4:Size}\", 90.0);",
-      "    for (i, row) in ${5:rows}.iter().enumerate() {",
+      "    t.table_sort(&mut ${5:sort_col}, &mut ${6:sort_desc});",
+      "    for i in 0..${7:count} {",
       "        t.table_row();",
       "        t.label(&i.to_string());",
       "        t.table_next();",
-      "        t.label(&row.to_string());",
+      "        t.label(\"$0\");",
       "    }",
-      "    $0",
       "}"
     ]
   },
@@ -401,21 +400,21 @@
   },
   "goome number": {
     "prefix": "goome-number",
-    "description": "number box with - and + buttons",
+    "description": "number box with - and + buttons on an f64",
     "body": [
       "ui.number_fmt(\"${1:Amount}\", &mut ${2:amount}, ${3:1.0}, Some(\"${4:%.0f}\"));"
     ]
   },
   "goome plot": {
     "prefix": "goome-plot",
-    "description": "line plot",
+    "description": "line plot from a slice of f32",
     "body": [
       "ui.plot_lines(\"${1:CPU}\", &${2:values}, ${3:0.0}, ${4:100.0}, ${5:90.0});"
     ]
   },
   "goome plot bars": {
     "prefix": "goome-plot-bars",
-    "description": "bar plot",
+    "description": "bar plot from a slice of f32",
     "body": [
       "ui.plot_bars(\"${1:Requests}\", &${2:values}, ${3:0.0}, ${4:20.0}, ${5:90.0});"
     ]
@@ -424,7 +423,7 @@
     "prefix": "goome-spinner",
     "description": "loading spinner",
     "body": [
-      "ui.spinner(${1:24.0});"
+      "ui.spinner(${1:0.0});"
     ]
   },
   "goome link": {
@@ -445,11 +444,11 @@
   },
   "goome style": {
     "prefix": "goome-style",
-    "description": "push a color and a size, popped when the with ends",
+    "description": "push a color and a size, popped when the block ends",
     "body": [
       "{",
       "    let mut s = ui.style();",
-      "    s.color(goome::S_${1:ACCENT}, ${2:0xFFFF5050}).num(goome::S_${3:RADIUS}, ${4:4.0});",
+      "    s.color(goome::S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xFFFF5050}).num(goome::S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4.0});",
       "    $0",
       "}"
     ]
@@ -466,7 +465,7 @@
   },
   "goome custom": {
     "prefix": "goome-custom",
-    "description": "your own widget, a knob you drag up and down",
+    "description": "your own widget, a knob you drag up and down, needs use goome::Draw",
     "body": [
       "let mut ${1:gain} = ui.store(\"$1\", 1)[0];",
       "let it = ui.custom(\"$1\", ${2:80.0}, ${3:80.0}, goome::ITEM_DRAG_Y | goome::ITEM_FOCUSABLE);",
@@ -503,7 +502,9 @@
     "prefix": "goome-hotkey",
     "description": "global hotkey and where it fires",
     "body": [
-      "let _ = ${1:ui}.hotkey(\"${2:alt+m}\", ${3:1});",
+      "if let Err(e) = ${1:ui}.hotkey(\"${2:alt+m}\", ${3:1}) {",
+      "    eprintln!(\"couldnt grab $2: {}\", e);",
+      "}",
       "$0",
       "if ev.kind == goome::HOTKEY && ev.id == $3 {",
       "}"
@@ -548,12 +549,12 @@
     "prefix": "goome-text-input",
     "description": "ime on with the candidate window at the caret, plus typed and composing text",
     "body": [
-      "let _ = ${1:g}.text_input(${2:focused}, Some(goome::Rect::new(${3:0}, ${4:0}, 2, ${5:20})));",
+      "let _ = ${1:ui}.text_input(${2:focused}, Some(goome::Rect::new(${3:0}, ${4:0}, 2, ${5:20})));",
       "$0",
       "if ev.kind == goome::TEXT {",
-      "    let ${6:typed} = $1.event_text();",
+      "    let ${6:typed} = &ev.msg;",
       "} else if ev.kind == goome::PREEDIT {",
-      "    let (${7:composing}, ${8:at}) = ($1.event_text(), $1.preedit_cursor());",
+      "    let (${7:composing}, ${8:at}) = (&ev.msg, $1.preedit_cursor());",
       "}"
     ]
   },
@@ -569,8 +570,8 @@
     "prefix": "goome-font-fallback",
     "description": "font that falls back to another one for chars it doesnt have",
     "body": [
-      "let ${1:font} = goome::Font::load(\"${2:Inter.ttf}\").expect(\"couldnt load the font\");",
-      "$1.fallback(&goome::Font::load(\"${3:NotoSansCJK.ttc}\").expect(\"couldnt load the fallback font\"));"
+      "let ${1:font} = goome::Font::load(\"${2:Inter.ttf}\").expect(\"couldnt load $2\");",
+      "$1.fallback(&goome::Font::load(\"${3:NotoSansCJK.ttc}\").expect(\"couldnt load $3\"));"
     ]
   },
   "goome text dir": {

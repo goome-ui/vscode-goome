@@ -7,7 +7,7 @@
       "",
       "local g, err = goome.open(\"${1:my overlay}\")",
       "if not g then",
-      "  io.stderr:write(\"cant open an overlay: \" .. tostring(err) .. \"\\n\")",
+      "  io.stderr:write(\"couldnt open an overlay: \" .. tostring(err) .. \"\\n\")",
       "  os.exit(1)",
       "end",
       "local ui = g:ui()",
@@ -37,7 +37,7 @@
       "",
       "local g, err = goome.open_app(\"${1:My App}\", ${2:960}, ${3:640})",
       "if not g then",
-      "  io.stderr:write(\"cant open a window: \" .. tostring(err) .. \"\\n\")",
+      "  io.stderr:write(\"couldnt open a window: \" .. tostring(err) .. \"\\n\")",
       "  os.exit(1)",
       "end",
       "local ui = g:ui()",
@@ -105,8 +105,7 @@
       "  c:round_rect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22)",
       "  c:text($2 + 12, $3 + 12, \"${6:hello}\", 0xFFE9EBEE, true)",
       "  $0",
-      "  c:hit($2, $3, $4, $5)",
-      "  $1:finish(c)",
+      "  $1:finish(c, {{$2, $3, $4, $5}})",
       "end"
     ]
   },
@@ -188,7 +187,7 @@
     "prefix": "goome-password",
     "description": "password input with a hint",
     "body": [
-      "${2:password} = ui:password(\"${1:Password}\", $2, \"${3:hint}\")"
+      "${2:password} = ui:password(\"${1:Password}\", $2, \"${3:8 letters or more}\")"
     ]
   },
   "goome combo": {
@@ -228,7 +227,7 @@
   },
   "goome tree": {
     "prefix": "goome-tree",
-    "description": "tree node, open while it returns true",
+    "description": "tree node, src_open is a boolean",
     "body": [
       "local shown",
       "shown, ${2:src_open} = ui:tree(\"${1:src}\", $2)",
@@ -299,10 +298,10 @@
   },
   "goome split": {
     "prefix": "goome-split",
-    "description": "split panes",
+    "description": "split panes, frac is how much the first pane gets",
     "body": [
       "local shown",
-      "shown, ${1:frac} = ui:split(\"${2:main}\", $1, false)",
+      "shown, ${2:frac} = ui:split(\"${1:main}\", $2)",
       "if shown then",
       "  $0",
       "  ui:split_next()",
@@ -352,7 +351,7 @@
   },
   "goome modal": {
     "prefix": "goome-modal",
-    "description": "modal with a Done button",
+    "description": "modal with a Done button, settings_open is a boolean",
     "body": [
       "if ui:button(\"${1:Open settings}\") then ${2:settings_open} = true end",
       "local shown",
@@ -388,12 +387,13 @@
       "  local changed",
       "  changed, ${5:sort_col}, ${6:sort_desc} = ui:table_sort($5, $6)",
       "  if changed then",
+      "    $0",
       "  end",
       "  for i = 1, ${7:count} do",
       "    ui:table_row()",
       "    ui:label(tostring(i))",
       "    ui:table_next()",
-      "    ui:label(\"$0\")",
+      "    ui:label(\"${8:value}\")",
       "  end",
       "end",
       "ui:table_end()"
@@ -489,11 +489,7 @@
     "prefix": "goome-offscreen",
     "description": "offscreen frame: no window, push a click, save what it drew",
     "body": [
-      "local goome = require(\"goome\")",
-      "",
-      "local g, err = goome.open_offscreen(${1:640}, ${2:480})",
-      "if not g then",
-      "  io.stderr:write(\"cant open offscreen: \" .. tostring(err) .. \"\\n\")",
+      "  io.stderr:write(\"couldnt open an offscreen frame: \" .. tostring(err) .. \"\\n\")",
       "  os.exit(1)",
       "end",
       "local ui = g:ui()",
@@ -505,8 +501,7 @@
       "  ui:app_end()",
       "  ui:finish()",
       "end",
-      "local frame = assert(g:last_frame())",
-      "frame:save_ppm(\"${6:frame.ppm}\")",
+      "g:last_frame():save_ppm(\"${6:frame.ppm}\")",
       "ui:close()",
       "g:close()"
     ]
@@ -515,9 +510,8 @@
     "prefix": "goome-hotkey",
     "description": "global hotkey and where it fires",
     "body": [
-      "if not g:hotkey(\"${1:alt+m}\", ${2:1}) then",
-      "  print(\"no global hotkeys here: \" .. tostring(g:error()))",
-      "end",
+      "local ok, err = g:hotkey(\"${1:alt+m}\", ${2:1})",
+      "if not ok then io.stderr:write(\"couldnt grab $1: \" .. tostring(err) .. \"\\n\") end",
       "$0",
       "if ev.type == goome.HOTKEY and ev.id == $2 then",
       "end"

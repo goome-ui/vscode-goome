@@ -1,4 +1,18 @@
 {
+  "goome overlay": {
+    "prefix": "goome-overlay",
+    "description": "a floating ui window over the game, drawn by a GoomeView",
+    "body": [
+      "extends GoomeView",
+      "",
+      "",
+      "func _goome_frame(ui: GoomeUI) -> void:",
+      "\tif ui.window(\"${1:my overlay}\", Rect2(60, 60, 280, 0), GoomeUI.WIN_MOVE | GoomeUI.WIN_CLOSE):",
+      "\t\tui.label(\"${2:im on top of your game}\")",
+      "\t\t$0",
+      "\tui.window_end()"
+    ]
+  },
   "goome view": {
     "prefix": "goome-view",
     "description": "a view script with a ui window",
@@ -29,10 +43,13 @@
   },
   "goome loop": {
     "prefix": "goome-loop",
-    "description": "only redraw when input came in or something animates",
+    "description": "frame callback that only redraws when input came in or something animates",
     "body": [
       "func _ready() -> void:",
       "\tredraw_every_frame = false",
+      "",
+      "",
+      "func _goome_frame(ui: GoomeUI) -> void:",
       "\t$0"
     ]
   },
@@ -49,11 +66,15 @@
   },
   "goome canvas": {
     "prefix": "goome-canvas",
-    "description": "draw on the view yourself",
+    "description": "draw on the view yourself with the draw calls, no widgets",
     "body": [
-      "ui.draw_rect(Rect2(${1:40}, ${2:40}, ${3:200}, ${4:80}), Color(\"1b1d22\"), 10.0)",
-      "ui.draw_text(Vector2($1 + 12, $2 + 12), \"${5:hello}\", Color(\"e9ebee\"), 16.0)",
-      "$0"
+      "extends GoomeView",
+      "",
+      "",
+      "func _goome_frame(ui: GoomeUI) -> void:",
+      "\tui.draw_rect(Rect2(${1:40}, ${2:40}, ${3:200}, ${4:80}), Color(\"1b1d22\"), 10.0)",
+      "\tui.draw_text(Vector2($1 + 12, $2 + 12), \"${5:hello}\", Color(\"e9ebee\"))",
+      "\t$0"
     ]
   },
   "goome label": {
@@ -72,7 +93,7 @@
   },
   "goome wrapped": {
     "prefix": "goome-wrapped",
-    "description": "text that wraps to the width",
+    "description": "text that wraps at the edge",
     "body": [
       "ui.wrapped(\"${1:a longer bit of text that wraps}\")"
     ]
@@ -87,14 +108,14 @@
   },
   "goome checkbox": {
     "prefix": "goome-checkbox",
-    "description": "checkbox on a bool",
+    "description": "checkbox, returns the new value",
     "body": [
       "${1:enabled} = ui.checkbox(\"${2:Enabled}\", $1)"
     ]
   },
   "goome toggle": {
     "prefix": "goome-toggle",
-    "description": "toggle switch on a bool",
+    "description": "toggle switch, returns the new value",
     "body": [
       "${1:enabled} = ui.toggle(\"${2:Enabled}\", $1)"
     ]
@@ -110,14 +131,14 @@
   },
   "goome slider": {
     "prefix": "goome-slider",
-    "description": "float slider",
+    "description": "slider, returns the new value",
     "body": [
       "${1:volume} = ui.slider(\"${2:Volume}\", $1, ${3:0.0}, ${4:1.0}, \"${5:%.2f}\")"
     ]
   },
   "goome slider int": {
     "prefix": "goome-slider-int",
-    "description": "int slider",
+    "description": "int slider, returns the new value",
     "body": [
       "${1:count} = ui.slider_int(\"${2:Count}\", $1, ${3:0}, ${4:100})"
     ]
@@ -170,7 +191,7 @@
   },
   "goome tree": {
     "prefix": "goome-tree",
-    "description": "tree node",
+    "description": "tree node, goome remembers if its open",
     "body": [
       "if ui.tree(\"${1:src}\"):",
       "\t$0",
@@ -186,7 +207,7 @@
   },
   "goome color": {
     "prefix": "goome-color",
-    "description": "color picker on a Color",
+    "description": "color picker, returns the new color",
     "body": [
       "${1:highlight} = ui.color(\"${2:Highlight}\", $1)"
     ]
@@ -406,6 +427,15 @@
       "var c := Vector2(it.x + it.w / 2, it.y + it.h / 2)",
       "ui.draw_arc(c, 30, 2.36, 2.36 + 4.71 * $1[0], accent, 6)",
       "$0"
+    ]
+  },
+  "goome hotkey": {
+    "prefix": "goome-hotkey",
+    "description": "key shortcut on the view, only fires while the game window has focus",
+    "body": [
+      "func _unhandled_key_input(event: InputEvent) -> void:",
+      "\tif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_${1:F1}:",
+      "\t\t$0"
     ]
   },
   "goome theme preset": {

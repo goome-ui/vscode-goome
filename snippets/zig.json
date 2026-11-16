@@ -8,20 +8,19 @@
       "",
       "pub fn main() !void {",
       "    const g = goome.Goome.open(.{ .title = \"${1:my overlay}\" }) catch |e| {",
-      "        std.debug.print(\"cant open an overlay: {s}\\n\", .{goome.strerror(goome.errorCode(e))});",
+      "        std.debug.print(\"couldnt open an overlay: {s}\\n\", .{goome.strerror(goome.errorCode(e))});",
       "        std.process.exit(1);",
       "    };",
       "    defer g.deinit();",
       "    const u = try g.ui();",
       "    defer u.deinit();",
       "    var win: goome.Window = .{ .x = 60, .y = 60, .w = 280 };",
-      "    var running = true;",
-      "    while (running) {",
+      "    while (win.isOpen()) {",
       "        while (try g.poll(16)) |ev| {",
-      "            if (ev.kind == .quit) running = false;",
+      "            if (ev.kind == .quit) win.setOpen(false);",
       "            _ = u.feed(ev);",
       "        }",
-      "        if (!running) break;",
+      "        if (!win.isOpen()) break;",
       "        _ = u.begin(0) orelse continue;",
       "        if (u.window(\"$1\", &win, goome.win.move | goome.win.close)) {",
       "            u.label(\"${2:im on top of everything}\");",
@@ -29,7 +28,6 @@
       "        }",
       "        u.windowEnd();",
       "        u.end();",
-      "        if (!win.isOpen()) running = false;",
       "    }",
       "}"
     ]
@@ -43,7 +41,7 @@
       "",
       "pub fn main() !void {",
       "    const g = goome.Goome.openApp(\"${1:My App}\", ${2:960}, ${3:640}) catch |e| {",
-      "        std.debug.print(\"cant open a window: {s}\\n\", .{goome.strerror(goome.errorCode(e))});",
+      "        std.debug.print(\"couldnt open a window: {s}\\n\", .{goome.strerror(goome.errorCode(e))});",
       "        std.process.exit(1);",
       "    };",
       "    defer g.deinit();",
@@ -178,28 +176,28 @@
   },
   "goome slider int": {
     "prefix": "goome-slider-int",
-    "description": "slider on an i32",
+    "description": "int slider on an i32",
     "body": [
       "_ = u.sliderInt(\"${1:Count}\", &${2:count}, ${3:0}, ${4:100});"
     ]
   },
   "goome input": {
     "prefix": "goome-input",
-    "description": "one line text input",
+    "description": "one line text input on a u8 buffer",
     "body": [
       "_ = u.input(\"${1:Name}\", &${2:name});"
     ]
   },
   "goome password": {
     "prefix": "goome-password",
-    "description": "password input with a hint",
+    "description": "password input on a u8 buffer",
     "body": [
       "_ = u.inputEx(\"${1:Password}\", &${2:pass}, goome.c.GOOME_INPUT_PASSWORD, \"${3:hint}\");"
     ]
   },
   "goome combo": {
     "prefix": "goome-combo",
-    "description": "dropdown",
+    "description": "dropdown on an i32",
     "body": [
       "const ${1:fruit}_items = [_][*:0]const u8{ \"${2:Mango}\", \"${3:Banana}\", \"${4:Cherry}\" };",
       "_ = u.combo(\"${5:Fruit}\", &$1, &$1_items);"
@@ -214,7 +212,7 @@
   },
   "goome tabs": {
     "prefix": "goome-tabs",
-    "description": "tabs",
+    "description": "tabs on an i32",
     "body": [
       "const ${1:tab}_names = [_][*:0]const u8{ \"${2:General}\", \"${3:Advanced}\" };",
       "_ = u.tabs(\"$1\", &$1_names, &${4:tab});",
@@ -234,7 +232,7 @@
   },
   "goome tree": {
     "prefix": "goome-tree",
-    "description": "tree node",
+    "description": "tree node, src_open is a bool",
     "body": [
       "if (u.tree(\"${1:src}\", &${2:src_open})) {",
       "    $0",
@@ -303,9 +301,9 @@
   },
   "goome split": {
     "prefix": "goome-split",
-    "description": "split panes",
+    "description": "split panes, frac is an f64",
     "body": [
-      "if (u.splitBegin(\"${2:main}\", false, &${1:frac})) {",
+      "if (u.splitBegin(\"${1:main}\", false, &${2:frac})) {",
       "    $0",
       "    u.splitNext();",
       "}",
@@ -354,7 +352,7 @@
   },
   "goome modal": {
     "prefix": "goome-modal",
-    "description": "modal with a Done button",
+    "description": "modal with a Done button, settings_open is a c_int",
     "body": [
       "if (u.button(\"${1:Open settings}\")) ${2:settings_open} = 1;",
       "if (u.modalBegin(\"${3:Settings}\", &$2)) {",
@@ -373,7 +371,7 @@
   },
   "goome text edit": {
     "prefix": "goome-text-edit",
-    "description": "multiline text editor",
+    "description": "multiline text editor on a u8 buffer",
     "body": [
       "_ = u.textEdit(\"${1:notes}\", &${2:notes}, ${3:140}, goome.c.GOOME_EDIT_WRAP);"
     ]
@@ -412,16 +410,16 @@
   },
   "goome plot": {
     "prefix": "goome-plot",
-    "description": "line plot from an f32 array",
+    "description": "line plot from a float array",
     "body": [
-      "u.plotLines(\"${1:CPU}\", ${2:values}[0..], ${3:0}, ${4:100}, ${5:90});"
+      "u.plotLines(\"${1:CPU}\", ${2:&values}, ${3:0}, ${4:100}, ${5:90});"
     ]
   },
   "goome plot bars": {
     "prefix": "goome-plot-bars",
-    "description": "bar plot from an f32 array",
+    "description": "bar plot from a float array",
     "body": [
-      "u.plotBars(\"${1:Requests}\", ${2:values}[0..], ${3:0}, ${4:20}, ${5:90});"
+      "u.plotBars(\"${1:Requests}\", ${2:&values}, ${3:0}, ${4:20}, ${5:90});"
     ]
   },
   "goome spinner": {
@@ -449,20 +447,22 @@
   },
   "goome style": {
     "prefix": "goome-style",
-    "description": "push a color and a size, pop them after",
+    "description": "push a color and a size, popped when the block ends",
     "body": [
-      "u.pushColor(goome.c.GOOME_S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xFFFF5050});",
-      "u.pushNum(goome.c.GOOME_S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4});",
-      "$0",
-      "u.pop(2);"
+      "{",
+      "    u.pushColor(goome.c.GOOME_S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xFFFF5050});",
+      "    u.pushNum(goome.c.GOOME_S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4});",
+      "    defer u.pop(2);",
+      "    $0",
+      "}"
     ]
   },
   "goome style push": {
     "prefix": "goome-style-push",
-    "description": "push a color and corner radii, pop them after",
+    "description": "push and pop by hand",
     "body": [
       "u.pushColor(goome.c.GOOME_S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xFFFF5050});",
-      "u.pushRadii(goome.radius(${3:4}));",
+      "u.pushNum(goome.c.GOOME_S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4});",
       "$0",
       "u.pop(2);"
     ]
@@ -488,7 +488,7 @@
       "",
       "pub fn main() !void {",
       "    const g = goome.Goome.openOffscreen(${1:640}, ${2:480}, 1) catch |e| {",
-      "        std.debug.print(\"cant open offscreen: {s}\\n\", .{goome.strerror(goome.errorCode(e))});",
+      "        std.debug.print(\"couldnt open offscreen: {s}\\n\", .{goome.strerror(goome.errorCode(e))});",
       "        std.process.exit(1);",
       "    };",
       "    defer g.deinit();",
@@ -511,7 +511,7 @@
     "prefix": "goome-hotkey",
     "description": "global hotkey and where it fires",
     "body": [
-      "g.hotkey(\"${1:alt+m}\", ${2:1}) catch {};",
+      "g.hotkey(\"${1:alt+m}\", ${2:1}) catch std.debug.print(\"couldnt grab $1: {s}\\n\", .{g.lastError()});",
       "$0",
       "if (ev.kind == .hotkey and ev.id == $2) {",
       "}"
@@ -521,7 +521,7 @@
     "prefix": "goome-theme-preset",
     "description": "use a built in theme",
     "body": [
-      "u.themePreset(goome.c.GOOME_PRESET_${1|DARK,LIGHT,MIDNIGHT,PAPER,MINT,HIGH_CONTRAST,ROSE|}) catch {};"
+      "try u.themePreset(goome.c.GOOME_PRESET_${1|DARK,LIGHT,MIDNIGHT,PAPER,MINT,HIGH_CONTRAST,ROSE|});"
     ]
   },
   "goome theme make": {
@@ -556,15 +556,16 @@
     "prefix": "goome-text-input",
     "description": "ime on with the candidate window at the caret, plus typed and composing text",
     "body": [
-      "const ${1:caret} = goome.rect(${2:x}, ${3:y}, 2, ${4:20});",
-      "${5:g}.textInput(${6:focused}, $1) catch {};",
+      "try ${1:g}.textInput(${2:focused}, goome.rect(${3:x}, ${4:y}, 2, ${5:20}));",
       "$0",
       "if (ev.kind == .text) {",
-      "    const ${7:typed} = $5.eventText();",
-      "}",
-      "if (ev.kind == .preedit) {",
-      "    const ${8:composing} = $5.eventText();",
-      "    const ${9:at} = $5.preeditCursor();",
+      "    const ${6:typed} = $1.eventText();",
+      "    _ = $6;",
+      "} else if (ev.kind == .preedit) {",
+      "    const ${7:composing} = $1.eventText();",
+      "    const ${8:at} = $1.preeditCursor();",
+      "    _ = $7;",
+      "    _ = $8;",
       "}"
     ]
   },

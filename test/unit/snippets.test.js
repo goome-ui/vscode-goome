@@ -6,7 +6,7 @@ const src = require("./sources");
 const api = require("../../scripts/api.js");
 
 const FILES = { c: "c.json", cs: "csharp.json", py: "python.json", java: "java.json", rust: "rust.json", node: "node.json", go: "go.json", zig: "zig.json", lua: "lua.json", godot: "godot.json" };
-const GODOT_SKIPS = ["goome-overlay", "goome-hotkey", "goome-offscreen"];
+const GODOT_SKIPS = ["goome-offscreen"];
 const MUST = ["goome-overlay", "goome-app", "goome-loop", "goome-window", "goome-label", "goome-heading", "goome-button", "goome-checkbox", "goome-toggle", "goome-radio",
   "goome-slider", "goome-slider-int", "goome-input", "goome-combo", "goome-selectable", "goome-tabs", "goome-collapsing", "goome-tree", "goome-progress", "goome-color",
   "goome-tooltip", "goome-separator", "goome-same-line", "goome-row", "goome-scroll", "goome-split", "goome-menubar", "goome-popup", "goome-modal", "goome-toast",

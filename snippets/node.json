@@ -191,7 +191,7 @@
   },
   "goome input": {
     "prefix": "goome-input",
-    "description": "one line text input",
+    "description": "one line text input, returns the new text",
     "body": [
       "${2:name} = ui.input(\"${1:Name}\", $2, ${3:64});"
     ]
@@ -371,7 +371,7 @@
   },
   "goome text edit": {
     "prefix": "goome-text-edit",
-    "description": "multiline text editor",
+    "description": "multiline text editor, returns the new text",
     "body": [
       "${2:notes} = ui.textEdit(\"${1:notes}\", $2, ${3:140}, goome.EDIT_WRAP);"
     ]
@@ -383,7 +383,12 @@
       "ui.table(\"${1:files}\", 2, ${2:200}, goome.TABLE_SORTABLE | goome.TABLE_STRIPES, () => {",
       "  ui.tableColumn(\"${3:Name}\");",
       "  ui.tableColumn(\"${4:Size}\", 90);",
-      "  for (const row of ${5:rows}) {",
+      "  const sort = ui.tableSort(${5:sortCol}, ${6:sortDesc});",
+      "  if (sort.changed) {",
+      "    $5 = sort.col;",
+      "    $6 = sort.desc;",
+      "  }",
+      "  for (const row of ${7:rows}) {",
       "    ui.tableRow();",
       "    ui.label(row.name);",
       "    ui.tableNext();",
@@ -409,14 +414,14 @@
   },
   "goome plot": {
     "prefix": "goome-plot",
-    "description": "line plot",
+    "description": "line plot from a float array",
     "body": [
       "ui.plotLines(\"${1:CPU}\", ${2:values}, ${3:0}, ${4:100}, ${5:90});"
     ]
   },
   "goome plot bars": {
     "prefix": "goome-plot-bars",
-    "description": "bar plot",
+    "description": "bar plot from a float array",
     "body": [
       "ui.plotBars(\"${1:Requests}\", ${2:values}, ${3:0}, ${4:20}, ${5:90});"
     ]
@@ -478,8 +483,6 @@
     "prefix": "goome-offscreen",
     "description": "offscreen frame: no window, push a click, save what it drew",
     "body": [
-      "const goome = require(\"goome\");",
-      "",
       "const g = goome.openOffscreen(${1:640}, ${2:480});",
       "const ui = g.ui();",
       "g.pushClick(${3:60}, ${4:60});",
@@ -546,13 +549,13 @@
     "prefix": "goome-text-input",
     "description": "ime on with the candidate window at the caret, plus typed and composing text",
     "body": [
-      "${1:g}.textInput(${2:focused}, [${3:x}, ${4:y}, 2, ${5:20}]);",
+      "${1:g}.textInput(${2:focused}, { x: ${3:x}, y: ${4:y}, w: 2, h: ${5:20} });",
       "$0",
       "if (ev.type === goome.TEXT) {",
-      "  ${6:typed} = $1.eventText;",
+      "  const ${6:typed} = $1.eventText;",
       "} else if (ev.type === goome.PREEDIT) {",
-      "  ${7:composing} = $1.eventText;",
-      "  ${8:at} = $1.preeditCursor;",
+      "  const ${7:composing} = $1.eventText;",
+      "  const ${8:at} = $1.preeditCursor;",
       "}"
     ]
   },
