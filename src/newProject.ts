@@ -3,23 +3,9 @@ import * as fs from "fs";
 import * as https from "https";
 import * as path from "path";
 import * as vscode from "vscode";
+import { LANGS, TEMPLATES } from "./sidebar";
 
 export const CLI_URL = "https://github.com/goome-ui/goome-cli/releases/latest/download/goome.py";
-
-const LANGS = [
-  { id: "c", label: "C", detail: "one goome.h, builds with any C compiler" },
-  { id: "csharp", label: "C#", detail: ".NET 8 or newer" },
-  { id: "python", label: "Python", detail: "Python 3.8 or newer" },
-  { id: "java", label: "Java", detail: "Java 22 or newer, Gradle" },
-  { id: "godot", label: "Godot", detail: "Godot 4.4 or newer, GDScript" },
-];
-
-const TEMPLATES = [
-  { id: "app", label: "app", detail: "a normal window, with a toggle that turns it into an overlay" },
-  { id: "overlay", label: "overlay", detail: "a see-through overlay, only the window takes clicks" },
-  { id: "mod-menu", label: "mod-menu", detail: "a menu over the game that a hotkey opens and closes" },
-  { id: "hud", label: "hud", detail: "a little info panel in the corner, clicks go through it" },
-];
 
 export interface NewProjectArgs {
   lang?: string;
