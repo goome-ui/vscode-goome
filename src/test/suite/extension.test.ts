@@ -41,7 +41,7 @@ describe("goome extension", () => {
 
   it("registers its commands", async () => {
     const all = await vscode.commands.getCommands(true);
-    for (const c of ["goome.newProject", "goome.openPreview", "goome.copyCode"]) assert.ok(all.includes(c), c);
+    for (const c of ["goome.newProject", "goome.openPreview", "goome.copyCode", "goome.openBuilder", "goome.searchDocs", "goome.openDocs", "goome.openFile", "goome.insertSnippet", "goome.refreshSidebar"]) assert.ok(all.includes(c), c);
   });
 
   it("shows the goome.h note and a docs link on hover in C", async () => {
@@ -68,11 +68,60 @@ describe("goome extension", () => {
     });
   }
 
-  it("treats .goome.json and .goome-theme.json as json", async () => {
+  it("gives .goome.json and .goome-theme.json their own languages", async () => {
     const a = await vscode.workspace.openTextDocument(path.join(fixtures, "demo.goome.json"));
     const b = await vscode.workspace.openTextDocument(path.join(fixtures, "midnight.goome-theme.json"));
-    assert.strictEqual(a.languageId, "json");
-    assert.strictEqual(b.languageId, "json");
+    assert.strictEqual(a.languageId, "goome");
+    assert.strictEqual(b.languageId, "goome-theme");
+  });
+
+  it("shows the goome side bar with all four groups", async () => {
+    await vscode.commands.executeCommand("workbench.view.extension.goome");
+    await vscode.commands.executeCommand("goome.sidebar.focus");
+    await api.sidebar.ready;
+    const tree = api.sidebar.tree;
+    const top = tree.getChildren();
+    assert.deepStrictEqual(top.map((n: any) => n.label), ["Quick actions", "Builder files", "Templates", "Snippets"]);
+    const files = await until("builder files", () => {
+      const f = tree.getChildren(tree.getChildren()[1]);
+      return f.length >= 2 ? f : undefined;
+    });
+    assert.deepStrictEqual(files.map((n: any) => n.label).sort(), ["demo.goome.json", "midnight.goome-theme.json"]);
+    const item = tree.getTreeItem(files.find((n: any) => n.label === "demo.goome.json"));
+    assert.strictEqual(item.command.command, "goome.openFile");
+    assert.strictEqual(item.resourceUri.fsPath, path.join(fixtures, "demo.goome.json"));
+    const hud = tree.getChildren(tree.getChildren(top[2])[2]).find((n: any) => n.label === "hud");
+    const hudItem = tree.getTreeItem(hud);
+    assert.strictEqual(hudItem.command.command, "goome.newProject");
+    assert.deepStrictEqual(hudItem.command.arguments, [{ lang: "python", template: "hud" }]);
+    await vscode.commands.executeCommand("workbench.view.explorer");
+    await vscode.commands.executeCommand("goome.files.focus");
+    assert.deepStrictEqual(api.sidebar.explorer.getChildren().map((n: any) => n.label).sort(), ["demo.goome.json", "midnight.goome-theme.json"]);
+  });
+
+  it("picks up new builder files while running", async () => {
+    const extra = path.join(fixtures, "zz-new.goome.json");
+    try {
+      fs.writeFileSync(extra, JSON.stringify({ format: "goome-project", root: [] }));
+      await until("the new file in the side bar", () => (api.sidebar.explorer.files.includes(extra) ? true : undefined), 20000);
+    } finally {
+      fs.rmSync(extra, { force: true });
+    }
+    await until("the file to go away", () => (api.sidebar.explorer.files.includes(extra) ? undefined : true), 20000);
+  });
+
+  it("inserts a snippet from the cheat sheet into the editor", async () => {
+    const doc = await vscode.workspace.openTextDocument({ language: "python", content: "" });
+    await vscode.window.showTextDocument(doc);
+    await until("snippets to follow python", () => (api.sidebar.tree.lang === "python" ? true : undefined), 5000);
+    const snips = api.sidebar.tree.getChildren(api.sidebar.tree.getChildren()[3]);
+    assert.ok(snips.length > 40, "only " + snips.length + " snippets");
+    const button = snips.find((n: any) => n.label === "goome-button");
+    const item = api.sidebar.tree.getTreeItem(button);
+    assert.deepStrictEqual(item.command.arguments, ["python", "goome-button"]);
+    await vscode.commands.executeCommand(item.command.command, ...item.command.arguments);
+    assert.ok(doc.getText().includes("ui.button("), doc.getText());
+    await vscode.commands.executeCommand("workbench.action.revertAndCloseActiveEditor");
   });
 
   it("checks .goome.json files against the schema", async () => {
@@ -104,6 +153,19 @@ describe("goome extension", () => {
     const info = await until("the preview to render", () => api.preview.renders.get(uri.toString()), 60000);
     assert.strictEqual(info.error, "");
     assert.ok(info.nodes >= 10, "only " + info.nodes + " widgets got drawn");
+    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+  });
+
+  it("opens the preview when a builder file is clicked", async () => {
+    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+    const uri = vscode.Uri.file(path.join(fixtures, "demo.goome.json"));
+    api.preview.renders.delete(uri.toString());
+    await vscode.commands.executeCommand("goome.openFile", uri);
+    const info = await until("the preview from the side bar", () => api.preview.renders.get(uri.toString()), 60000);
+    assert.strictEqual(info.error, "");
+    const theme = vscode.Uri.file(path.join(fixtures, "midnight.goome-theme.json"));
+    await vscode.commands.executeCommand("goome.openFile", theme);
+    assert.strictEqual(vscode.window.activeTextEditor?.document.uri.fsPath, theme.fsPath);
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
 

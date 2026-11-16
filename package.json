@@ -2,7 +2,7 @@
   "name": "vscode-goome",
   "displayName": "goome",
   "description": "Snippets, a new project command, a .goome.json preview and hover docs for goome, the see-through overlay and ui library.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "publisher": "goome-ui",
   "license": "GPL-3.0-only",
   "icon": "media/icon.png",
@@ -32,7 +32,9 @@
   "main": "./out/extension.js",
   "activationEvents": [
     "onLanguage:c",
-    "onLanguage:cpp"
+    "onLanguage:cpp",
+    "onLanguage:goome",
+    "onLanguage:goome-theme"
   ],
   "contributes": {
     "configuration": {
@@ -54,7 +56,8 @@
       {
         "command": "goome.newProject",
         "title": "New Project",
-        "category": "goome"
+        "category": "goome",
+        "icon": "$(new-folder)"
       },
       {
         "command": "goome.openPreview",
@@ -65,6 +68,40 @@
       {
         "command": "goome.copyCode",
         "title": "Copy Code From This Project",
+        "category": "goome"
+      },
+      {
+        "command": "goome.openBuilder",
+        "title": "Open UI Builder",
+        "category": "goome",
+        "icon": "$(layout)"
+      },
+      {
+        "command": "goome.searchDocs",
+        "title": "Search Docs",
+        "category": "goome",
+        "icon": "$(search)"
+      },
+      {
+        "command": "goome.openDocs",
+        "title": "Open Docs",
+        "category": "goome",
+        "icon": "$(book)"
+      },
+      {
+        "command": "goome.refreshSidebar",
+        "title": "Refresh",
+        "category": "goome",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "goome.openFile",
+        "title": "Open goome File",
+        "category": "goome"
+      },
+      {
+        "command": "goome.insertSnippet",
+        "title": "Insert Snippet",
         "category": "goome"
       }
     ],
@@ -77,6 +114,14 @@
         {
           "command": "goome.copyCode",
           "when": "resourceFilename =~ /\\.goome\\.json$/"
+        },
+        {
+          "command": "goome.openFile",
+          "when": "false"
+        },
+        {
+          "command": "goome.insertSnippet",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -85,8 +130,58 @@
           "when": "resourceFilename =~ /\\.goome\\.json$/ && activeEditor == workbench.editors.files.textFileEditor",
           "group": "navigation"
         }
+      ],
+      "view/title": [
+        {
+          "command": "goome.newProject",
+          "when": "view == goome.sidebar",
+          "group": "navigation@1"
+        },
+        {
+          "command": "goome.searchDocs",
+          "when": "view == goome.sidebar",
+          "group": "navigation@2"
+        },
+        {
+          "command": "goome.refreshSidebar",
+          "when": "view == goome.sidebar || view == goome.files",
+          "group": "navigation@9"
+        }
       ]
     },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "goome",
+          "title": "goome",
+          "icon": "media/goome-bar.svg"
+        }
+      ]
+    },
+    "views": {
+      "goome": [
+        {
+          "id": "goome.sidebar",
+          "name": "goome",
+          "icon": "media/goome-bar.svg",
+          "contextualTitle": "goome"
+        }
+      ],
+      "explorer": [
+        {
+          "id": "goome.files",
+          "name": "goome",
+          "icon": "media/goome-bar.svg",
+          "contextualTitle": "goome files"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "goome.files",
+        "contents": "No .goome.json or .goome-theme.json files in this workspace yet.\n[Open UI builder](command:goome.openBuilder)"
+      }
+    ],
     "customEditors": [
       {
         "viewType": "goome.preview",
@@ -101,11 +196,52 @@
     ],
     "languages": [
       {
-        "id": "json",
+        "id": "goome",
+        "aliases": [
+          "goome project"
+        ],
         "extensions": [
-          ".goome.json",
+          ".goome.json"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./media/goome-file-light.svg",
+          "dark": "./media/goome-file-dark.svg"
+        }
+      },
+      {
+        "id": "goome-theme",
+        "aliases": [
+          "goome theme"
+        ],
+        "extensions": [
           ".goome-theme.json"
-        ]
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./media/goome-file-light.svg",
+          "dark": "./media/goome-file-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "goome",
+        "scopeName": "source.json.goome",
+        "path": "./syntaxes/goome.tmLanguage.json"
+      },
+      {
+        "language": "goome-theme",
+        "scopeName": "source.json.goome-theme",
+        "path": "./syntaxes/goome-theme.tmLanguage.json"
+      }
+    ],
+    "jsonLanguageParticipants": [
+      {
+        "languageId": "goome"
+      },
+      {
+        "languageId": "goome-theme"
       }
     ],
     "jsonValidation": [

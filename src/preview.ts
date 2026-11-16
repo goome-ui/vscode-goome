@@ -1,8 +1,8 @@
 import * as crypto from "crypto";
 import * as vscode from "vscode";
 import { CODE_LANGS, generateCode } from "./codegen";
+import { BUILDER_URL } from "./sidebar";
 
-export const BUILDER_URL = "https://goome-ui.github.io/docs/builder/";
 const SCRIPTS = ["model.js", "elements.js", "app.js", "stage.js", "vars.js"];
 
 export interface RenderInfo {
