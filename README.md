@@ -42,7 +42,7 @@ code --install-extension goome-ui.vscode-goome
 ```
 
 <p align="center">
-Its not on Open VSX, so for VSCodium and the other forks grab <code>vscode-goome-x.y.z.vsix</code> from the <a href="https://github.com/goome-ui/vscode-goome/releases/latest">latest release</a>, open Extensions, click the <b>...</b> at the top and pick <b>Install from VSIX...</b>
+On VSCodium and the other forks it is on <a href="https://open-vsx.org/extension/goome-ui/vscode-goome">Open VSX</a>, or grab <code>vscode-goome-x.y.z.vsix</code> from the <a href="https://github.com/goome-ui/vscode-goome/releases/latest">latest release</a>, open Extensions, click the <b>...</b> at the top and pick <b>Install from VSIX...</b>
 </p>
 </details>
 
