@@ -292,5 +292,9 @@
     "@vscode/vsce": "^3.9.2",
     "mocha": "^11.7.0",
     "typescript": "~5.9.3"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1",
+    "serialize-javascript": "^7.1.3"
   }
 }
