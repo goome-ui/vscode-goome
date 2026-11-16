@@ -314,7 +314,8 @@ describe("goome extension", () => {
       const out = await vscode.commands.executeCommand<string>("goome.buildWeb", vscode.Uri.file(file));
       assert.strictEqual(vscode.Uri.file(out).fsPath, vscode.Uri.file(path.join(work, "app", "web")).fsPath);
       assert.strictEqual(calls[0].cmd, "fake-goome-cli");
-      assert.deepStrictEqual(calls[0].args, ["build", "--web", file, "--out", out, "--goome", "/src/c-goome"]);
+      const fsp = (p: string) => vscode.Uri.file(p).fsPath;
+      assert.deepStrictEqual(calls[0].args.map((a: string, i: number) => (i === 2 || i === 4 ? fsp(a) : a)), ["build", "--web", fsp(file), "--out", fsp(out), "--goome", "/src/c-goome"]);
     });
 
     it("gives back nothing when the cli fails", async () => {
