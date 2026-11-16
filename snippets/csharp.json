@@ -549,5 +549,66 @@
     "body": [
       "ui.Theme.Make(${1:0xFF4FA3FFu}, ${2:true}, ${3:10});"
     ]
+  },
+  "goome ease": {
+    "prefix": "goome-ease",
+    "description": "raw easing curve, t goes 0 to 1",
+    "body": [
+      "double ${1:k} = Ease.${2|Out,In,InOut,Linear,Smooth,Back,Spring,Bounce|}.At(${3:t});"
+    ]
+  },
+  "goome anim": {
+    "prefix": "goome-anim",
+    "description": "animate a number toward a target, call it every frame",
+    "body": [
+      "double ${1:x} = ${2:ui}.Anim(\"${3:panel x}\", ${4:open ? 0 : -300}, ${5:250}, Ease.${6|Out,In,InOut,Linear,Smooth,Back,Spring,Bounce|});"
+    ]
+  },
+  "goome anim color": {
+    "prefix": "goome-anim-color",
+    "description": "animate a color toward a target, call it every frame",
+    "body": [
+      "uint ${1:bg} = ${2:ui}.AnimColor(\"${3:bg}\", ${4:hot ? 0xFF3A7BD5 : 0xFF202020}, ${5:150}, Ease.${6|Out,In,InOut,Linear,Smooth,Back,Spring,Bounce|});"
+    ]
+  },
+  "goome text input": {
+    "prefix": "goome-text-input",
+    "description": "ime on with the candidate window at the caret, plus typed and composing text",
+    "body": [
+      "${1:g}.TextInput(${2:focused}, new Rect(${3:x}, ${4:y}, 2, ${5:20}));",
+      "$0",
+      "if (ev.Type == EventType.Text)",
+      "{",
+      "\tstring ${6:typed} = $1.EventText;",
+      "}",
+      "else if (ev.Type == EventType.Preedit)",
+      "{",
+      "\tstring ${7:composing} = $1.EventText;",
+      "\tint ${8:at} = $1.PreeditCursor;",
+      "}"
+    ]
+  },
+  "goome a11y": {
+    "prefix": "goome-a11y",
+    "description": "screen reader role, name and value for the next custom item",
+    "body": [
+      "${1:ui}.A11yRole(Role.${2|Slider,Button,Checkbox,Progress,Image,Group|}, \"${3:Volume}\");",
+      "$1.A11yValue(${4:\"50%\"});"
+    ]
+  },
+  "goome font fallback": {
+    "prefix": "goome-font-fallback",
+    "description": "font that falls back to another one for chars it doesnt have",
+    "body": [
+      "var ${1:font} = Font.Load(\"${2:Inter.ttf}\");",
+      "$1.Fallback(Font.Load(\"${3:NotoSansCJK.ttc}\"));"
+    ]
+  },
+  "goome text dir": {
+    "prefix": "goome-text-dir",
+    "description": "force the text direction for all text",
+    "body": [
+      "Font.Direction = TextDirection.${1|Rtl,Ltr,Auto|};"
+    ]
   }
 }

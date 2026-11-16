@@ -73,7 +73,7 @@ test("python snippets use real python-goome names", (t) => {
 test("c# snippets use real GoomeSharp names", (t) => {
   const code = src.csharp();
   if (!code) return t.skip("no csharp-goome next to this repo");
-  for (const [p, list] of texts("cs")) for (const text of list) for (const [n] of names(text, ["ui", "g", "c", "it", "ev", "pace", "Goome", "Event", "Theme", "Style", "Preset", "WindowFlags", "ItemFlags", "EventType", "EditFlags", "TableFlags"])) {
+  for (const [p, list] of texts("cs")) for (const text of list) for (const [n] of names(text, ["ui", "g", "c", "it", "ev", "pace", "Goome", "Event", "Theme", "Style", "Preset", "WindowFlags", "ItemFlags", "EventType", "EditFlags", "TableFlags", "Ease", "Role", "Font", "TextDirection"])) {
     if (["Message", "ToString", "Error", "WriteLine"].includes(n)) continue;
     assert.ok(new RegExp("(public[^\\n]*\\b" + n + "\\b|^\\s*" + n + "\\b\\s*(=|,|$))", "m").test(code), p + " uses ." + n + " which isnt in GoomeSharp");
   }
@@ -82,8 +82,8 @@ test("c# snippets use real GoomeSharp names", (t) => {
 test("java snippets use real java-goome names", (t) => {
   const code = src.java();
   if (!code) return t.skip("no java-goome next to this repo");
-  for (const [p, list] of texts("java")) for (const text of list) for (const [n] of names(text, ["ui", "g", "c", "it", "ev", "e", "pace", "sort", "Goome", "Ui", "Theme", "ItemFlag", "Style"])) {
+  for (const [p, list] of texts("java")) for (const text of list) for (const [n] of names(text, ["ui", "g", "c", "it", "ev", "e", "pace", "sort", "Goome", "Ui", "Theme", "ItemFlag", "Style", "Font", "A11yNode"])) {
     if (["getMessage", "println", "err", "put", "get"].includes(n)) continue;
-    assert.ok(new RegExp("(public[^\\n]*\\b" + n + "\\b|^\\s*" + n + "\\b\\s*[(,;=]|\\b" + n + "\\(\\d+\\)|\\b(boolean|double|int|String) " + n + "\\s*[,)])", "m").test(code), p + " uses ." + n + " which isnt in java-goome");
+    assert.ok(new RegExp("(public[^\\n]*\\b" + n + "\\b|^\\s*" + n + "\\b\\s*[(,;=]|\\b" + n + "\\(\\d+\\)|\\b(boolean|double|int|String) " + n + "\\s*[,)]|\\b" + n + " = -?\\d)", "m").test(code), p + " uses ." + n + " which isnt in java-goome");
   }
 });
