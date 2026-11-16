@@ -1,5 +1,6 @@
 import * as assert from "assert";
 import * as fs from "fs";
+import { EventEmitter } from "events";
 import * as path from "path";
 import * as vscode from "vscode";
 
@@ -41,7 +42,7 @@ describe("goome extension", () => {
 
   it("registers its commands", async () => {
     const all = await vscode.commands.getCommands(true);
-    for (const c of ["goome.newProject", "goome.openPreview", "goome.copyCode", "goome.openBuilder", "goome.searchDocs", "goome.openDocs", "goome.openFile", "goome.insertSnippet", "goome.refreshSidebar"]) assert.ok(all.includes(c), c);
+    for (const c of ["goome.newProject", "goome.openPreview", "goome.copyCode", "goome.openBuilder", "goome.searchDocs", "goome.openDocs", "goome.openFile", "goome.insertSnippet", "goome.refreshSidebar", "goome.buildWeb", "goome.stopWebServer"]) assert.ok(all.includes(c), c);
   });
 
   it("shows the goome.h note and a docs link on hover in C", async () => {
@@ -203,5 +204,74 @@ describe("goome extension", () => {
     } finally {
       process.env.PATH = keep;
     }
+  });
+
+  function fakeChild(script: (c: any) => void) {
+    const c: any = new EventEmitter();
+    c.stdout = new EventEmitter();
+    c.stderr = new EventEmitter();
+    c.exitCode = null;
+    c.killed = false;
+    c.kill = () => {
+      c.killed = true;
+      c.emit("close", null);
+    };
+    setImmediate(() => script(c));
+    return c;
+  }
+
+  describe("build for web", () => {
+    const realSpawn = () => api.web.spawn;
+    let keep: any;
+    const calls: { cmd: string; args: string[] }[] = [];
+
+    before(async () => {
+      keep = realSpawn();
+      await vscode.workspace.getConfiguration("goome").update("cli", "fake-goome-cli", vscode.ConfigurationTarget.Global);
+      await vscode.workspace.getConfiguration("goome").update("web.goomePath", "/src/c-goome", vscode.ConfigurationTarget.Global);
+    });
+
+    after(async () => {
+      api.web.spawn = keep;
+      await vscode.workspace.getConfiguration("goome").update("cli", undefined, vscode.ConfigurationTarget.Global);
+      await vscode.workspace.getConfiguration("goome").update("web.goomePath", undefined, vscode.ConfigurationTarget.Global);
+    });
+
+    it("runs goome build --web on the file with the c-goome setting", async () => {
+      api.web.spawn = (cmd: string, args: string[]) => {
+        calls.push({ cmd, args });
+        return fakeChild((c) => {
+          c.stdout.emit("data", "built\n");
+          c.emit("close", 0);
+        });
+      };
+      const file = path.join(work, "app", "main.c");
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, "int main(void){return 0;}\n");
+      const out = await vscode.commands.executeCommand<string>("goome.buildWeb", vscode.Uri.file(file));
+      assert.strictEqual(out, path.join(work, "app", "web"));
+      assert.strictEqual(calls[0].cmd, "fake-goome-cli");
+      assert.deepStrictEqual(calls[0].args, ["build", "--web", file, "--out", out, "--goome", "/src/c-goome"]);
+    });
+
+    it("gives back nothing when the cli fails", async () => {
+      api.web.spawn = () =>
+        fakeChild((c) => {
+          c.stderr.emit("data", "goome: overlays cant run in the browser\n");
+          c.emit("close", 1);
+        });
+      const file = path.join(work, "app", "main.c");
+      const out = await vscode.commands.executeCommand<string>("goome.buildWeb", vscode.Uri.file(file));
+      assert.strictEqual(out, undefined);
+    });
+
+    it("stops the servers it started", async () => {
+      assert.strictEqual(await vscode.commands.executeCommand("goome.stopWebServer"), 0);
+      const child = fakeChild(() => undefined);
+      api.web.servers.set("/x/web", { url: "http://localhost:1/", dir: "/x/web", child });
+      assert.strictEqual(await vscode.commands.executeCommand("goome.stopWebServer"), 1);
+      assert.ok(child.killed);
+      assert.strictEqual(api.web.servers.size, 0);
+    });
   });
 });
