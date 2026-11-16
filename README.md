@@ -10,6 +10,7 @@
 
 <p align="center">
   <img src="media/badge-vscode.png" alt="VS Code 1.90+" height="20">
+  <a href="https://marketplace.visualstudio.com/items?itemName=goome-ui.vscode-goome"><img src="media/badge-marketplace.png" alt="VS Code Marketplace" height="20"></a>
   <img src="https://img.shields.io/badge/C%20%C2%B7%20C%23%20%C2%B7%20Python%20%C2%B7%20Java-1b1d22?style=flat-square&labelColor=6fdc5f" alt="C, C#, Python, Java">
   <img src="https://img.shields.io/badge/license-GPL--3.0-1b1d22?style=flat-square" alt="GPL-3.0">
 </p>
@@ -33,18 +34,15 @@
 <br>
 
 <p align="center">
-1. Grab <code>vscode-goome-x.y.z.vsix</code> from the <a href="https://github.com/goome-ui/vscode-goome/releases/latest">latest release</a><br>
-2. In VS Code open Extensions, click the <b>...</b> at the top and pick <b>Install from VSIX...</b><br>
-3. Pick the file you downloaded, done<br> <br>
-Or from a terminal:
+Its on the <a href="https://marketplace.visualstudio.com/items?itemName=goome-ui.vscode-goome">VS Code Marketplace</a>. Search <b>goome</b> in Extensions and hit Install, or from a terminal:
 </p>
 
 ```sh
-code --install-extension vscode-goome-0.5.0.vsix
+code --install-extension goome-ui.vscode-goome
 ```
 
 <p align="center">
-The marketplace version is coming soon.
+Its not on Open VSX, so for VSCodium and the other forks grab <code>vscode-goome-x.y.z.vsix</code> from the <a href="https://github.com/goome-ui/vscode-goome/releases/latest">latest release</a>, open Extensions, click the <b>...</b> at the top and pick <b>Install from VSIX...</b>
 </p>
 </details>
 
