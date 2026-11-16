@@ -1,7 +1,7 @@
 {
   "name": "vscode-goome",
   "displayName": "goome",
-  "description": "Snippets, a new project command, a .goome.json preview and hover docs for goome. See-through overlays, normal app windows, game mod menus and engine ui. One file, no dependencies, Linux, Windows, Mac.",
+  "description": "Snippets, completion, hover docs and a new project command for goome in C, C#, Python, Java, Rust, Node, Go, Zig, Lua and Godot, plus a .goome.json preview. See-through overlays, normal app windows, game mod menus and engine ui. Linux, Windows, Mac.",
   "version": "0.5.1",
   "publisher": "goome-ui",
   "license": "GPL-3.0-only",
@@ -27,12 +27,36 @@
     "overlay",
     "ui",
     "immediate mode",
-    "gui"
+    "gui",
+    "c",
+    "csharp",
+    "python",
+    "java",
+    "rust",
+    "node",
+    "javascript",
+    "typescript",
+    "go",
+    "golang",
+    "zig",
+    "lua",
+    "godot",
+    "gdscript",
+    "snippets"
   ],
   "main": "./out/extension.js",
   "activationEvents": [
     "onLanguage:c",
     "onLanguage:cpp",
+    "onLanguage:rust",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:go",
+    "onLanguage:zig",
+    "onLanguage:lua",
+    "onLanguage:gdscript",
     "onLanguage:goome",
     "onLanguage:goome-theme"
   ],
@@ -257,6 +281,51 @@
           "light": "./media/goome-file-light.svg",
           "dark": "./media/goome-file-dark.svg"
         }
+      },
+      {
+        "id": "rust",
+        "aliases": [
+          "Rust"
+        ],
+        "extensions": [
+          ".rs"
+        ]
+      },
+      {
+        "id": "go",
+        "aliases": [
+          "Go"
+        ],
+        "extensions": [
+          ".go"
+        ]
+      },
+      {
+        "id": "zig",
+        "aliases": [
+          "Zig"
+        ],
+        "extensions": [
+          ".zig"
+        ]
+      },
+      {
+        "id": "lua",
+        "aliases": [
+          "Lua"
+        ],
+        "extensions": [
+          ".lua"
+        ]
+      },
+      {
+        "id": "gdscript",
+        "aliases": [
+          "GDScript"
+        ],
+        "extensions": [
+          ".gd"
+        ]
       }
     ],
     "grammars": [
@@ -309,6 +378,42 @@
       {
         "language": "java",
         "path": "./snippets/java.json"
+      },
+      {
+        "language": "rust",
+        "path": "./snippets/rust.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/node.json"
+      },
+      {
+        "language": "go",
+        "path": "./snippets/go.json"
+      },
+      {
+        "language": "zig",
+        "path": "./snippets/zig.json"
+      },
+      {
+        "language": "lua",
+        "path": "./snippets/lua.json"
+      },
+      {
+        "language": "gdscript",
+        "path": "./snippets/godot.json"
       }
     ]
   },

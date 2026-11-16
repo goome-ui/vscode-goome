@@ -56,7 +56,7 @@ describe("goome extension", () => {
     assert.ok(!/goome docs/.test(hoverText(none)), "goome_nope got a goome hover");
   });
 
-  for (const [lang, want] of [["c", "goome_ui_button"], ["csharp", "ui.Button"], ["python", "ui.button"], ["java", "ui.button"]]) {
+  for (const [lang, want] of [["c", "goome_ui_button"], ["csharp", "ui.Button"], ["python", "ui.button"], ["java", "ui.button"], ["rust", "ui.button"], ["javascript", "ui.button"], ["go", "ui.Button"], ["zig", "u.button"], ["lua", "ui:button"], ["gdscript", "ui.button"]]) {
     it("offers the goome snippets in " + lang, async () => {
       const doc = await vscode.workspace.openTextDocument({ language: lang, content: "goome-but" });
       const list = await until("completions in " + lang, async () => {
@@ -68,6 +68,50 @@ describe("goome extension", () => {
       assert.ok(body.includes(want), lang + " snippet body: " + body);
     });
   }
+
+  const API_CASES: [string, string, string, string][] = [
+    ["rust", "use goome::Ui;\nfn f(ui: &mut Ui) {\n    ui.button(\"x\");\n}\n", "button", "fn button(&mut self, label: &str) -> bool"],
+    ["javascript", "const goome = require(\"goome\");\nui.button(\"x\");\n", "button", "button(label: string): boolean"],
+    ["typescript", "import * as goome from \"goome\";\nui.button(\"x\");\n", "button", "button(label: string): boolean"],
+    ["go", "package main\nimport \"github.com/goome-ui/go-goome\"\nfunc f(ui *goome.UI) {\n\tui.Button(\"x\")\n}\n", "Button", "func (u *UI) Button(label string) bool"],
+    ["zig", "const goome = @import(\"goome\");\nfn f(u: *goome.Ui) void {\n    _ = u.button(\"x\");\n}\n", "button", "fn button(s: [*:0]const u8) bool"],
+    ["lua", "local goome = require(\"goome\")\nui:button(\"x\")\n", "button", "ui:button(...)"],
+    ["gdscript", "extends GoomeView\nfunc _goome_frame(ui: GoomeUI):\n\tui.button(\"x\")\n", "button", "func button(label: String) -> bool"],
+  ];
+
+  for (const [lang, content, member, sig] of API_CASES) {
+    it("hovers goome members in " + lang, async () => {
+      const doc = await vscode.workspace.openTextDocument({ language: lang, content });
+      const at = doc.positionAt(content.indexOf((lang === "lua" ? ":" : ".") + member) + 2);
+      const h = await until("a goome hover in " + lang, async () => {
+        const list = (await vscode.commands.executeCommand<vscode.Hover[]>("vscode.executeHoverProvider", doc.uri, at)) || [];
+        return hoverText(list).includes(sig) ? list : undefined;
+      }, 20000);
+      assert.match(hoverText(h), /https:\/\/goome-ui\.github\.io\/docs\//);
+    });
+
+    it("completes goome members in " + lang, async () => {
+      const line = lang === "lua" ? "ui:" : "ui.";
+      const text = content.split("\n").slice(0, -2).join("\n") + "\n" + line;
+      const doc = await vscode.workspace.openTextDocument({ language: lang, content: text });
+      const end = doc.lineAt(doc.lineCount - 1).range.end;
+      const list = await until("goome completions in " + lang, async () => {
+        const l = await vscode.commands.executeCommand<vscode.CompletionList>("vscode.executeCompletionItemProvider", doc.uri, end, lang === "lua" ? ":" : ".");
+        return l && l.items.some((i) => i.detail === sig) ? l : undefined;
+      }, 20000);
+      const ours = list.items.filter((i) => typeof i.label !== "string" && ["ui", "Ui", "UI", "GoomeUI"].includes(i.label.description || "")).length;
+      assert.ok(ours > 50, "only " + ours + " goome items");
+    });
+  }
+
+  it("keeps quiet in files that never mention goome", async () => {
+    const content = "const ui = makeThing();\nui.button(\"x\");\n";
+    const doc = await vscode.workspace.openTextDocument({ language: "javascript", content });
+    const h = (await vscode.commands.executeCommand<vscode.Hover[]>("vscode.executeHoverProvider", doc.uri, new vscode.Position(1, 5))) || [];
+    assert.ok(!hoverText(h).includes("goome docs"), hoverText(h));
+    const l = await vscode.commands.executeCommand<vscode.CompletionList>("vscode.executeCompletionItemProvider", doc.uri, new vscode.Position(1, 3), ".");
+    assert.ok(!l.items.some((i) => i.detail && i.detail.includes("label: string")));
+  });
 
   it("gives .goome.json and .goome-theme.json their own languages", async () => {
     const a = await vscode.workspace.openTextDocument(path.join(fixtures, "demo.goome.json"));
@@ -172,7 +216,7 @@ describe("goome extension", () => {
 
   it("copies code from the project with the builder codegen", async () => {
     const uri = vscode.Uri.file(path.join(fixtures, "demo.goome.json"));
-    const want: Record<string, string> = { c: "goome_ui_window(", cs: "ui.Window(", py: "ui.window(", java: "ui.window(" };
+    const want: Record<string, string> = { c: "goome_ui_window(", cs: "ui.Window(", py: "ui.window(", java: "ui.window(", gd: "ui.window(" };
     for (const lang of Object.keys(want)) {
       const code = await vscode.commands.executeCommand<string>("goome.copyCode", uri, lang);
       assert.ok(code && code.includes(want[lang]), lang + ": " + String(code).slice(0, 200));
@@ -189,6 +233,19 @@ describe("goome extension", () => {
     assert.ok(fs.existsSync(path.join(dest, "main.c")), "no main.c in " + dest);
     assert.ok(fs.readFileSync(path.join(dest, "README.md"), "utf8").includes("E2e Hud"));
   });
+
+  const MAIN_FILE: Record<string, string> = { c: "main.c", csharp: "Program.cs", python: "main.py", java: "build.gradle", godot: "game.gd", rust: "src/main.rs", node: "main.js", go: "main.go", zig: "src/main.zig", lua: "main.lua" };
+
+  for (const lang of Object.keys(MAIN_FILE)) {
+    it("makes a " + lang + " overlay project from its template", async function () {
+      const cli = process.env.GOOME_CLI || path.join(root, "..", "goome-cli", "goome.py");
+      if (!fs.existsSync(cli)) return this.skip();
+      await vscode.workspace.getConfiguration("goome").update("cli", cli, vscode.ConfigurationTarget.Global);
+      const dest = await vscode.commands.executeCommand<string>("goome.newProject", { lang, template: "overlay", folder: work, name: "e2e " + lang, open: false });
+      assert.ok(dest, "no project made for " + lang);
+      assert.ok(fs.existsSync(path.join(dest, MAIN_FILE[lang])), "no " + MAIN_FILE[lang] + " in " + dest);
+    });
+  }
 
   it("downloads goome.py from the latest release when goome isnt on PATH", async () => {
     await vscode.workspace.getConfiguration("goome").update("cli", undefined, vscode.ConfigurationTarget.Global);

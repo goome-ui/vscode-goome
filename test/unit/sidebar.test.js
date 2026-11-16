@@ -25,7 +25,7 @@ test("quick actions point at real commands", () => {
 
 test("templates cover every language and template and preselect them", () => {
   const langs = sb.templateNodes();
-  assert.deepStrictEqual(langs.map((l) => l.label), ["C", "C#", "Python", "Java", "Godot"]);
+  assert.deepStrictEqual(langs.map((l) => l.label), ["C", "C#", "Python", "Java", "Godot", "Rust", "Node", "Go", "Zig", "Lua"]);
   for (const l of langs) {
     assert.deepStrictEqual(l.children.map((t) => t.label), ["app", "overlay", "mod-menu", "hud"]);
     for (const t of l.children) {
@@ -62,6 +62,7 @@ test("snippet language follows the editor and falls back to c", () => {
   assert.strictEqual(sb.snippetLang("csharp"), "csharp");
   assert.strictEqual(sb.snippetLang("python"), "python");
   assert.strictEqual(sb.snippetLang("java"), "java");
+  for (const [editor, lang] of [["rust", "rust"], ["javascript", "node"], ["javascriptreact", "node"], ["typescript", "node"], ["typescriptreact", "node"], ["go", "go"], ["zig", "zig"], ["lua", "lua"], ["gdscript", "godot"]]) assert.strictEqual(sb.snippetLang(editor), lang, editor);
   assert.strictEqual(sb.snippetLang("markdown"), "c");
   assert.strictEqual(sb.snippetLang(undefined), "c");
 });
@@ -80,7 +81,7 @@ test("snippet cheat sheet lists every prefix with an insert command", () => {
     }
     assert.ok(snips.every((s) => typeof s.body === "string" && s.body.length > 0));
   }
-  assert.deepStrictEqual(sb.readSnippets(src.root, "rust"), []);
+  assert.deepStrictEqual(sb.readSnippets(src.root, "swift"), []);
 });
 
 test("package.json wires the side bar, explorer view and file icons", () => {
@@ -89,11 +90,34 @@ test("package.json wires the side bar, explorer view and file icons", () => {
   assert.deepStrictEqual(c.views.goome.map((v) => v.id), ["goome.sidebar"]);
   assert.deepStrictEqual(c.views.explorer.map((v) => v.id), ["goome.files"]);
   const icons = [c.viewsContainers.activitybar[0].icon];
-  for (const l of c.languages) icons.push(l.icon.light, l.icon.dark);
+  const own = c.languages.filter((l) => l.icon);
+  for (const l of own) icons.push(l.icon.light, l.icon.dark);
   for (const i of icons) assert.ok(fs.existsSync(path.join(src.root, i)), i);
-  assert.deepStrictEqual(c.languages.map((l) => l.extensions[0]), [".goome.json", ".goome-theme.json"]);
-  assert.deepStrictEqual(c.jsonLanguageParticipants.map((p) => p.languageId), c.languages.map((l) => l.id));
+  assert.deepStrictEqual(own.map((l) => l.extensions[0]), [".goome.json", ".goome-theme.json"]);
+  assert.deepStrictEqual(c.jsonLanguageParticipants.map((p) => p.languageId), own.map((l) => l.id));
+  assert.deepStrictEqual(c.languages.filter((l) => !l.icon).map((l) => l.id + l.extensions[0]), ["rust.rs", "go.go", "zig.zig", "lua.lua", "gdscript.gd"]);
   const bar = fs.readFileSync(path.join(src.root, c.viewsContainers.activitybar[0].icon), "utf8");
   assert.match(bar, /viewBox="0 0 24 24"/);
   assert.ok(!/#[0-9a-f]{3,6}/i.test(bar), "activity bar icon should only use currentColor");
+});
+
+test("new project offers the same languages and templates as goome-cli", (t) => {
+  const dir = src.find("GOOME_CLI_DIR", ["goome-cli"]);
+  const file = dir && path.join(dir, "goome.py");
+  if (!file || !fs.existsSync(file)) return t.skip("no goome-cli next to this repo");
+  const text = fs.readFileSync(file, "utf8");
+  const keys = (name) => [...new Set([...text.slice(text.indexOf(name + " = {")).split("\n}")[0].matchAll(/^    "([\w-]+)":/gm)].map((m) => m[1]))];
+  assert.deepStrictEqual(sb.LANGS.map((l) => l.id), keys("LANGS"));
+  assert.deepStrictEqual(sb.TEMPLATES.map((l) => l.id), keys("TEMPLATES"));
+});
+
+test("package.json activates and contributes snippets for every language", () => {
+  const ev = new Set(pkg.activationEvents);
+  const snip = Object.fromEntries(pkg.contributes.snippets.map((s) => [s.language, s.path]));
+  for (const l of ["c", "cpp", "rust", "javascript", "javascriptreact", "typescript", "typescriptreact", "go", "zig", "lua", "gdscript"]) assert.ok(ev.has("onLanguage:" + l), l);
+  for (const [l, f] of Object.entries({ c: "c", cpp: "c", csharp: "csharp", python: "python", java: "java", rust: "rust", javascript: "node", javascriptreact: "node", typescript: "node", typescriptreact: "node", go: "go", zig: "zig", lua: "lua", gdscript: "godot" })) {
+    assert.strictEqual(snip[l], "./snippets/" + f + ".json", l);
+    assert.ok(fs.existsSync(path.join(src.root, "snippets", f + ".json")), f);
+  }
+  for (const w of ["Rust", "Node", "Go", "Zig", "Lua", "Godot"]) assert.ok(pkg.description.includes(w), w);
 });

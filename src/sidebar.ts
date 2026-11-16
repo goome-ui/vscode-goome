@@ -18,6 +18,11 @@ export const LANGS: Choice[] = [
   { id: "python", label: "Python", detail: "Python 3.8 or newer" },
   { id: "java", label: "Java", detail: "Java 22 or newer, Gradle" },
   { id: "godot", label: "Godot", detail: "Godot 4.4 or newer, GDScript" },
+  { id: "rust", label: "Rust", detail: "Rust 1.77 or newer, cargo" },
+  { id: "node", label: "Node", detail: "Node 18 or newer, npm" },
+  { id: "go", label: "Go", detail: "Go 1.23 or newer, cgo with a C compiler" },
+  { id: "zig", label: "Zig", detail: "Zig 0.15.2" },
+  { id: "lua", label: "Lua", detail: "Lua 5.4 or LuaJIT, LuaRocks and a C compiler" },
 ];
 
 export const TEMPLATES: Choice[] = [
@@ -32,6 +37,21 @@ export const SNIPPET_LANGS: Record<string, { file: string; label: string }> = {
   csharp: { file: "csharp.json", label: "C#" },
   python: { file: "python.json", label: "Python" },
   java: { file: "java.json", label: "Java" },
+  rust: { file: "rust.json", label: "Rust" },
+  node: { file: "node.json", label: "Node" },
+  go: { file: "go.json", label: "Go" },
+  zig: { file: "zig.json", label: "Zig" },
+  lua: { file: "lua.json", label: "Lua" },
+  godot: { file: "godot.json", label: "Godot" },
+};
+
+const EDITOR_SNIPPETS: Record<string, string> = {
+  cpp: "c",
+  javascript: "node",
+  javascriptreact: "node",
+  typescript: "node",
+  typescriptreact: "node",
+  gdscript: "godot",
 };
 
 export interface Node {
@@ -54,7 +74,7 @@ export interface Snippet {
 }
 
 export function snippetLang(languageId?: string): string {
-  if (languageId === "cpp") return "c";
+  if (languageId && EDITOR_SNIPPETS[languageId]) return EDITOR_SNIPPETS[languageId];
   return languageId && SNIPPET_LANGS[languageId] ? languageId : "c";
 }
 

@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
-import { CODE_LANGS } from "./codegen";
+import { API_LANGS, loadApiMap } from "./api";
+import { GoomeApiCompletion, GoomeApiHover } from "./apiProviders";
+import { codeLangs } from "./codegen";
 import { GoomeHover, loadHoverMap } from "./hover";
 import { newProject, NewProjectArgs } from "./newProject";
 import { GoomePreview } from "./preview";
@@ -22,12 +24,21 @@ export function activate(ctx: vscode.ExtensionContext) {
   const preview = new GoomePreview(ctx);
   const map = loadHoverMap(ctx.extensionPath);
   const hover = new GoomeHover(map);
+  const apiMap = loadApiMap(ctx.extensionPath);
+  const apiProviders = API_LANGS.flatMap((l) => {
+    const sel = l.editors.map((language) => ({ language }));
+    return [
+      vscode.languages.registerHoverProvider(sel, new GoomeApiHover(apiMap, map, l)),
+      vscode.languages.registerCompletionItemProvider(sel, new GoomeApiCompletion(apiMap, map, l), ".", ":"),
+    ];
+  });
   const sidebar = new GoomeSidebar(ctx.extensionPath);
   const web = new WebBuilder(ctx.globalStorageUri);
 
   ctx.subscriptions.push(
     sidebar,
     web,
+    ...apiProviders,
     vscode.languages.registerHoverProvider([{ language: "c" }, { language: "cpp" }], hover),
     vscode.window.registerCustomEditorProvider(GoomePreview.viewType, preview, { webviewOptions: { retainContextWhenHidden: false } }),
     vscode.commands.registerCommand("goome.newProject", async (args?: NewProjectArgs) => {
@@ -48,7 +59,8 @@ export function activate(ctx: vscode.ExtensionContext) {
         const u = goomeJson(uri);
         if (!u) return sayError("open a .goome.json first");
         if (!lang) {
-          const pick = await vscode.window.showQuickPick(Object.keys(CODE_LANGS).map((id) => ({ label: CODE_LANGS[id], id })), { placeHolder: "which language?" });
+          const names = codeLangs(ctx.extensionPath);
+          const pick = await vscode.window.showQuickPick(Object.keys(names).map((id) => ({ label: names[id], id })), { placeHolder: "which language?" });
           if (!pick) return undefined;
           lang = pick.id;
         }
@@ -112,7 +124,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand("goome.refreshSidebar", () => sidebar.refresh()),
   );
 
-  return { preview, hover, sidebar, web, storage: ctx.globalStorageUri };
+  return { preview, hover, apiMap, sidebar, web, storage: ctx.globalStorageUri };
 }
 
 export function deactivate() {}
