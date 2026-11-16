@@ -1,0 +1,493 @@
+{
+  "goome view": {
+    "prefix": "goome-view",
+    "description": "a view script with a ui window",
+    "body": [
+      "extends GoomeView",
+      "",
+      "",
+      "func _goome_frame(ui: GoomeUI) -> void:",
+      "\tif ui.window(\"${1:Window}\", Rect2(40, 40, 300, 0), GoomeUI.WIN_MOVE | GoomeUI.WIN_RESIZE | GoomeUI.WIN_COLLAPSE):",
+      "\t\tui.label(\"${2:hello}\")",
+      "\t\t$0",
+      "\tui.window_end()"
+    ]
+  },
+  "goome app": {
+    "prefix": "goome-app",
+    "description": "a view script where the ui fills the whole view",
+    "body": [
+      "extends GoomeView",
+      "",
+      "",
+      "func _goome_frame(ui: GoomeUI) -> void:",
+      "\tui.app_begin(\"${1:My App}\", 0)",
+      "\tui.heading(\"${2:Hello}\")",
+      "\t$0",
+      "\tui.app_end()"
+    ]
+  },
+  "goome loop": {
+    "prefix": "goome-loop",
+    "description": "only redraw when input came in or something animates",
+    "body": [
+      "func _ready() -> void:",
+      "\tredraw_every_frame = false",
+      "\t$0"
+    ]
+  },
+  "goome window": {
+    "prefix": "goome-window",
+    "description": "ui window with a label and a button",
+    "body": [
+      "if ui.window(\"${1:Window}\", Rect2(40, 40, 300, 0), GoomeUI.WIN_MOVE | GoomeUI.WIN_RESIZE | GoomeUI.WIN_COLLAPSE):",
+      "\tui.label(\"${2:hello}\")",
+      "\tif ui.button(\"${3:Click me}\"):",
+      "\t\t$0",
+      "ui.window_end()"
+    ]
+  },
+  "goome canvas": {
+    "prefix": "goome-canvas",
+    "description": "draw on the view yourself",
+    "body": [
+      "ui.draw_rect(Rect2(${1:40}, ${2:40}, ${3:200}, ${4:80}), Color(\"1b1d22\"), 10.0)",
+      "ui.draw_text(Vector2($1 + 12, $2 + 12), \"${5:hello}\", Color(\"e9ebee\"), 16.0)",
+      "$0"
+    ]
+  },
+  "goome label": {
+    "prefix": "goome-label",
+    "description": "label",
+    "body": [
+      "ui.label(\"${1:some text}\")"
+    ]
+  },
+  "goome heading": {
+    "prefix": "goome-heading",
+    "description": "heading",
+    "body": [
+      "ui.heading(\"${1:Heading}\")"
+    ]
+  },
+  "goome wrapped": {
+    "prefix": "goome-wrapped",
+    "description": "text that wraps to the width",
+    "body": [
+      "ui.wrapped(\"${1:a longer bit of text that wraps}\")"
+    ]
+  },
+  "goome button": {
+    "prefix": "goome-button",
+    "description": "button",
+    "body": [
+      "if ui.button(\"${1:Click me}\"):",
+      "\t$0"
+    ]
+  },
+  "goome checkbox": {
+    "prefix": "goome-checkbox",
+    "description": "checkbox on a bool",
+    "body": [
+      "${1:enabled} = ui.checkbox(\"${2:Enabled}\", $1)"
+    ]
+  },
+  "goome toggle": {
+    "prefix": "goome-toggle",
+    "description": "toggle switch on a bool",
+    "body": [
+      "${1:enabled} = ui.toggle(\"${2:Enabled}\", $1)"
+    ]
+  },
+  "goome radio": {
+    "prefix": "goome-radio",
+    "description": "radio buttons on one int",
+    "body": [
+      "${1:size} = ui.radio(\"${2:Small}\", $1, 0)",
+      "ui.same_line()",
+      "$1 = ui.radio(\"${3:Large}\", $1, 1)"
+    ]
+  },
+  "goome slider": {
+    "prefix": "goome-slider",
+    "description": "float slider",
+    "body": [
+      "${1:volume} = ui.slider(\"${2:Volume}\", $1, ${3:0.0}, ${4:1.0}, \"${5:%.2f}\")"
+    ]
+  },
+  "goome slider int": {
+    "prefix": "goome-slider-int",
+    "description": "int slider",
+    "body": [
+      "${1:count} = ui.slider_int(\"${2:Count}\", $1, ${3:0}, ${4:100})"
+    ]
+  },
+  "goome input": {
+    "prefix": "goome-input",
+    "description": "one line text input",
+    "body": [
+      "${1:name} = ui.input(\"${2:Name}\", $1, ${3:64})"
+    ]
+  },
+  "goome password": {
+    "prefix": "goome-password",
+    "description": "password input",
+    "body": [
+      "${1:secret} = ui.password(\"${2:Password}\", $1)"
+    ]
+  },
+  "goome combo": {
+    "prefix": "goome-combo",
+    "description": "dropdown",
+    "body": [
+      "${1:fruit} = ui.combo(\"${2:Fruit}\", $1, PackedStringArray([\"${3:Mango}\", \"${4:Banana}\", \"${5:Cherry}\"]))"
+    ]
+  },
+  "goome selectable": {
+    "prefix": "goome-selectable",
+    "description": "selectable list row",
+    "body": [
+      "if ui.selectable(\"${1:Item}\", ${2:picked} == ${3:0}):",
+      "\t$2 = $3"
+    ]
+  },
+  "goome tabs": {
+    "prefix": "goome-tabs",
+    "description": "tabs",
+    "body": [
+      "${1:tab} = ui.tabs(\"${2:tabs}\", PackedStringArray([\"${3:General}\", \"${4:Advanced}\"]), $1)",
+      "if $1 == 0:",
+      "\t$0"
+    ]
+  },
+  "goome collapsing": {
+    "prefix": "goome-collapsing",
+    "description": "collapsing section",
+    "body": [
+      "if ui.collapsing(\"${1:More stuff}\"):",
+      "\t$0"
+    ]
+  },
+  "goome tree": {
+    "prefix": "goome-tree",
+    "description": "tree node",
+    "body": [
+      "if ui.tree(\"${1:src}\"):",
+      "\t$0",
+      "\tui.tree_end()"
+    ]
+  },
+  "goome progress": {
+    "prefix": "goome-progress",
+    "description": "progress bar",
+    "body": [
+      "ui.progress(${1:0.6}, \"${2:60%}\")"
+    ]
+  },
+  "goome color": {
+    "prefix": "goome-color",
+    "description": "color picker on a Color",
+    "body": [
+      "${1:highlight} = ui.color(\"${2:Highlight}\", $1)"
+    ]
+  },
+  "goome tooltip": {
+    "prefix": "goome-tooltip",
+    "description": "tooltip for the widget before it",
+    "body": [
+      "ui.tooltip(\"${1:what it does}\")"
+    ]
+  },
+  "goome row": {
+    "prefix": "goome-row",
+    "description": "next widgets go side by side",
+    "body": [
+      "ui.row(${1:2})"
+    ]
+  },
+  "goome same line": {
+    "prefix": "goome-same-line",
+    "description": "next widget on the same line",
+    "body": [
+      "ui.same_line()"
+    ]
+  },
+  "goome separator": {
+    "prefix": "goome-separator",
+    "description": "separator line",
+    "body": [
+      "ui.separator()"
+    ]
+  },
+  "goome space": {
+    "prefix": "goome-space",
+    "description": "empty space",
+    "body": [
+      "ui.space(${1:12.0})"
+    ]
+  },
+  "goome scroll": {
+    "prefix": "goome-scroll",
+    "description": "scroll area",
+    "body": [
+      "if ui.scroll_begin(\"${1:list}\", ${2:150.0}):",
+      "\t$0",
+      "ui.scroll_end()"
+    ]
+  },
+  "goome split": {
+    "prefix": "goome-split",
+    "description": "split panes",
+    "body": [
+      "if ui.split_begin(\"${1:main}\", false, ${2:0.3}):",
+      "\t$0",
+      "\tui.split_next()",
+      "ui.split_end()"
+    ]
+  },
+  "goome menubar": {
+    "prefix": "goome-menubar",
+    "description": "menu bar with a File menu",
+    "body": [
+      "if ui.menubar_begin():",
+      "\tif ui.menu_begin(\"${1:File}\"):",
+      "\t\tif ui.menu_item(\"${2:Open}\", \"${3:Ctrl+O}\"):",
+      "\t\t\t$0",
+      "\t\tui.menu_separator()",
+      "\t\tif ui.menu_item(\"Quit\", \"Ctrl+Q\"):",
+      "\t\t\tget_tree().quit()",
+      "\t\tui.menu_end()",
+      "\tui.menubar_end()"
+    ]
+  },
+  "goome popup": {
+    "prefix": "goome-popup",
+    "description": "button that opens a popup",
+    "body": [
+      "if ui.button(\"${1:More}\"):",
+      "\tui.popup_open(\"${2:more}\")",
+      "if ui.popup_begin(\"$2\"):",
+      "\t$0",
+      "\tui.popup_end()"
+    ]
+  },
+  "goome context": {
+    "prefix": "goome-context",
+    "description": "right click menu for the widget before it",
+    "body": [
+      "if ui.context_begin(\"${1:ctx}\"):",
+      "\tif ui.menu_item(\"${2:Delete}\"):",
+      "\t\t$0",
+      "\tui.context_end()"
+    ]
+  },
+  "goome modal": {
+    "prefix": "goome-modal",
+    "description": "modal with a Done button",
+    "body": [
+      "if ui.button(\"${1:Open settings}\"):",
+      "\tui.modal_open(\"${2:Settings}\")",
+      "if ui.modal_begin(\"$2\"):",
+      "\t$0",
+      "\tif ui.button(\"Done\"):",
+      "\t\tui.popup_close()",
+      "\tui.modal_end()"
+    ]
+  },
+  "goome toast": {
+    "prefix": "goome-toast",
+    "description": "toast message",
+    "body": [
+      "ui.toast(\"${1:saved}\", ${2:2500})"
+    ]
+  },
+  "goome text edit": {
+    "prefix": "goome-text-edit",
+    "description": "multiline text editor",
+    "body": [
+      "${1:notes} = ui.text_edit(\"$1\", $1, ${2:140.0}, GoomeUI.EDIT_WRAP)"
+    ]
+  },
+  "goome table": {
+    "prefix": "goome-table",
+    "description": "table with sortable columns",
+    "body": [
+      "if ui.table_begin(\"${1:files}\", 2, ${2:200.0}, GoomeUI.TABLE_SORTABLE | GoomeUI.TABLE_STRIPES):",
+      "\tui.table_column(\"${3:Name}\")",
+      "\tui.table_column(\"${4:Size}\", 90.0)",
+      "\t${5:sort} = ui.table_sort($5)",
+      "\tfor row in ${6:rows}:",
+      "\t\tui.table_row()",
+      "\t\tui.label(str(row))",
+      "\t\tui.table_next()",
+      "\t\tui.label(\"$0\")",
+      "ui.table_end()"
+    ]
+  },
+  "goome drag float": {
+    "prefix": "goome-drag-float",
+    "description": "drag a number left and right",
+    "body": [
+      "${1:speed} = ui.drag_float(\"${2:Speed}\", $1, ${3:0.01}, ${4:0.0}, ${5:10.0}, \"${6:%.2f}\")"
+    ]
+  },
+  "goome number": {
+    "prefix": "goome-number",
+    "description": "number box with - and + buttons",
+    "body": [
+      "${1:amount} = ui.number(\"${2:Amount}\", $1, ${3:1.0}, \"${4:%.0f}\")"
+    ]
+  },
+  "goome plot": {
+    "prefix": "goome-plot",
+    "description": "line plot from a PackedFloat32Array",
+    "body": [
+      "ui.plot_lines(\"${1:fps}\", ${2:history}, ${3:0.0}, ${4:100.0}, ${5:90.0})"
+    ]
+  },
+  "goome plot bars": {
+    "prefix": "goome-plot-bars",
+    "description": "bar plot from a PackedFloat32Array",
+    "body": [
+      "ui.plot_bars(\"${1:requests}\", ${2:history}, ${3:0.0}, ${4:20.0}, ${5:90.0})"
+    ]
+  },
+  "goome spinner": {
+    "prefix": "goome-spinner",
+    "description": "loading spinner",
+    "body": [
+      "ui.spinner()"
+    ]
+  },
+  "goome link": {
+    "prefix": "goome-link",
+    "description": "clickable link",
+    "body": [
+      "if ui.link(\"${1:goome docs}\"):",
+      "\t$0"
+    ]
+  },
+  "goome badge": {
+    "prefix": "goome-badge",
+    "description": "little colored badge",
+    "body": [
+      "ui.badge(\"${1:new}\", Color(\"${2:6fdc5f}\"))"
+    ]
+  },
+  "goome style": {
+    "prefix": "goome-style",
+    "description": "push a color and a size, pop them after",
+    "body": [
+      "var ${1:pushed} := ui.push_style({\"${2|accent,bg,panel,border,text,text_dim,hover,active,input_bg|}\": Color(\"${3:ff5050}\"), \"${4|radius,pad,gap,border_width,font_size|}\": ${5:4}})",
+      "$0",
+      "ui.pop($1)"
+    ]
+  },
+  "goome style push": {
+    "prefix": "goome-style-push",
+    "description": "push and pop by hand",
+    "body": [
+      "ui.push_color(GoomeUI.S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, Color(\"${2:ff5050}\"))",
+      "ui.push_num(GoomeUI.S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4})",
+      "$0",
+      "ui.pop(2)"
+    ]
+  },
+  "goome custom": {
+    "prefix": "goome-custom",
+    "description": "your own widget, a knob you drag up and down",
+    "body": [
+      "var ${1:gain} := ui.store(\"$1\", 1)",
+      "var it := ui.custom(\"$1\", ${2:80}, ${3:80}, GoomeUI.ITEM_DRAG_Y | GoomeUI.ITEM_FOCUSABLE)",
+      "if it.held:",
+      "\t$1[0] = clampf($1[0] - it.dy / 200, 0, 1)",
+      "ui.store_set(\"$1\", $1)",
+      "var accent: Color = ui.theme_get(\"accent\")",
+      "var c := Vector2(it.x + it.w / 2, it.y + it.h / 2)",
+      "ui.draw_arc(c, 30, 2.36, 2.36 + 4.71 * $1[0], accent, 6)",
+      "$0"
+    ]
+  },
+  "goome theme preset": {
+    "prefix": "goome-theme-preset",
+    "description": "use a built in theme",
+    "body": [
+      "ui.theme_preset(GoomeUI.PRESET_${1|DARK,LIGHT,MIDNIGHT,PAPER,MINT,HIGH_CONTRAST,ROSE|})"
+    ]
+  },
+  "goome theme make": {
+    "prefix": "goome-theme-make",
+    "description": "make a theme from one accent color",
+    "body": [
+      "ui.theme_make(Color(\"${1:4fa3ff}\"), ${2:true}, ${3:10})"
+    ]
+  },
+  "goome ease": {
+    "prefix": "goome-ease",
+    "description": "raw easing curve, t goes 0 to 1",
+    "body": [
+      "var ${1:k} := ui.ease(GoomeUI.EASE_${2|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|}, ${3:t})"
+    ]
+  },
+  "goome anim": {
+    "prefix": "goome-anim",
+    "description": "animate a number toward a target, call it every frame",
+    "body": [
+      "var ${1:x} := ui.anim(\"${2:panel x}\", ${3:-300.0 if closed else 0.0}, ${4:250}, GoomeUI.EASE_${5|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|})"
+    ]
+  },
+  "goome anim color": {
+    "prefix": "goome-anim-color",
+    "description": "animate a color toward a target, call it every frame",
+    "body": [
+      "var ${1:bg} := ui.anim_color(\"${2:bg}\", ${3:Color(\"3a7bd5\") if hot else Color(\"202020\")}, ${4:150}, GoomeUI.EASE_${5|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|})"
+    ]
+  },
+  "goome text input": {
+    "prefix": "goome-text-input",
+    "description": "typed and composing text from the ime signals",
+    "body": [
+      "var ${1:typed} := \"\"",
+      "var ${2:composing} := \"\"",
+      "var ${3:at} := 0",
+      "",
+      "",
+      "func _ready() -> void:",
+      "\time_text.connect(_on_ime_text)",
+      "\time_preedit.connect(_on_ime_preedit)",
+      "",
+      "",
+      "func _on_ime_text(text: String) -> void:",
+      "\t$1 = text",
+      "\t$0",
+      "",
+      "",
+      "func _on_ime_preedit(text: String, caret: int) -> void:",
+      "\t$2 = text",
+      "\t$3 = caret"
+    ]
+  },
+  "goome a11y": {
+    "prefix": "goome-a11y",
+    "description": "screen reader role, name and value for the next custom item",
+    "body": [
+      "ui.a11y(true)",
+      "ui.a11y_role(GoomeUI.ROLE_${1|SLIDER,BUTTON,CHECKBOX,PROGRESS,IMAGE,GROUP|}, \"${2:Volume}\")",
+      "ui.a11y_value(\"${3:50%}\")"
+    ]
+  },
+  "goome font fallback": {
+    "prefix": "goome-font-fallback",
+    "description": "font that falls back to another one for chars it doesnt have",
+    "body": [
+      "ui.font_fallback(load(\"res://${1:Inter.ttf}\"), load(\"res://${2:NotoSansCJK.ttf}\"))"
+    ]
+  },
+  "goome text dir": {
+    "prefix": "goome-text-dir",
+    "description": "force the text direction for all text",
+    "body": [
+      "ui.text_dir(GoomeUI.DIR_${1|RTL,LTR,AUTO|})"
+    ]
+  }
+}
