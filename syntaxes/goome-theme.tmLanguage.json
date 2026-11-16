@@ -1,0 +1,4 @@
+{
+  "scopeName": "source.json.goome-theme",
+  "patterns": [{ "include": "source.json" }]
+}
