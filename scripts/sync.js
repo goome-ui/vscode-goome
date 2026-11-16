@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const api = require("./api");
 
 const root = path.join(__dirname, "..");
 const BUILDER_FILES = ["model.js", "codegen.js", "elements.js", "app.js", "stage.js", "vars.js", "style.css", "elements.css"];
@@ -46,6 +47,23 @@ function docPages(docs) {
   return pages;
 }
 
+function writeApi(functions) {
+  const file = path.join(root, "media", "api.json");
+  const langs = api.build(root, functions);
+  const have = Object.keys(langs);
+  if (!have.length) {
+    if (fs.existsSync(file)) console.log("no bindings found, keeping media/api.json");
+    else console.log("no bindings found, no api.json made");
+    return;
+  }
+  let old = {};
+  try {
+    old = JSON.parse(fs.readFileSync(file, "utf8")).langs;
+  } catch {}
+  fs.writeFileSync(file, JSON.stringify({ langs: Object.assign(old, langs) }) + "\n");
+  console.log("api names for " + have.map((l) => l + " " + langs[l].length).join(", "));
+}
+
 function main() {
   const docs = find("GOOME_DOCS", ["goome-docs", "docs"]);
   const cgoome = find("GOOME_C", ["c-goome"]);
@@ -73,6 +91,7 @@ function main() {
     for (const name of Object.keys(fns)) fns[name].url = DOCS_URL + (pages[name] || "");
     fs.writeFileSync(hoverFile, JSON.stringify({ version, docs: DOCS_URL, functions: fns }, null, 1) + "\n");
     console.log("hover docs for " + Object.keys(fns).length + " functions from " + header);
+    writeApi(fns);
   } else if (fs.existsSync(hoverFile)) {
     console.log("no c-goome found, keeping media/hover.json");
   } else {

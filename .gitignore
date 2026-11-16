@@ -5,3 +5,4 @@ media/hover.json
 deps/
 .vscode-test/
 *.vsix
+media/api.json
