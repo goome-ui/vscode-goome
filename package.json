@@ -1,7 +1,7 @@
 {
   "name": "vscode-goome",
   "displayName": "goome",
-  "description": "Snippets, a new project command, a .goome.json preview and hover docs for goome, the see-through overlay and ui library.",
+  "description": "Snippets, a new project command, a .goome.json preview and hover docs for goome. See-through overlays, normal app windows, game mod menus and engine ui. One file, no dependencies, Linux, Windows, Mac.",
   "version": "0.5.1",
   "publisher": "goome-ui",
   "license": "GPL-3.0-only",
