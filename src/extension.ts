@@ -5,6 +5,7 @@ import { newProject, NewProjectArgs } from "./newProject";
 import { GoomePreview } from "./preview";
 import { BUILDER_URL, DOCS_URL } from "./sidebar";
 import { GoomeSidebar } from "./sidebarView";
+import { WebBuilder } from "./webBuild";
 
 function sayError(e: unknown) {
   vscode.window.showErrorMessage("goome: " + (e instanceof Error ? e.message : String(e)));
@@ -22,9 +23,11 @@ export function activate(ctx: vscode.ExtensionContext) {
   const map = loadHoverMap(ctx.extensionPath);
   const hover = new GoomeHover(map);
   const sidebar = new GoomeSidebar(ctx.extensionPath);
+  const web = new WebBuilder(ctx.globalStorageUri);
 
   ctx.subscriptions.push(
     sidebar,
+    web,
     vscode.languages.registerHoverProvider([{ language: "c" }, { language: "cpp" }], hover),
     vscode.window.registerCustomEditorProvider(GoomePreview.viewType, preview, { webviewOptions: { retainContextWhenHidden: false } }),
     vscode.commands.registerCommand("goome.newProject", async (args?: NewProjectArgs) => {
@@ -55,6 +58,19 @@ export function activate(ctx: vscode.ExtensionContext) {
         sayError(e);
         return undefined;
       }
+    }),
+    vscode.commands.registerCommand("goome.buildWeb", async (uri?: vscode.Uri) => {
+      try {
+        return await web.build(uri instanceof vscode.Uri ? uri : undefined);
+      } catch (e) {
+        sayError(e);
+        return undefined;
+      }
+    }),
+    vscode.commands.registerCommand("goome.stopWebServer", () => {
+      const n = web.stop();
+      vscode.window.showInformationMessage(n ? "stopped the web server" : "no web server is running");
+      return n;
     }),
     vscode.commands.registerCommand("goome.openBuilder", () => vscode.env.openExternal(vscode.Uri.parse(BUILDER_URL))),
     vscode.commands.registerCommand("goome.openDocs", () => vscode.env.openExternal(vscode.Uri.parse(DOCS_URL))),
@@ -96,7 +112,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand("goome.refreshSidebar", () => sidebar.refresh()),
   );
 
-  return { preview, hover, sidebar, storage: ctx.globalStorageUri };
+  return { preview, hover, sidebar, web, storage: ctx.globalStorageUri };
 }
 
 export function deactivate() {}

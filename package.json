@@ -49,6 +49,11 @@
           "type": "string",
           "default": "",
           "markdownDescription": "Python to run goome.py with. Empty = `python3`, `python` or `py -3`."
+        },
+        "goome.web.goomePath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "A c-goome checkout for **goome: Build for Web**. Empty = look next to your app, then download c-goome. Released versions dont have the web build yet, so point this at a checkout of c-goome."
         }
       }
     },
@@ -68,6 +73,17 @@
       {
         "command": "goome.copyCode",
         "title": "Copy Code From This Project",
+        "category": "goome"
+      },
+      {
+        "command": "goome.buildWeb",
+        "title": "Build for Web",
+        "category": "goome",
+        "icon": "$(globe)"
+      },
+      {
+        "command": "goome.stopWebServer",
+        "title": "Stop Web Server",
         "category": "goome"
       },
       {
@@ -129,6 +145,11 @@
           "command": "goome.openPreview",
           "when": "resourceFilename =~ /\\.goome\\.json$/ && activeEditor == workbench.editors.files.textFileEditor",
           "group": "navigation"
+        },
+        {
+          "command": "goome.buildWeb",
+          "when": "resourceExtname == .c",
+          "group": "navigation"
         }
       ],
       "view/title": [
@@ -146,6 +167,20 @@
           "command": "goome.refreshSidebar",
           "when": "view == goome.sidebar || view == goome.files",
           "group": "navigation@9"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "goome.buildWeb",
+          "when": "resourceExtname == .c",
+          "group": "goome"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "goome.buildWeb",
+          "when": "resourceExtname == .c",
+          "group": "goome"
         }
       ]
     },
