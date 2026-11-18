@@ -51,7 +51,7 @@ describe("goome extension", () => {
     const text = hoverText(h);
     assert.match(text, /int goome_ui_custom\(goome_ui \*u, const char \*id/);
     assert.match(text, /DRAG\\?_X or DRAG\\?_Y alone locks that axis/);
-    assert.match(text, /https:\/\/goome-ui\.github\.io\/docs\//);
+    assert.match(text, /https:\/\/goome\.wtf\/docs\//);
     const none = (await vscode.commands.executeCommand<vscode.Hover[]>("vscode.executeHoverProvider", doc.uri, new vscode.Position(2, 8))) || [];
     assert.ok(!/goome docs/.test(hoverText(none)), "goome_nope got a goome hover");
   });
@@ -87,7 +87,7 @@ describe("goome extension", () => {
         const list = (await vscode.commands.executeCommand<vscode.Hover[]>("vscode.executeHoverProvider", doc.uri, at)) || [];
         return hoverText(list).includes(sig) ? list : undefined;
       }, 20000);
-      assert.match(hoverText(h), /https:\/\/goome-ui\.github\.io\/docs\//);
+      assert.match(hoverText(h), /https:\/\/goome\.wtf\/docs\//);
     });
 
     it("completes goome members in " + lang, async () => {

@@ -110,7 +110,7 @@ test("hover text has the signature, the goome.h note and a docs link", () => {
   assert.match(text, /```lua\nui:slider\(\.\.\.\)\n```/);
   assert.match(text, /wraps the C function/);
   assert.match(text, /goome_ui_slider/);
-  assert.match(text, /\(https:\/\/goome-ui\.github\.io\/docs\/[^)]*\)$/);
+  assert.match(text, /\(https:\/\/goome\.wtf\/docs\/[^)]*\)$/);
   assert.strictEqual(lib.apiLang("typescriptreact").id, "node");
   assert.strictEqual(lib.apiLang("gdscript").id, "godot");
   assert.strictEqual(lib.apiLang("python"), undefined);
