@@ -4,7 +4,7 @@ const api = require("./api");
 
 const root = path.join(__dirname, "..");
 const BUILDER_FILES = ["model.js", "codegen.js", "elements.js", "app.js", "stage.js", "vars.js", "style.css", "elements.css"];
-const DOCS_URL = "https://goome-ui.github.io/docs/";
+const DOCS_URL = "https://goome.wtf/docs/";
 
 function find(envName, names) {
   const tries = [];

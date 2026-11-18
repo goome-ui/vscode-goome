@@ -6,7 +6,7 @@
   "publisher": "goome-ui",
   "license": "GPL-3.0-only",
   "icon": "media/icon.png",
-  "homepage": "https://goome-ui.github.io/docs/",
+  "homepage": "https://goome.wtf/docs/",
   "repository": {
     "type": "git",
     "url": "https://github.com/goome-ui/vscode-goome"

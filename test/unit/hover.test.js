@@ -15,7 +15,7 @@ test("hover map has every goome function with a signature and a docs link", () =
     assert.match(n, /^goome_\w+$/);
     assert.ok(f.sig.includes(n + "("), n + " sig " + f.sig);
     assert.ok(f.sig.endsWith(");"), n + " sig " + f.sig);
-    assert.ok(f.url.startsWith("https://goome-ui.github.io/docs/"), n + " url " + f.url);
+    assert.ok(f.url.startsWith("https://goome.wtf/docs/"), n + " url " + f.url);
     assert.strictEqual(typeof f.note, "string");
   }
   for (const n of ["goome_open", "goome_open_app", "goome_poll", "goome_pace", "goome_ui_new", "goome_ui_window", "goome_ui_button", "goome_ui_custom", "goome_ui_theme_preset", "goome_frame"]) assert.ok(map.functions[n], n);
