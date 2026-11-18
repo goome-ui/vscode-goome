@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
-export const DOCS_URL = "https://goome-ui.github.io/docs/";
-export const BUILDER_URL = "https://goome-ui.github.io/docs/builder/";
+export const DOCS_URL = "https://goome.wtf/docs/";
+export const BUILDER_URL = "https://goome.wtf/builder/";
 export const FILE_GLOB = "**/*.{goome.json,goome-theme.json}";
 
 export interface Choice {

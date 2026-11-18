@@ -128,7 +128,7 @@ function projectSchema() {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: BASE + "goome-project.schema.json",
     title: "goome ui builder project",
-    description: "a .goome.json from the goome ui builder, https://goome-ui.github.io/docs/builder/",
+    description: "a .goome.json from the goome ui builder, https://goome.wtf/builder/",
     type: "object",
     properties: {
       format: { const: "goome-project" },

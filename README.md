@@ -22,9 +22,9 @@
 </p>
 
 <p align="center">
-  <a href="https://goome-ui.github.io/docs/">Docs</a> &nbsp;·&nbsp;
+  <a href="https://goome.wtf/docs/">Docs</a> &nbsp;·&nbsp;
   <a href="https://github.com/goome-ui/c-goome">goome</a> &nbsp;·&nbsp;
-  <a href="https://goome-ui.github.io/docs/builder/">UI builder</a> &nbsp;·&nbsp;
+  <a href="https://goome.wtf/builder/">UI builder</a> &nbsp;·&nbsp;
   <a href="https://github.com/goome-ui/goome-cli">goome-cli</a>
 </p>
 
