@@ -12,7 +12,7 @@ export class WebBuilder implements vscode.Disposable {
 
   constructor(private storage: vscode.Uri) {}
 
-  private log(): vscode.OutputChannel {
+  log(): vscode.OutputChannel {
     if (!this.channel) this.channel = vscode.window.createOutputChannel("goome");
     return this.channel;
   }

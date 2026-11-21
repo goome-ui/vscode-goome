@@ -106,6 +106,12 @@
         "icon": "$(globe)"
       },
       {
+        "command": "goome.updateGoome",
+        "title": "Update goome",
+        "category": "goome",
+        "icon": "$(cloud-download)"
+      },
+      {
         "command": "goome.stopWebServer",
         "title": "Stop Web Server",
         "category": "goome"

@@ -8,6 +8,7 @@ import { GoomePreview } from "./preview";
 import { BUILDER_URL, DOCS_URL } from "./sidebar";
 import { GoomeSidebar } from "./sidebarView";
 import { WebBuilder } from "./webBuild";
+import { Upgrader } from "./upgrade";
 
 function sayError(e: unknown) {
   vscode.window.showErrorMessage("goome: " + (e instanceof Error ? e.message : String(e)));
@@ -34,6 +35,7 @@ export function activate(ctx: vscode.ExtensionContext) {
   });
   const sidebar = new GoomeSidebar(ctx.extensionPath);
   const web = new WebBuilder(ctx.globalStorageUri);
+  const upgrader = new Upgrader(ctx.globalStorageUri, (c, a, o) => web.spawn(c, a, o), () => web.log());
 
   ctx.subscriptions.push(
     sidebar,
@@ -74,6 +76,14 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand("goome.buildWeb", async (uri?: vscode.Uri) => {
       try {
         return await web.build(uri instanceof vscode.Uri ? uri : undefined);
+      } catch (e) {
+        sayError(e);
+        return undefined;
+      }
+    }),
+    vscode.commands.registerCommand("goome.updateGoome", async () => {
+      try {
+        return await upgrader.upgrade();
       } catch (e) {
         sayError(e);
         return undefined;
@@ -124,7 +134,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand("goome.refreshSidebar", () => sidebar.refresh()),
   );
 
-  return { preview, hover, apiMap, sidebar, web, storage: ctx.globalStorageUri };
+  return { preview, hover, apiMap, sidebar, web, upgrader, storage: ctx.globalStorageUri };
 }
 
 export function deactivate() {}
