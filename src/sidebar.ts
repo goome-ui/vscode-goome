@@ -89,6 +89,7 @@ export function quickActions(): Node[] {
   return [
     { id: "quick/new", label: "New Project", icon: "new-folder", command: "goome.newProject", tooltip: "Make a goome project with goome-cli" },
     { id: "quick/web", label: "Build for Web", icon: "globe", command: "goome.buildWeb", tooltip: "Compile a C app to webassembly and run it in the browser" },
+    { id: "quick/update", label: "Update goome", icon: "cloud-download", command: "goome.updateGoome", tooltip: "Bump goome in this project to the newest version" },
     { id: "quick/builder", label: "Open UI builder", icon: "layout", command: "goome.openBuilder", tooltip: BUILDER_URL },
     { id: "quick/search", label: "Search docs", icon: "search", command: "goome.searchDocs", tooltip: "Find a goome function and open its docs" },
     { id: "quick/docs", label: "Open docs", icon: "book", command: "goome.openDocs", tooltip: DOCS_URL },

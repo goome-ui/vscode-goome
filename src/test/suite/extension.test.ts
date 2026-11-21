@@ -42,7 +42,7 @@ describe("goome extension", () => {
 
   it("registers its commands", async () => {
     const all = await vscode.commands.getCommands(true);
-    for (const c of ["goome.newProject", "goome.openPreview", "goome.copyCode", "goome.openBuilder", "goome.searchDocs", "goome.openDocs", "goome.openFile", "goome.insertSnippet", "goome.refreshSidebar", "goome.buildWeb", "goome.stopWebServer"]) assert.ok(all.includes(c), c);
+    for (const c of ["goome.newProject", "goome.openPreview", "goome.copyCode", "goome.openBuilder", "goome.searchDocs", "goome.openDocs", "goome.openFile", "goome.insertSnippet", "goome.refreshSidebar", "goome.buildWeb", "goome.updateGoome", "goome.stopWebServer"]) assert.ok(all.includes(c), c);
   });
 
   it("shows the goome.h note and a docs link on hover in C", async () => {

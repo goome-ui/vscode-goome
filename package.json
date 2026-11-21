@@ -2,7 +2,7 @@
   "name": "vscode-goome",
   "displayName": "goome",
   "description": "Snippets, completion, hover docs and a new project command for goome in C, C#, Python, Java, Rust, Node, Go, Zig, Lua and Godot, plus a .goome.json preview. See-through overlays, normal app windows, game mod menus and engine ui. Linux, Windows, Mac.",
-  "version": "0.5.5",
+  "version": "0.5.7",
   "publisher": "goome-ui",
   "license": "GPL-3.0-only",
   "icon": "media/icon.png",
@@ -104,6 +104,12 @@
         "title": "Build for Web",
         "category": "goome",
         "icon": "$(globe)"
+      },
+      {
+        "command": "goome.updateGoome",
+        "title": "Update goome",
+        "category": "goome",
+        "icon": "$(cloud-download)"
       },
       {
         "command": "goome.stopWebServer",

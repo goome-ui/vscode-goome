@@ -19,7 +19,7 @@ test("root has the four groups in order", () => {
 test("quick actions point at real commands", () => {
   const cmds = new Set(pkg.contributes.commands.map((c) => c.command));
   const q = sb.quickActions();
-  assert.deepStrictEqual(q.map((n) => n.label), ["New Project", "Build for Web", "Open UI builder", "Search docs", "Open docs"]);
+  assert.deepStrictEqual(q.map((n) => n.label), ["New Project", "Build for Web", "Update goome", "Open UI builder", "Search docs", "Open docs"]);
   for (const n of q) assert.ok(cmds.has(n.command), n.command + " isnt in package.json");
 });
 
