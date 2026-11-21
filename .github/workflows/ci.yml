@@ -23,7 +23,7 @@ jobs:
       - name: goome sources
         run: |
           mkdir -p deps
-          for r in docs c-goome python-goome csharp-goome java-goome rust-goome node-goome go-goome zig-goome lua-goome godot-goome goome-cli; do
+          for r in docs website c-goome python-goome csharp-goome java-goome rust-goome node-goome go-goome zig-goome lua-goome godot-goome goome-cli; do
             git clone -q --depth 1 "https://github.com/goome-ui/$r.git" "deps/$r"
           done
       - uses: actions/setup-node@v4

@@ -39,7 +39,7 @@ function docPages(docs) {
       if (m && !pages[m[1]]) pages[m[1]] = slug + "/#" + m[1];
     }
   }
-  for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".md") && !f.startsWith("api-")).sort()) {
+  for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".md") && !f.startsWith("api-") && f !== "index.md").sort()) {
     const slug = f.replace(/\.md$/, "");
     const text = fs.readFileSync(path.join(dir, f), "utf8");
     for (const m of text.matchAll(/\b(goome_\w+)\s*\(/g)) if (!pages[m[1]]) pages[m[1]] = slug + "/";
@@ -71,15 +71,16 @@ function main() {
   const outBuilder = path.join(media, "builder");
   const hoverFile = path.join(media, "hover.json");
 
-  const builder = docs && path.join(docs, "builder");
-  if (builder && fs.existsSync(path.join(builder, "model.js"))) {
+  const website = find("GOOME_WEBSITE", ["website", "website-source"]);
+  const builder = [docs && path.join(docs, "builder"), website && path.join(website, "src", "builder")].find((d) => d && fs.existsSync(path.join(d, "model.js")));
+  if (builder) {
     fs.mkdirSync(outBuilder, { recursive: true });
     for (const f of BUILDER_FILES) fs.copyFileSync(path.join(builder, f), path.join(outBuilder, f));
     console.log("copied the builder from " + builder);
   } else if (BUILDER_FILES.every((f) => fs.existsSync(path.join(outBuilder, f)))) {
     console.log("no goome-docs found, keeping the builder copy thats already in media/builder");
   } else {
-    console.error("cant find goome-docs/builder. put goome-docs next to this folder or set GOOME_DOCS");
+    console.error("cant find the builder. put website next to this folder (or in deps/) or set GOOME_WEBSITE");
     process.exit(1);
   }
 

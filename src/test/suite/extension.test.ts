@@ -300,6 +300,19 @@ describe("goome extension", () => {
       await vscode.workspace.getConfiguration("goome").update("web.goomePath", undefined, vscode.ConfigurationTarget.Global);
     });
 
+    it("does not run the cli for a non C file", async () => {
+      const before = calls.length;
+      api.web.spawn = (cmd: string, args: string[]) => {
+        calls.push({ cmd, args });
+        return fakeChild((c) => c.emit("close", 0));
+      };
+      const file = path.join(work, "csapp", "Program.cs");
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, "class P {}");
+      await assert.rejects(api.web.build(vscode.Uri.file(file)), /only works for C apps right now, this looks like a C# project/);
+      assert.strictEqual(calls.length, before);
+    });
+
     it("runs goome build --web on the file with the c-goome setting", async () => {
       api.web.spawn = (cmd: string, args: string[]) => {
         calls.push({ cmd, args });

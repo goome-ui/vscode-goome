@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.5
+
+- the docs buttons, hover links and quick docs point at goome.wtf now, the old github.io links were broken
+- Build for Web tells you it only works for C apps when you run it on another language, and says why
+- new window flag GOOME_WINDOW_NO_CONSOLE
+- the hover and quick docs link no longer sends a few functions to a page that doesnt exist
+- the web build note in the readme and settings is right now, c-goome 0.5.5 has it
+
 ## 0.5.2
 
 - Rust, Node (JavaScript and TypeScript), Go, Zig, Lua and Godot (GDScript) get the goome snippets, with the same prefixes as C, C#, Python and Java

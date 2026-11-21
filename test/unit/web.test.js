@@ -111,3 +111,17 @@ test("package.json has the web commands, setting and menus", () => {
     assert.ok(m && m.when === "resourceExtname == .c", menu);
   }
 });
+
+test("other languages get the friendly web message", () => {
+  const cases = { "Program.cs": "C#", "a.py": "Python", "A.java": "Java", "A.kt": "Kotlin", "m.rs": "Rust", "m.go": "Go", "m.zig": "Zig", "m.lua": "Lua", "a.js": "JavaScript", "a.ts": "TypeScript", "m.gd": "GDScript" };
+  for (const [f, lang] of Object.entries(cases)) assert.strictEqual(web.languageOfFile(f), lang, f);
+  assert.strictEqual(web.languageOfFile("main.c"), undefined);
+  assert.strictEqual(web.languageOfFile("weird.cc"), undefined);
+  const folders = { "App.csproj": "C#", "pyproject.toml": "Python", "requirements.txt": "Python", "build.gradle": "Java", "Cargo.toml": "Rust", "go.mod": "Go", "build.zig": "Zig", "a-1.rockspec": "Lua", "package.json": "JavaScript", "project.godot": "Godot" };
+  for (const [f, lang] of Object.entries(folders)) assert.strictEqual(web.languageOfFolder(["x", f]), lang, f);
+  assert.strictEqual(web.languageOfFolder(["main.c", "Makefile"]), undefined);
+  const m = web.notCMessage("C#");
+  assert.match(m, /only works for C apps right now, this looks like a C# project/);
+  assert.match(m, /goome\.wtf\/builder\//);
+  assert.match(m, /goome\.wtf\/docs\/browser\//);
+});

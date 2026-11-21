@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
 import { findRunner } from "./newProject";
-import { buildArgs, errorLines, headline, needsGoomeFolder, outFolder, runBuild, Server, Spawn, startServer } from "./webCore";
+import { buildArgs, errorLines, headline, languageOfFile, languageOfFolder, notCMessage, needsGoomeFolder, outFolder, runBuild, Server, Spawn, startServer } from "./webCore";
 
 export class WebBuilder implements vscode.Disposable {
   spawn: Spawn = (cmd, args, opts) => cp.spawn(cmd, args, opts);
@@ -20,7 +20,14 @@ export class WebBuilder implements vscode.Disposable {
   private async pickFile(uri?: vscode.Uri): Promise<string | undefined> {
     const given = uri || vscode.window.activeTextEditor?.document.uri;
     if (given && given.scheme === "file" && given.path.endsWith(".c")) return given.fsPath;
+    const other = given && given.scheme === "file" ? languageOfFile(given.fsPath) : undefined;
+    if (other) throw new Error(notCMessage(other));
     const found = await vscode.workspace.findFiles("**/*.c", "**/{node_modules,web,build,.git}/**", 200);
+    if (!found.length) {
+      const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+      const lang = root ? languageOfFolder(fs.readdirSync(root)) : undefined;
+      if (lang) throw new Error(notCMessage(lang));
+    }
     if (!found.length) throw new Error("no .c files in this workspace, open the one with your app first");
     const pick = await vscode.window.showQuickPick(
       found.map((f) => ({ label: path.basename(f.fsPath), description: vscode.workspace.asRelativePath(f), file: f.fsPath })),
