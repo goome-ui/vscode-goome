@@ -39,7 +39,7 @@ function docPages(docs) {
       if (m && !pages[m[1]]) pages[m[1]] = slug + "/#" + m[1];
     }
   }
-  for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".md") && !f.startsWith("api-")).sort()) {
+  for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".md") && !f.startsWith("api-") && f !== "index.md").sort()) {
     const slug = f.replace(/\.md$/, "");
     const text = fs.readFileSync(path.join(dir, f), "utf8");
     for (const m of text.matchAll(/\b(goome_\w+)\s*\(/g)) if (!pages[m[1]]) pages[m[1]] = slug + "/";
