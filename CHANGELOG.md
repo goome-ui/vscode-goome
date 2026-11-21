@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.5.7
 
-- new Update goome button, bumps goome in your project to the newest version. it is in the side bar and the command palette (goome: Update goome), asks before it changes anything and before it runs the restore command
+- new Update goome button: checks the newest goome for your project and bumps it, it is in the side bar and the command palette (goome: Update goome), asks before it changes anything and before it runs the restore command
+- needs goome-cli 0.5.7, the button offers to update the cli for you
 
 ## 0.5.5
 
