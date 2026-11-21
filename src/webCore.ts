@@ -16,6 +16,23 @@ export interface Server {
   child: cp.ChildProcess;
 }
 
+const EXT_LANG: Record<string, string> = { ".cs": "C#", ".py": "Python", ".java": "Java", ".kt": "Kotlin", ".rs": "Rust", ".go": "Go", ".zig": "Zig", ".lua": "Lua", ".js": "JavaScript", ".mjs": "JavaScript", ".ts": "TypeScript", ".gd": "GDScript" };
+const FILE_LANG: [string, string][] = [["project.godot", "Godot"], ["Cargo.toml", "Rust"], ["go.mod", "Go"], ["build.zig", "Zig"], ["pyproject.toml", "Python"], ["requirements.txt", "Python"], ["build.gradle", "Java"], ["build.gradle.kts", "Kotlin"], ["pom.xml", "Java"], ["package.json", "JavaScript"]];
+
+export function languageOfFile(file: string): string | undefined {
+  return EXT_LANG[path.extname(file).toLowerCase()];
+}
+
+export function languageOfFolder(names: string[]): string | undefined {
+  if (names.some((n) => /\.(csproj|sln)$/i.test(n))) return "C#";
+  if (names.some((n) => /\.rockspec$/i.test(n))) return "Lua";
+  return FILE_LANG.find(([f]) => names.includes(f))?.[1];
+}
+
+export function notCMessage(lang: string): string {
+  return "building for the web only works for C apps right now, this looks like a " + lang + " project. the web build compiles C, so the same app needs to be written in C to go in the browser. try it live at https://goome.wtf/builder/ or see https://goome.wtf/docs/browser/";
+}
+
 export function buildArgs(file: string, out: string, goomePath: string): string[] {
   const args = ["build", "--web", file, "--out", out];
   if (goomePath) args.push("--goome", goomePath);
